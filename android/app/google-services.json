@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "256140874932",
+    "project_id": "studentshopapplication",
+    "storage_bucket": "studentshopapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256140874932:android:f6a90fe9a8f883825973e1",
+        "android_client_info": {
+          "package_name": "com.example.student_shopping"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256140874932-1bb2e1nonkdo3aagm9q0kf8hnudfd2md.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.student_shopping",
+            "certificate_hash": "4dd4139f1ef394667e769c108438d1fd1ec37565"
+          }
+        },
+        {
+          "client_id": "256140874932-3848tfdacnfmkl06sbnl8s6mmre5iqn5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4bAdRU8HjyyeMS2W7kDTq3c_9JAIfMAw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256140874932-3848tfdacnfmkl06sbnl8s6mmre5iqn5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
