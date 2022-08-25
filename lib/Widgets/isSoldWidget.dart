@@ -91,7 +91,7 @@ class _isSoldWidgetState extends State<isSoldWidget> {
     Map<String, dynamic> data;
     String itemId = widget.item.id.toString();
     String categoryId = widget.item.category_id.toString();
-    var url = Uri.parse('http://localhost:8080/categories/$categoryId/items/soldStatus/$itemId');
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/categories/$categoryId/items/soldStatus/$itemId');
     // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.put(url
         , headers: {

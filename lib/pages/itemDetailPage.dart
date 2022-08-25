@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:another_carousel_pro/another_carousel_pro.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:student_shopping_v1/Authentication/authentication.dart';
@@ -72,6 +73,55 @@ class _ItemDetailsState extends State<ItemDetails> {
               ),
             );
           } else {
+            // final List<Object> imgList = [
+            //   numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
+            //       "assets/images/no-picture-available-icon.png"),
+            //   numberOfImagesInItem > 1 ? MemoryImage(snapshot.data[1]) : AssetImage(
+            //       "assets/images/no-picture-available-icon.png"),
+            //   numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
+            //       "assets/images/no-picture-available-icon.png"),
+            // ];
+            // final List<Widget> imageSliders = imgList
+            //     .map((item) => Container(
+            //   child: Container(
+            //     margin: EdgeInsets.all(5.0),
+            //     child: ClipRRect(
+            //         borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            //         child: Stack(
+            //           children: <Widget>[
+            //             MemoryImage(item),
+            //             Positioned(
+            //               bottom: 0.0,
+            //               left: 0.0,
+            //               right: 0.0,
+            //               child: Container(
+            //                 decoration: BoxDecoration(
+            //                   gradient: LinearGradient(
+            //                     colors: [
+            //                       Color.fromARGB(200, 0, 0, 0),
+            //                       Color.fromARGB(0, 0, 0, 0)
+            //                     ],
+            //                     begin: Alignment.bottomCenter,
+            //                     end: Alignment.topCenter,
+            //                   ),
+            //                 ),
+            //                 padding: EdgeInsets.symmetric(
+            //                     vertical: 10.0, horizontal: 20.0),
+            //                 child: Text(
+            //                   'No. ${imgList.indexOf(item)} image',
+            //                   style: TextStyle(
+            //                     color: Colors.white,
+            //                     fontSize: 20.0,
+            //                     fontWeight: FontWeight.bold,
+            //                   ),
+            //                 ),
+            //               ),
+            //             ),
+            //           ],
+            //         )),
+            //   ),
+            // ))
+            //     .toList();
 
           return Container(
             child: SingleChildScrollView(
@@ -82,15 +132,29 @@ class _ItemDetailsState extends State<ItemDetails> {
                     height: MediaQuery
                         .of(context)
                         .size
-                        .height * 0.4,
+                        .height * .5,
                     width: MediaQuery
                         .of(context)
                         .size
                         .width,
-                    // decoration: BoxDecoration(
+              //     child: CarouselSlider(
+              //     options: CarouselOptions(
+              //     aspectRatio: 2.0,
+              //     enlargeCenterPage: true,
+              //     enableInfiniteScroll: false,
+              //     initialPage: 2,
+              //       autoPlay: true
+              //
+              // ),
+              //       items: [
+              //         imageSliders,
+              //       ],
+              // )
+              //       // decoration: BoxDecoration(
                     //   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
                     //   boxShadow: [BoxShadow(spreadRadius: 0, blurRadius: 19, offset: Offset(0, 4), color: Colors.grey)],
                     child: Carousel(
+                      boxFit: BoxFit.contain,
                       images: [
                         numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
                             "assets/images/no-picture-available-icon.png"),
@@ -213,7 +277,7 @@ bottomNavigationBar: Container(
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:8080/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -229,7 +293,7 @@ bottomNavigationBar: Container(
 
   Future<void> getProfileFromDbWithSellerId(int? profileId) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:8080/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

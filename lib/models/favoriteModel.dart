@@ -49,7 +49,7 @@ class FavoriteModel extends ChangeNotifier {
   Future<void> getItemRestList() async {
     List data;
     String firebaseId = currentUser!.uid;
-    var url = Uri.parse('http://localhost:8080/profiles/$firebaseId/favorites');
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body) as List;

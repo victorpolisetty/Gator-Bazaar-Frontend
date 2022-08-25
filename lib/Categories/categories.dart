@@ -1,102 +1,323 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import '../Widgets/circleIcon.dart';
+import '../models/categoryModel.dart';
 import '../pages/categoryItemPage.dart';
+import 'package:provider/provider.dart';
 
-// ToDo -- rewrite this to pull categories from the database using rest api
-class Categories extends StatelessWidget {
+class CategoryPage extends StatefulWidget {
+  const CategoryPage({Key? key}) : super(key: key);
+
+  @override
+  State<CategoryPage> createState() => _CategoryPageState();
+}
+
+class _CategoryPageState extends State<CategoryPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Provider.of<CategoryModel>(context, listen: false).getChatHomeHelper();
+  }
   @override
   Widget build(BuildContext context) {
+    // var categoryList = context.watch<CategoryModel>();
     return Container(
       margin: EdgeInsets.only(top: 10),
       height: 80,
       width: MediaQuery.of(context).size.width,
+    //   child: ListView.builder(
+    //     scrollDirection: Axis.horizontal,
+    //     itemCount: categoryList.categoryList.length,
+    //     itemBuilder: (context, index) {
+    // // return  Column(
+    // //       children: [
+    // //         InkWell(
+    // //           onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+    // //               // builder: (context) => CategoryItemPage(1))),
+    // //               builder: (context) => CategoryItemPage(1))),
+    // //
+    // //           child: CircleAvatar(
+    // //             backgroundColor: Color(0xff00A3FF),
+    // //             radius: 28.0,
+    // //             backgroundImage:
+    // //             MemoryImage(categoryList.categoryList[index].imageURL!),
+    // //           ),
+    // //       ),
+    // //         Padding(
+    // //           padding: const EdgeInsets.fromLTRB(20,0,0,0),
+    // //           child: Center(child: Text(categoryList.categoryList[index].name.toString())),
+    // //         )
+    // // ]
+    // //     );
+    //     },
+    //       child ListView.builder(
+    //   // shrinkWrap: true,
+    //   itemCount: _messages.length,
+    //   itemBuilder: (context, index) {
+    //     RemoteMessage message = _messages[index];
+    //
+    //     return ListTile(
+    //       title: Text(
+    //           message.messageId ?? 'no RemoteMessage.messageId available'),
+    //       subtitle:
+    //       Text(message.sentTime?.toString() ?? DateTime.now().toString()),
+    //       onTap: () => Navigator.pushNamed(context, '/message',
+    //           arguments: MessageArguments(message, false)),
+    //     );
+    //   });
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
           Column(
-            children: [
-              InkWell(
-                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+              children: [
+                InkWell(
+                    onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                      // builder: (context) => CategoryItemPage(1))),
+                        builder: (context) => CategoryItemPage(1))),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                        height: 62,
+                        width: 70,
+                        child: Image.asset('assets/images/male-clothes.png'),
+
+                      ),
+                    )
+
+                  // child: CircleIcon(
+                  //   Colors.green,
+                  //   Icon(
+                  //     Icons.clothes,
+                  //     color: Colors.grey[200],
+                  //     size: 28,
+                  //   ),
+                  // ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                  child: Text("Clothes",style: TextStyle(fontSize: 12),),
+                )
+              ]
+          ),
+          Column(
+              children: [
+                InkWell(
+                  onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                     // builder: (context) => CategoryItemPage(1))),
-                    builder: (context) => CategoryItemPage(1))),
+                      builder: (context) => CategoryItemPage(2))),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                      height: 62,
+                      width: 70,
+                      child: Image.asset('assets/images/dress.png'),
 
-                child: CircleIcon(
-                Colors.green,
-                Icon(
-                  Icons.emoji_people_outlined,
-                  color: Colors.grey[200],
-                  size: 28,
-                ),
-              ),
-            ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20,0,0,0),
-                child: Text("Clothes"),
-              )    ]
-          ),
-          Column(
-            children: [
-              InkWell(
-                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (context) => CategoryItemPage(2))),
-                child: CircleIcon(
-                  Colors.purple,
-                  Icon(
-                    Icons.sports_football_outlined,
-                    color: Colors.grey[200],
-                    size: 28,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20,0,0,0),
-                child: Text("Sports"),
-              )
-            ],
-          ),
-          Column(
-            children: [
-              InkWell(
-                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (context) => CategoryItemPage(3))),
-                child: CircleIcon(
-                  Colors.yellow,
-                  Icon(
-                    Icons.book_outlined,
-                    color: Colors.grey[200],
-                    size: 28,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20,0,0,0),
-                child: Text("Books"),
-              )
+                    ),
+                  )
 
-            ],
+                  // child: CircleIcon(
+                  //   Colors.green,
+                  //   Icon(
+                  //     Icons.clothes,
+                  //     color: Colors.grey[200],
+                  //     size: 28,
+                  //   ),
+                  // ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                  child: Text("Formal Dresses",style: TextStyle(fontSize: 12),),
+                )
+              ]
           ),
           Column(
-            children: [
-              InkWell(
-                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (context) => CategoryItemPage(4))),
-                child: CircleIcon(
-                  Colors.red,
-                  Icon(
-                    Icons.miscellaneous_services,
-                    color: Colors.grey[200],
-                    size: 28,
-                  ),
+              children: [
+                InkWell(
+                    onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                      // builder: (context) => CategoryItemPage(1))),
+                        builder: (context) => CategoryItemPage(3))),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                        height: 62,
+                        width: 70,
+                        child: Image.asset('assets/images/tickets.png'),
+
+                      ),
+                    )
+
+                  // child: CircleIcon(
+                  //   Colors.green,
+                  //   Icon(
+                  //     Icons.clothes,
+                  //     color: Colors.grey[200],
+                  //     size: 28,
+                  //   ),
+                  // ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20,0,0,0),
-                child: Text("Misc."),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                  child: Text("Student Tickets",style: TextStyle(fontSize: 12),),
+                )
+              ]
+          ),
+          Column(
+              children: [
+                InkWell(
+                    onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                      // builder: (context) => CategoryItemPage(1))),
+                        builder: (context) => CategoryItemPage(4))),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                        height: 62,
+                        width: 70,
+                        child: Image.asset('assets/images/furnitures.png'),
+                      ),
+                    )
+
+                  // child: CircleIcon(
+                  //   Colors.green,
+                  //   Icon(
+                  //     Icons.clothes,
+                  //     color: Colors.grey[200],
+                  //     size: 28,
+                  //   ),
+                  // ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                  child: Text("Furniture",style: TextStyle(fontSize: 12),),
+                )
+              ]
+          ),
+          Column(
+              children: [
+                InkWell(
+                    onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                      // builder: (context) => CategoryItemPage(1))),
+                        builder: (context) => CategoryItemPage(5))),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                        height: 62,
+                        width: 70,
+                        child: Image.asset('assets/images/home.png'),
+
+                      ),
+                    )
+
+                  // child: CircleIcon(
+                  //   Colors.green,
+                  //   Icon(
+                  //     Icons.clothes,
+                  //     color: Colors.grey[200],
+                  //     size: 28,
+                  //   ),
+                  // ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                  child: Text("Subleases",style: TextStyle(fontSize: 12),),
+                ),
+              ]
+          ),
+          Column(
+              children: [
+                InkWell(
+                    onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                      // builder: (context) => CategoryItemPage(1))),
+                        builder: (context) => CategoryItemPage(6))),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                        height: 62,
+                        width: 70,
+                        child: Image.asset('assets/images/responsive.png'),
+
+                      ),
+                    )
+
+                  // child: CircleIcon(
+                  //   Colors.green,
+                  //   Icon(
+                  //     Icons.clothes,
+                  //     color: Colors.grey[200],
+                  //     size: 28,
+                  //   ),
+                  // ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                  child: Text("Electronics",style: TextStyle(fontSize: 12),),
+                )
+              ]
+          ),
+          Column(
+              children: [
+                InkWell(
+                    onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                      // builder: (context) => CategoryItemPage(1))),
+                        builder: (context) => CategoryItemPage(7))),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                        height: 62,
+                        width: 70,
+                        child: Image.asset('assets/images/textbook1.png'),
+
+                      ),
+                    )
+
+                  // child: CircleIcon(
+                  //   Colors.green,
+                  //   Icon(
+                  //     Icons.clothes,
+                  //     color: Colors.grey[200],
+                  //     size: 28,
+                  //   ),
+                  // ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                  child: Text("Books",style: TextStyle(fontSize: 12),),
+                )
+              ]
+          ),
+          Column(
+              children: [
+                InkWell(
+                    onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                      // builder: (context) => CategoryItemPage(1))),
+                        builder: (context) => CategoryItemPage(8))),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                        height: 62,
+                        width: 70,
+                        child: Image.asset('assets/images/magic-box.png'),
+
+                      ),
+                    )
+
+                  // child: CircleIcon(
+                  //   Colors.green,
+                  //   Icon(
+                  //     Icons.clothes,
+                  //     color: Colors.grey[200],
+                  //     size: 28,
+                  //   ),
+                  // ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                  child: Text("Misc.",style: TextStyle(fontSize: 12),),
+                )
+              ]
           ),
         ],
       ),
     );
-  }
+    }
 }

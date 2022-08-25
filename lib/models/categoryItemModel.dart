@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:student_shopping_v1/models/recentItemModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
+import 'package:heic_to_jpg/heic_to_jpg.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -14,11 +15,12 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as p;
 part 'categoryItemModel.g.dart';
 
 
 
-const String BASE_URI = 'http://localhost:8080/';
+const String BASE_URI = 'http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/';
 const String CATEGORY_ITEMS_URL = '${BASE_URI}categories/';  // TODO -  call the CategoryItem service when it is built
 const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
@@ -158,7 +160,7 @@ class CategoryItemModel extends ChangeNotifier {
   Future<int> getNextSearchedPage(int categoryId, String searchWord, int pageNum) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://localhost:8080/items/search/$categoryId/$searchWord?size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$searchWord?size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -224,7 +226,7 @@ class CategoryItemModel extends ChangeNotifier {
   Future<void> getSearchedItemRestList() async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://localhost:8080/items/search/$categoryId/$keyword'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$keyword'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -305,10 +307,20 @@ class CategoryItemModel extends ChangeNotifier {
 
 
   Future<ItemWithImages?> uploadItemImageToDB(File imageFile, ItemWithImages itmRest) async {
+    int sizeInBytes = imageFile.lengthSync();
+    double sizeInMb = sizeInBytes / (1024 * 1024);
+    print("SIZE OF IMAGE IS: + " + sizeInMb.toString()) ;
+    // String fileExtension = p.extension(imageFile.path).replaceAll('.', '');
+    // if(fileExtension == 'heic'){
+    //   print("convert to jpeg");
+    //   String? jpegPath = await HeicToJpg.convert(imageFile.path);
+    //   imageFile = File(jpegPath!);
+    //   fileExtension = 'jpeg';
+    // }
     var stream  = new http.ByteStream(imageFile.openRead()); stream.cast();
     var length = await imageFile.length();
     var itemId = itmRest.id!;
-    var uri = Uri.parse('http://localhost:8080/items/$itemId/itemImages');
+    var uri = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/items/$itemId/itemImages');
 
     var request = new http.MultipartRequest("POST", uri);
     var multipartFile = new http.MultipartFile('file', stream, length,
@@ -372,7 +384,7 @@ class CategoryItemModel extends ChangeNotifier {
   }
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:8080/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import '../models/recentItemModel.dart';
+import 'package:heic_to_jpg/heic_to_jpg.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -22,13 +23,13 @@ class AddListing extends StatefulWidget {
 }
 
 class _AddListingState extends State<AddListing> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController itemNameController = TextEditingController();
   TextEditingController itemDescriptionController = TextEditingController();
   TextEditingController itemPriceController = TextEditingController();
 
   bool itemAddSuccess = false;
-  String _value = "5";
+  String _value = "-1";
   bool dialogShowed = false;
   // String clothingVal = "5";
   //late String imageUrl;
@@ -189,18 +190,24 @@ class _AddListingState extends State<AddListing> {
                       items: [
                         DropdownMenuItem(
                           child: Text("Select Category"),
-                          value: "5",
+                          value: "-1",
                         ),
                         DropdownMenuItem(
-                          child: Text("Text Book"),
+                          child: Text("Clothes"),
+                          value: "1",
+                        ),
+                        DropdownMenuItem(child: Text("Formal Dresses"), value: "2"),
+                        DropdownMenuItem(
+                          child: Text("Student Tickets"),
                           value: "3",
                         ),
-                        DropdownMenuItem(child: Text("Clothes"), value: "1"),
-                        DropdownMenuItem(
-                          child: Text("Sporting Goods"),
-                          value: "2",
-                        ),
-                        DropdownMenuItem(child: Text("Misc."), value: "4")
+                        DropdownMenuItem(child: Text("Furniture"), value: "4"),
+                        DropdownMenuItem(child: Text("Subleases"), value: "5"),
+                        DropdownMenuItem(child: Text("Electronics"), value: "6"),
+                        DropdownMenuItem(child: Text("Books"), value: "7"),
+                        DropdownMenuItem(child: Text("Misc."), value: "8"),
+
+
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -274,7 +281,7 @@ class _AddListingState extends State<AddListing> {
                 child: Text('Add Product'),
                 onPressed: () {
 
-                  _value != "5" &&
+                  _value != "-1" &&
                           itemNameController.text.isNotEmpty &&
                           itemDescriptionController.text.isNotEmpty &&
                           itemPriceController.text.isNotEmpty
@@ -431,7 +438,7 @@ class _AddListingState extends State<AddListing> {
     });
   }
   void _loadPicker(ImageSource source, int imageNumber) async{
-    XFile? picked = await ImagePicker().pickImage(source: source);
+    XFile? picked = await ImagePicker().pickImage(source: source, maxHeight: 400, maxWidth: 400);
     if(picked != null){
       switch (imageNumber) {
         case 1:

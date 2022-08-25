@@ -92,6 +92,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                         //   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
                         //   boxShadow: [BoxShadow(spreadRadius: 0, blurRadius: 19, offset: Offset(0, 4), color: Colors.grey)],
                         child: Carousel(
+                          boxFit: BoxFit.contain,
                           images: [
                             numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
                                 "assets/images/no-picture-available-icon.png"),
@@ -100,7 +101,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                             numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
                                 "assets/images/no-picture-available-icon.png"),
                           ],
-                          //autoplay: false,
+                          autoplay: false,
 
 
                           //   image: DecorationImage(
@@ -176,7 +177,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:8080/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -192,7 +193,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
 
   Future<void> getProfileFromDbWithSellerId(int? profileId) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:8080/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

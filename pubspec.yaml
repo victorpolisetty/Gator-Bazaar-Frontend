@@ -25,10 +25,11 @@ dependencies:
     sdk: flutter
   flutter_svg: ^1.0.3
   shared_preferences: ^2.0.13
+  carousel_slider: ^4.1.1
 #  firebase_core: ^1.4.0
   firebase_core: ^1.17.0
   socket_io_client: ^2.0.0
-
+  heic_to_jpg: ^0.2.0
   flutter_search_bar: ^3.0.0-dev.1
 #  firebase_auth: ^3.0.1
   firebase_auth: ^3.3.18
@@ -66,7 +67,8 @@ dev_dependencies:
 #  firebase_storage_web:
   fluttertoast: ^8.0.3
   cached_network_image: ^3.0.0
-  image_picker: ^0.8.4+1
+#  image_picker: ^0.8.4+1
+  image_picker: ^0.8.5+3
   permission_handler: ^8.1.6
   build_runner: ^2.0.5
   #  json_serializable: ^5.0.2

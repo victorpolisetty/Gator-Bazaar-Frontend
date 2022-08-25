@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:student_shopping_v1/buyerhome.dart';
 
 import '../pages/verifyEmail.dart';
 import '../widgets.dart';
@@ -9,7 +10,7 @@ import '../widgets.dart';
 Future<http.Response> addProfileToDB(String? email, String? name, String? uid) {
 
   return http.post(
-    Uri.parse('http://localhost:8080/profiles'),
+    Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -71,14 +72,18 @@ class Authentication extends StatelessWidget {
     switch (loginState) {
       case ApplicationLoginState.loggedOut:
         return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
-              child: StyledButton(
-                onPressed: () {
-                  startLoginFlow();
-                },
-                child: const Text('Login or Register'),
+              padding: const EdgeInsets.only(left: 0, bottom: 0),
+              child: Center(
+                child: StyledButton(
+
+                  onPressed: () {
+                    startLoginFlow();
+                  },
+                  child: const Text('Login or Register',style: TextStyle(color: Colors.black),),
+                ),
               ),
             ),
           ],
@@ -121,7 +126,9 @@ class Authentication extends StatelessWidget {
         User? currentUser = FirebaseAuth.instance.currentUser;
         getProfileFromDbAndCheckIfExist(currentUser!.email,currentUser.displayName,currentUser.uid);
         WidgetsBinding.instance!.addPostFrameCallback((_){
-          Navigator.pushNamed(context, '/buyerhome');
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => BuyerHomePage('Student Shop'), fullscreenDialog: true));
+          // Navigator.pushNamed(context, '/buyerhome');
         },);
 
 
@@ -175,7 +182,7 @@ class Authentication extends StatelessWidget {
               },
               child: const Text(
                 'OK',
-                style: TextStyle(color: Colors.deepPurple),
+                style: TextStyle(color: Colors.black),
               ),
             ),
           ],
@@ -209,18 +216,29 @@ class _EmailFormState extends State<EmailForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: TextFormField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your email',
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12)
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter your email address to continue';
-                      }
-                      return null;
-                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:20),
+                      child: TextFormField(
+                        controller: _controller,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your email',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter your email address to continue';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
                   ),
                 ),
                 Row(
@@ -235,7 +253,7 @@ class _EmailFormState extends State<EmailForm> {
                             widget.callback(_controller.text);
                           }
                         },
-                        child: const Text('NEXT'),
+                        child: const Text('NEXT',style: TextStyle(color: Colors.black),),
                       ),
                     ),
                   ],
@@ -288,51 +306,134 @@ class _RegisterFormState extends State<RegisterForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your email',
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter your email address to continue';
-                      }
-                      return null;
-                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:20),
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your email',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter your email address to continue';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
                   ),
                 ),
+
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 24),
+                //   child: TextFormField(
+                //     controller: _emailController,
+                //     decoration: const InputDecoration(
+                //       hintText: 'Enter your email',
+                //     ),
+                //     validator: (value) {
+                //       if (value!.isEmpty) {
+                //         return 'Enter your email address to continue';
+                //       }
+                //       return null;
+                //     },
+                //   ),
+                // ),
+
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: TextFormField(
-                    controller: _displayNameController,
-                    decoration: const InputDecoration(
-                      hintText: 'First & last name',
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter your account name';
-                      }
-                      return null;
-                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:20),
+                      child: TextFormField(
+                        controller: _displayNameController,
+                        decoration: const InputDecoration(
+                          hintText: 'First & last name',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter your account name';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
                   ),
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 24),
+                //   child: TextFormField(
+                //     controller: _displayNameController,
+                //     decoration: const InputDecoration(
+                //       hintText: 'First & last name',
+                //     ),
+                //     validator: (value) {
+                //       if (value!.isEmpty) {
+                //         return 'Enter your account name';
+                //       }
+                //       return null;
+                //     },
+                //   ),
+                // ),
+
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      hintText: 'Password',
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)
                     ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter your password';
-                      }
-                      return null;
-                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:20),
+                      child: TextFormField(
+                        obscureText: true,
+                        controller: _passwordController,
+                        decoration: const InputDecoration(
+                          hintText: 'Password',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
                   ),
                 ),
+
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 24),
+                //   child: TextFormField(
+                //     controller: _passwordController,
+                //     decoration: const InputDecoration(
+                //       hintText: 'Password',
+                //     ),
+                //     obscureText: true,
+                //     validator: (value) {
+                //       if (value!.isEmpty) {
+                //         return 'Enter your password';
+                //       }
+                //       return null;
+                //     },
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Row(
@@ -340,7 +441,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     children: [
                       TextButton(
                         onPressed: widget.cancel,
-                        child: const Text('CANCEL'),
+                        child: const Text('CANCEL', style: TextStyle(color: Colors.black),),
                       ),
                       const SizedBox(width: 16),
                       StyledButton(
@@ -362,7 +463,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
                           }
                         },
-                        child: const Text('SAVE'),
+                        child: const Text('SAVE',style: TextStyle(color: Colors.black),),
                       ),
                       const SizedBox(width: 30),
                     ],
@@ -412,34 +513,56 @@ class _PasswordFormState extends State<PasswordForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your email',
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter your email address to continue';
-                      }
-                      return null;
-                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:20),
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your email',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter your email address to continue';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      hintText: 'Password',
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)
                     ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter your password';
-                      }
-                      return null;
-                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:20),
+                      child: TextFormField(
+                        obscureText: true,
+                        controller: _passwordController,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your password',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter your password to continue';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
                   ),
                 ),
                 Padding(
@@ -457,7 +580,7 @@ class _PasswordFormState extends State<PasswordForm> {
                             );
                           }
                         },
-                        child: const Text('SIGN IN'),
+                        child: const Text('SIGN IN', style: TextStyle(color: Colors.black),),
                       ),
                       const SizedBox(width: 30),
                     ],
@@ -473,7 +596,7 @@ class _PasswordFormState extends State<PasswordForm> {
 }
 Future<void> getProfileFromDbAndCheckIfExist(String? email, String? displayName ,String? firebaseid) async {
   Map<String, dynamic> data;
-  var url = Uri.parse('http://localhost:8080/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+  var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
   http.Response response = await http.get(
       url, headers: {"Accept": "application/json"});
   if (response.statusCode == 200) {

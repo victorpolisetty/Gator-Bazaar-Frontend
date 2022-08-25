@@ -66,72 +66,124 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // This size provide us total height and width of our screen
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-          child: Container(
-            // margin: EdgeInsets.only(right: 10),
-            // child: Icon(
-            //   Icons.search,
-            //   color: Colors.grey[800],
-            //   size: 27,
-            // ),
-          ),
-        ),
-        iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-        backgroundColor: Colors.grey[300],
-        elevation: .1,
-        title: Center(
-          child: Text(
-            'Student Shopping',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 10),
-            child: Icon(
-              Icons.notifications,
-              color: Colors.grey[800],
-              size: 27,
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     leading: InkWell(
+    //       child: Container(
+    //         // margin: EdgeInsets.only(right: 10),
+    //         // child: Icon(
+    //         //   Icons.search,
+    //         //   color: Colors.grey[800],
+    //         //   size: 27,
+    //         // ),
+    //       ),
+    //     ),
+    //     iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
+    //     backgroundColor: Colors.grey[300],
+    //     elevation: .1,
+    //     title:
+    //       Text(
+    //         'Sign In',
+    //         style: TextStyle(color: Colors.black),
+    //       ),
+    //     actions: [
+    //       // Container(
+    //       //   margin: EdgeInsets.only(right: 10),
+    //       //   child: Icon(
+    //       //     Icons.notifications,
+    //       //     color: Colors.grey[800],
+    //       //     size: 27,
+    //       //   ),
+    //       // ),
+    //     ],
+    //   ),
+      return Scaffold(
+        // backgroundColor: Colors.grey[300],
+          backgroundColor: Colors.white,
+
+          body: ListView(
+          children: [
+            SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/StudentShopLogoJPEG.jpeg'),
+                    // SizedBox(height: 30),
+                    // Text('Student Shop',style: TextStyle(fontSize: 52),),
+
+                    // Text('Hello Again!',style: TextStyle(fontSize: 52),),
+                    // SizedBox(height: 10),
+                    // Text('Welcome to the UF Marketplace',
+                    // style: TextStyle(
+                    //   fontSize: 20
+                    // ),),
+                    SizedBox(height: 20,),
+                    Consumer<ApplicationState>(
+                      builder: (context, appState, _) => Authentication(
+                        email: appState.email,
+                        loginState: appState.loginState,
+                        startLoginFlow: appState.startLoginFlow,
+                        verifyEmail: appState.verifyEmail,
+                        signInWithEmailAndPassword: appState.signInWithEmailAndPassword,
+                        cancelRegistration: appState.cancelRegistration,
+                        registerAccount: appState.registerAccount,
+                        signOut: appState.signOut,
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    Center(child: const Header("For Students.")),
+                    SizedBox(height: 175,child: Image.asset('assets/images/gatorLogo.png')),
+                    Center(child: const Header("By Students.")),
+                  ],
+                ),
+              )
             ),
-          ),
-        ],
-      ),
-      body: ListView(
-        children: <Widget>[
-          Image.asset('assets/images/codelab.png'),
-          const SizedBox(height: 8),
-          const IconAndDetail(Icons.calendar_today, 'October 30'),
-          const IconAndDetail(Icons.location_city, 'San Francisco'),
-          // Add from here
-          Consumer<ApplicationState>(
-            builder: (context, appState, _) => Authentication(
-              email: appState.email,
-              loginState: appState.loginState,
-              startLoginFlow: appState.startLoginFlow,
-              verifyEmail: appState.verifyEmail,
-              signInWithEmailAndPassword: appState.signInWithEmailAndPassword,
-              cancelRegistration: appState.cancelRegistration,
-              registerAccount: appState.registerAccount,
-              signOut: appState.signOut,
-            ),
-          ),
+          ],
+        )
+        // children: <Widget>[
+        //   Text(
+        //     "Welcome!",
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(
+        //       color: Colors.black,
+        //       fontSize: 28,
+        //       fontWeight: FontWeight.bold
+        //     ),
+        //   ),
+          // Image.asset('assets/images/codelab.png'),
+          // const SizedBox(height: 8),
+          // // const IconAndDetail(Icons.calendar_today, 'October 30'),
+          // // const IconAndDetail(Icons.location_city, 'San Francisco'),
+          // // Add from here
+          // Consumer<ApplicationState>(
+          //   builder: (context, appState, _) => Authentication(
+          //     email: appState.email,
+          //     loginState: appState.loginState,
+          //     startLoginFlow: appState.startLoginFlow,
+          //     verifyEmail: appState.verifyEmail,
+          //     signInWithEmailAndPassword: appState.signInWithEmailAndPassword,
+          //     cancelRegistration: appState.cancelRegistration,
+          //     registerAccount: appState.registerAccount,
+          //     signOut: appState.signOut,
+          //   ),
+          // ),
           // to here
-          const Divider(
-            height: 8,
-            thickness: 1,
-            indent: 8,
-            endIndent: 8,
-            color: Colors.grey,
-          ),
-          const Header("Trusted people buying and selling to each other"),
-          const Paragraph(
-            'Sign in for an experience created just for you',
-          ),
+          // const Divider(
+          //   height: 8,
+          //   thickness: 1,
+          //   indent: 8,
+          //   endIndent: 8,
+          //   color: Colors.grey,
+          // ),
+          // Center(child: const Header("For Students.")),
+          //
+          // SizedBox(width: 60, height: 150,child: Image.asset('assets/images/gatorLogo.png')),
+          //
+          // Center(child: const Header("By Students.")),
           // HomePage("Student Shop"),
-        ],
-      ),
+        // ],
+      // ),
     );
   }
 }

@@ -99,129 +99,132 @@ class _SellerProfilePageBodyState extends State<SellerProfilePageBody> {
   Widget build(BuildContext context) {
     var userItemList = context.watch<SellerItemModel>();
     var totalPages = userItemList.totalPages;
-    return new FutureBuilder<User?>(
-      future: isSignedIn(),
-      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.hasData) {
-          String? dname = snapshot.data!.displayName;
-          String? email = snapshot.data!.email;
-          return Column(
-            children: [
-              AppBar(
-                iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-                backgroundColor: Colors.grey[300],
-                elevation: .1,
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.exit_to_app_outlined),
-                    color: Colors.black,
-                    onPressed: () {
-                      // Navigator.of(context).push(new MaterialPageRoute(
-                      //     builder: (context) => new HomePage()));
-                      FirebaseAuth.instance.signOut();
-                      Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (context) => new HomePage()));
-                    },
-                  )
-                ],
-              ),
-              SizedBox(height: 25),
-              Container(
-                  height: 100,
-                  // width: MediaQuery.of(context).size.width,
-                  child: Hero(
-                    tag:
-                        'https://images.unsplash.com/photo-1598369685311-a22ca3406009?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1234&q=80',
-                    // child: InkWell(
-                    // onTap: (){
-                    //   // _showPickOptionsDialog(context);
-                    //   print("HIT ME");
-                    // },
-                    child: CircleAvatar(
-                      radius: 50,
-                      // child: _pickedImage == null ? Text("Picture") : null,
-                      backgroundImage: _pickedImage != null
-                          ? FileImage(File(_pickedImage!.path))
-                          : AssetImage('assets/images/defaultPic.png')
-                              as ImageProvider,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: new FutureBuilder<User?>(
+        future: isSignedIn(),
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.hasData) {
+            String? dname = snapshot.data!.displayName;
+            String? email = snapshot.data!.email;
+            return Column(
+              children: [
+                AppBar(
+                  iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
+                  backgroundColor: Colors.grey[300],
+                  elevation: .1,
+                  actions: [
+                    IconButton(
+                      icon: Icon(Icons.exit_to_app_outlined),
+                      color: Colors.black,
+                      onPressed: () {
+                        // Navigator.of(context).push(new MaterialPageRoute(
+                        //     builder: (context) => new HomePage()));
+                        FirebaseAuth.instance.signOut();
+                        Navigator.of(context).push(new MaterialPageRoute(
+                            builder: (context) => new HomePage(), fullscreenDialog: true));
+                      },
                     )
-                    // )
-                    ,
-                  )),
-              SizedBox(height: 25.0),
-              Text(
-                dname.toString(),
-                style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 4.0),
-              Text(
-                email.toString(),
-                style: TextStyle(fontFamily: 'Montserrat', color: Colors.grey),
-              ),
-              SizedBox(height: 20.0),
-              Text(
-                'LISTINGS',
-                style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: Colors.black),
-              ),
-              userItemList.items.length != 0 ? Container(
-                  height: MediaQuery.of(context).size.height - 442,
-                  width: MediaQuery.of(context).size.width,
-                  child: GridView.builder(
-                    controller: _controller,
-                    itemCount: userItemList.items.length == null
-                        ? 0
-                        : userItemList.items.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return SingleItem(item: userItemList.items[index]);
-                      // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                    },
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 0,
-                    ),
-                  )
-                  ) : Container(
-                  height: MediaQuery.of(context).size.height - 442,
-                  width: MediaQuery.of(context).size.width,
-                  child: Center(child: Text("No Listings!"))
-              ),
-              // if(loading)(spinkit),
-              // (isBottom && !allLoaded && !loading) ? ElevatedButton(
-              //   style: ElevatedButton.styleFrom(
-              //       primary: Colors.black
-              //   ),
-              //   child: Center(
-              //     // child: Expanded(
-              //       child: Text("Show More")
-              //     //),
-              //   ),
-              //   onPressed: (){
-              //     setState(() {
-              //       if(userItemList.currentPage <= totalPages-1 && !loading){
-              //         mockFetch(userItemList);
-              //       }
-              //       //recentList.getNextPage(1);
-              //     });
-              //   },
-              // ) : Container(),
-            ],
-          );
-        } else {
-          return Container(
-            color: Colors.grey[300],
-            height: 350,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height,
+                  ],
+                ),
+                SizedBox(height: 25),
+                Container(
+                    height: 100,
+                    // width: MediaQuery.of(context).size.width,
+                    child: Hero(
+                      tag:
+                          'https://images.unsplash.com/photo-1598369685311-a22ca3406009?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1234&q=80',
+                      // child: InkWell(
+                      // onTap: (){
+                      //   // _showPickOptionsDialog(context);
+                      //   print("HIT ME");
+                      // },
+                      child: CircleAvatar(
+                        radius: 50,
+                        // child: _pickedImage == null ? Text("Picture") : null,
+                        backgroundImage: _pickedImage != null
+                            ? FileImage(File(_pickedImage!.path))
+                            : AssetImage('assets/images/defaultPic.png')
+                                as ImageProvider,
+                      )
+                      // )
+                      ,
+                    )),
+                SizedBox(height: 25.0),
+                Text(
+                  dname.toString(),
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4.0),
+                Text(
+                  email.toString(),
+                  style: TextStyle(fontFamily: 'Montserrat', color: Colors.grey),
+                ),
+                SizedBox(height: 20.0),
+                Text(
+                  'LISTINGS',
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      color: Colors.black),
+                ),
+                userItemList.items.length != 0 ? Container(
+                    height: MediaQuery.of(context).size.height - 442,
+                    width: MediaQuery.of(context).size.width,
+                    child: GridView.builder(
+                      controller: _controller,
+                      itemCount: userItemList.items.length == null
+                          ? 0
+                          : userItemList.items.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return SingleItem(item: userItemList.items[index]);
+                        // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                      },
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 0,
+                      ),
+                    )
+                    ) : Container(
+                    height: MediaQuery.of(context).size.height - 442,
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(child: Text("No Listings!"))
+                ),
+                // if(loading)(spinkit),
+                // (isBottom && !allLoaded && !loading) ? ElevatedButton(
+                //   style: ElevatedButton.styleFrom(
+                //       primary: Colors.black
+                //   ),
+                //   child: Center(
+                //     // child: Expanded(
+                //       child: Text("Show More")
+                //     //),
+                //   ),
+                //   onPressed: (){
+                //     setState(() {
+                //       if(userItemList.currentPage <= totalPages-1 && !loading){
+                //         mockFetch(userItemList);
+                //       }
+                //       //recentList.getNextPage(1);
+                //     });
+                //   },
+                // ) : Container(),
+              ],
+            );
+          } else {
+            return Container(
+              color: Colors.grey[300],
+              height: 350,
+              width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height,
 
-            child: spinkit,
-          );
-        }
-      },
+              child: spinkit,
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -245,8 +248,7 @@ class SingleItem extends StatelessWidget {
             alignment: Alignment.topRight,
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: MemoryImage(item.imageDataList[0]),
-                    fit: BoxFit.cover),
+                    image: MemoryImage(item.imageDataList[0]), fit: BoxFit.contain),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18)),
             child: Container(

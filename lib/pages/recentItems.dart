@@ -171,7 +171,8 @@ class SingleItem extends StatelessWidget {
             height: 100,
             alignment: Alignment.topRight,
             decoration: BoxDecoration(
-                image: DecorationImage(image: item.imageDataList.length > 0 ? MemoryImage(item.imageDataList[0]) : AssetImage('assets/images/no-picture-available-icon.png') as ImageProvider, fit: BoxFit.cover),
+                image: DecorationImage(image: item.imageDataList.length > 0 ?
+                MemoryImage(item.imageDataList[0]) : AssetImage('assets/images/no-picture-available-icon.png') as ImageProvider, fit: BoxFit.contain),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18)),
             child: Container(

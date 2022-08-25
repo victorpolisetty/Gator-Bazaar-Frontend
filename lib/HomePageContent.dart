@@ -12,7 +12,7 @@ class HomePageBody extends StatelessWidget {
           children: [
             // SearchBarWidget(),
             SectionTitle(title: "Categories"),
-            Categories(),
+            CategoryPage(),
             SectionTitle(title: "Recent Listings"),
             RecentItems(),
         ],

@@ -49,7 +49,7 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
       elevation: .1,
       title: Center(
         child: Text(
-          'Student Shopping',
+          'Student Shop',
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -278,7 +278,7 @@ class singleItem extends StatelessWidget {
             height: 100,
             alignment: Alignment.topRight,
             decoration: BoxDecoration(
-                image: DecorationImage(image: MemoryImage(item.imageDataList[0]), fit: BoxFit.cover),
+                image: DecorationImage(image: MemoryImage(item.imageDataList[0]), fit: BoxFit.contain),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18)),
           ),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:student_shopping_v1/models/categoryModel.dart';
 import 'package:student_shopping_v1/models/chatMessageModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'firebase_options.dart';
@@ -39,8 +40,16 @@ Future<void> main() async {
     }
   });
 
-  // final fcmToken = await FirebaseMessaging.instance.getToken();
+  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    // If you're going to use other Firebase services in the background, such as Firestore,
+    // make sure you call `initializeApp` before using other Firebase services.
+    await Firebase.initializeApp();
 
+    print("Handling a background message: ${message.messageId}");
+  }
+
+  // final fcmToken = await FirebaseMessaging.instance.getToken();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MyApp());
 }
 
@@ -70,6 +79,10 @@ class MyApp extends StatelessWidget {
           //builder: (context, _) => App(),
         ),
         ChangeNotifierProvider(
+          create: (context) => CategoryModel(),
+          //builder: (context, _) => App(),
+        ),
+        ChangeNotifierProvider(
           create: (context) => SellerItemModel(),
           //builder: (context, _) => App(),
         ),
@@ -81,7 +94,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.blue,
+        primaryColor: Colors.grey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
         home: App(),
