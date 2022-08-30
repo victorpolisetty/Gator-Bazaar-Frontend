@@ -1,5 +1,7 @@
+// import 'dart:_http';
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
@@ -42,6 +44,9 @@ class MessageModel extends ChangeNotifier{
   int totalPages = 0;
   int currentPage = 1;
   int lastMessageItemId = -1;
+  String? recipientDeviceToken = "";
+  String? currentUserName = FirebaseAuth.instance.currentUser?.displayName;
+
   /// List of items in the cart.
   List<UserMessage> get msgs => messageList;
 
@@ -121,12 +126,56 @@ class MessageModel extends ChangeNotifier{
     //  .then((response) {
     if (response.statusCode == 200) {
       messageList.insert(0,message);
+      await sendMessageNotification(myjsonNew["message_text"], myjsonNew["creator_user_id"], myjsonNew["recipient_user_id"]);
       notifyListeners();
     } else {
       print(response.statusCode);
       throw Future.error("Future did not work for sendMessage function in messageModel");
     }
     //  });
+  }
+
+  Future<void> sendMessageNotification(String? messageText, int? creatorUserId, int? recipientUserId) async {
+    await getDeviceToken(recipientUserId).then((value) => sendMessageNotificationHelper(messageText, creatorUserId));
+  }
+
+  Future<void> getDeviceToken(int? recipientUserId) async {
+    Map<String, dynamic> data;
+    // var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/1'); // TODO -  call the recentItem service when it is built
+
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/$recipientUserId'); // TODO -  call the recentItem service when it is built
+    http.Response response = await http.get(
+        url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      // data.map<Item>((json) => Item.fromJson(json)).toList();
+      data = jsonDecode(response.body);
+      recipientDeviceToken = data['deviceToken'];
+      print(response.statusCode);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future<void> sendMessageNotificationHelper(String? messageText, int? creatorUserId) async {
+    // final HttpClient httpClient = HttpClient();
+    final String fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+    final fcmKey = "AAAA8gRWlF0:APA91bH8WJNgwnlcHtC5nHIiW78x_HJxqZlLu64pAFRWpE1uwmWb69tqcbvE4Yuai0fA0S35OF_pg1gJGv4_jNw6y_F0Ckh6aJ44w8sH0nHt8SeyWcBy3BsyCKCfADx_AHxNnHkvijIP";
+    final fcmToken = recipientDeviceToken;
+
+    var headers = {'Content-Type': 'application/json', 'Authorization': 'key=$fcmKey'};
+    var request = http.Request('POST', Uri.parse(fcmUrl));
+    // request.body = '''{"to":"dX3OvDFxl07snDMXDYnxNh:APA91bHFeZFIXQSEBFynTmy0VpF_HXm1nNaupt80sSuwrrm4bSVOprU8KO6fnoRpCMYp_7U4PqDvGO7P_IF0pf_hC3fvRdn3I4vQ2kLuPO6HkK5H2xRJM4lTM617tDSoOuK8ZPJO1IJG","priority":"high","notification":{"title":"Victor Polisetty","body":"$messageText","sound": "default"}}''';
+    request.body = '''{"to":"$fcmToken","priority":"high","notification":{"title":"$currentUserName","body":"$messageText","sound": "default"}}''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
+    }
+    //
   }
 
   Future<bool?> initNextMessagePage(int pageNum) async {

@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^1.0.3
+  overlay_support:
   shared_preferences: ^2.0.13
   carousel_slider: ^4.1.1
 #  firebase_core: ^1.4.0
@@ -58,6 +59,7 @@ dependencies:
   sliver_tools: ^0.2.5
   intl: ^0.17.0
   firebase_messaging: ^12.0.1
+  flutter_local_notifications: ^9.8.0+1
 
 dev_dependencies:
   flutter_test:
