@@ -5,6 +5,7 @@ import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:student_shopping_v1/Authentication/authentication.dart';
 import 'package:student_shopping_v1/Widgets/FavoriteWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -188,7 +189,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                           .size
                           .width,
                       margin: EdgeInsets.only(left: 15, top: 15),
-                      child: Text('\$${widget.item.price}',
+                      child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(widget.item.price)}'),
+
                         style: TextStyle(fontSize: 19, color: Colors.grey[700]),
                         textAlign: TextAlign.left,)
                   ),
@@ -252,7 +254,7 @@ bottomNavigationBar: Container(
           child: InkWell(
             onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (context) => new ChatDetailPage(chatProfile: new ChatMessageHome.NewChatMessage
-                  ("", sellerUserName, currentUser?.displayName, currentUserId, widget.item.seller_id, "createdAt", currentUserId,widget.item.id), currentUserDbId: currentUserId))),
+                  ("", sellerUserName, currentUser?.displayName, currentUserId, widget.item.seller_id, "createdAt", currentUserId,widget.item.id, false, -1), currentUserDbId: currentUserId))),
             child: Text(
               "Click here to buy!",
               textAlign: TextAlign.center,

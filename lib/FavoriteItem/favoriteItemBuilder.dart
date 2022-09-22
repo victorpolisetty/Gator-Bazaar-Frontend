@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/favoriteModel.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
@@ -117,7 +118,8 @@ class FavoriteItem extends StatelessWidget {
                     child: new Text("Price:"),),
                   Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: new Text("\$${item.price}", style:TextStyle(color: Colors.black),)
+                      child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
+                        style:TextStyle(color: Colors.black),)
                   ),
                 ],
               ),

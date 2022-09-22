@@ -4,6 +4,7 @@ import 'dart:core';
 import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:student_shopping_v1/Authentication/authentication.dart';
 import 'package:student_shopping_v1/Widgets/FavoriteWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -125,8 +126,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                               .of(context)
                               .size
                               .width,
-                          margin: EdgeInsets.only(left: 15, top: 15),
-                          child: Text('\$${widget.item.price}',
+                          child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(widget.item.price)}'),
                             style: TextStyle(fontSize: 19, color: Colors.grey[700]),
                             textAlign: TextAlign.left,)
                       ),

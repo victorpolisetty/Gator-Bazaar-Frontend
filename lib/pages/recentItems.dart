@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
 import 'package:student_shopping_v1/models/recentItemModel.dart';
@@ -92,7 +93,8 @@ class _RecentItemsState extends State<RecentItems> {
             // margin: EdgeInsets.only(top: 10),
             width: MediaQuery.of(context).size.width,
             // height: double.,
-            height: MediaQuery.of(context).size.height - 452,
+          height: MediaQuery.of(context).size.height * .43,
+          // height: MediaQuery.of(context).size.height - 452,
             child: recentList.items.length > 0 ? Container(
               height: double.infinity,
               width: double.infinity,
@@ -188,7 +190,9 @@ class SingleItem extends StatelessWidget {
               width: 80,
               margin: EdgeInsets.only(top: 5, left: 30),
               height: 30,
-              child: Text("\$${item.price}",
+            child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
+
+    // child: Text("\$${item.price.toDouble()}",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
             ),
             item.isSold ? ClipRRect(

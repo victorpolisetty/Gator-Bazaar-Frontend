@@ -71,7 +71,7 @@ Future<int?> getUserDbIdRealFunc() async {
       data = jsonDecode(response.body);
       currDbId = data['id'];
       // recipientProfileName = data['name'];
-      // print(response.statusCode);
+      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
@@ -110,9 +110,8 @@ class _HomePageState extends State<BuyerHomePage> {
 
   @override
   void initState(){
-    super.initState();
     getUserDbId().then((value) => setupToken(currDbId));
-    ;
+    super.initState();
   }
 
   final List<Widget> tabs = [

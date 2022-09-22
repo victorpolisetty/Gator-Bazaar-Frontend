@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
 import 'package:student_shopping_v1/searchBarClass.dart';
@@ -290,7 +291,7 @@ class singleItem extends StatelessWidget {
               width: 80,
               margin: EdgeInsets.only(top: 5, left: 30),
               height: 30,
-              child: Text("\$${item.price}",
+              child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
             ),
             item.isSold ? ClipRRect(

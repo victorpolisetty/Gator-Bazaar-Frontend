@@ -20,6 +20,8 @@ class ChatMessageHome extends ChangeNotifier {
   String createdAt = "";
   @JsonKey(ignore: true)
   int? current_user_id = -1;
+  bool? is_message_read = false;
+  int? id = -1;
 
 
 
@@ -32,7 +34,9 @@ class ChatMessageHome extends ChangeNotifier {
   int? recipient_user_id,
   String createdAt,
   int? current_user_id,
-      int? item_id){
+      int? item_id,
+      bool? is_message_read,
+      int? id){
     this.message_text = message_text;
     this.recipient_profile_name = recipient_profile_name;
     this.creator_profile_name = creator_profile_name;
@@ -41,6 +45,8 @@ class ChatMessageHome extends ChangeNotifier {
     this.createdAt = createdAt;
     this.current_user_id = current_user_id;
     this.item_id = item_id;
+    this.is_message_read = is_message_read;
+    this.id = id;
   }
 
 
@@ -122,6 +128,27 @@ class ChatMessageModel extends ChangeNotifier{
     } else {
       print(response.statusCode);
     }
+  }
+
+  Future<void> changeLatestMessageToRead(int? userMessageId)  async {
+    Map<String, dynamic> data;
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/message/readStatus/$userMessageId');
+    // var tmpObj =  json.encode(itm.toJson());
+    final http.Response response =  await http.put(url
+        , headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        }
+      // , body: tmpObj
+    );
+
+    //  .then((response) {
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+    } else {
+      print(response.statusCode);
+    }
+    //  });
   }
 
   int getCurrentUserDbId(){

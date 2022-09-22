@@ -22,10 +22,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
   @override
   void initState(){
     user = auth.currentUser;
-    // if(emailSendCounter == 0){
-    //   user?.sendEmailVerification();
-    //   emailSendCounter++;
-    // }
+    if(emailSendCounter == 0){
+      user?.sendEmailVerification();
+      emailSendCounter++;
+    }
     timer = Timer.periodic(Duration(seconds: 5), (timer) {
       checkEmailVerified();
     });
@@ -43,13 +43,13 @@ class _VerifyScreenState extends State<VerifyScreen> {
     return Container(child: Text("An email has been sent to ${user?.email} please verify"),);
   }
   Future<void> checkEmailVerified() async{
-    // user = auth.currentUser;
-    // await user?.reload();
-    // if(user?.emailVerified == true){
-    //   timer?.cancel();
-    //   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => BuyerHomePage("Student Shop")));
-    // }
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => BuyerHomePage("Student Shop")));
+    user = auth.currentUser;
+    await user?.reload();
+    if(user?.emailVerified == true){
+      timer?.cancel();
 
+      // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => BuyerHomePage("Student Shop")));
+    }
+    // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => BuyerHomePage("Student Shop")));
   }
 }

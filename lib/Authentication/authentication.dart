@@ -4,12 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:student_shopping_v1/buyerhome.dart';
 
+import '../pages/itemDetailPage.dart';
 import '../pages/verifyEmail.dart';
 import '../widgets.dart';
 
-Future<http.Response> addProfileToDB(String? email, String? name, String? uid) {
+bool isFirstSignUp = false;
 
-  return http.post(
+void getProfileDb (String? email, String? name, String? uid) {
+  var initFuture = addProfileToDBHelper(email, name, uid);
+  initFuture.then((voidValue) {
+//      notifyListeners();
+  });
+}
+
+ Future<void> addProfileToDBHelper(String? email, String? name, String? uid) async {
+   await addProfileToDB(email, name, uid);
+ }
+
+Future<void> addProfileToDB(String? email, String? name, String? uid) async {
+
+  http.post(
     Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -21,6 +35,7 @@ Future<http.Response> addProfileToDB(String? email, String? name, String? uid) {
       'firebaseUID' : uid!
     }),
   );
+  print("Done with adding profile");
 }
 
 enum ApplicationLoginState {
@@ -121,31 +136,32 @@ class Authentication extends StatelessWidget {
         )
         ;
       case ApplicationLoginState.unVerifiedEmail:
+        isFirstSignUp = true;
         return VerifyScreen();
       case ApplicationLoginState.loggedIn:
         User? currentUser = FirebaseAuth.instance.currentUser;
-        getProfileFromDbAndCheckIfExist(currentUser!.email,currentUser.displayName,currentUser.uid);
-        WidgetsBinding.instance!.addPostFrameCallback((_){
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => BuyerHomePage('Student Shop'), fullscreenDialog: true));
-          // Navigator.pushNamed(context, '/buyerhome');
-        },);
-
-
-        //return null as Widget;
-        return Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
-              child: StyledButton(
-                onPressed: () {
-                  signOut();
-                },
-                child: const Text('LOGOUT'),
-              ),
-            ),
-          ],
+            WidgetsBinding.instance!.addPostFrameCallback((_){
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => BuyerHomePage('Student Shop'), fullscreenDialog: true));
+              // Navigator.pushNamed(context, '/buyerhome');
+            },);
+        // return null as Widget;
+        return Container(
+          child: Center(child: spinkit),
         );
+        //   Row(
+        //   children: [
+        //     Padding(
+        //       padding: const EdgeInsets.only(left: 24, bottom: 8),
+        //       child: StyledButton(
+        //         onPressed: () {
+        //           signOut();
+        //         },
+        //         child: const Text('LOGOUT'),
+        //       ),
+        //     ),
+        //   ],
+        // );
 
       default:
         return Row(
@@ -284,7 +300,8 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_RegisterFormState');
   final _emailController = TextEditingController();
-  final _displayNameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
@@ -359,13 +376,13 @@ class _RegisterFormState extends State<RegisterForm> {
                     child: Padding(
                       padding: const EdgeInsets.only(left:20),
                       child: TextFormField(
-                        controller: _displayNameController,
+                        controller: _firstNameController,
                         decoration: const InputDecoration(
-                          hintText: 'First & last name',
+                          hintText: 'First Name',
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Enter your account name';
+                            return 'Enter your first name';
                           }
                           return null;
                         },
@@ -373,6 +390,35 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
 
                   ),
+
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:20),
+                      child: TextFormField(
+                        controller: _lastNameController,
+                        decoration: const InputDecoration(
+                          hintText: 'Last Name',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter your last name';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
+                  ),
+
                 ),
                 // Padding(
                 //   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -456,7 +502,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             // }
                               widget.registerAccount(
                                 _emailController.text,
-                                _displayNameController.text,
+                                _firstNameController.text + " " + _lastNameController.text,
                                 _passwordController.text,
                               );
 
@@ -594,7 +640,7 @@ class _PasswordFormState extends State<PasswordForm> {
     );
   }
 }
-Future<void> getProfileFromDbAndCheckIfExist(String? email, String? displayName ,String? firebaseid) async {
+Future<void> getProfileFromDbAndCheckIfExist (String? email, String? displayName ,String? firebaseid) async {
   Map<String, dynamic> data;
   var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
   http.Response response = await http.get(
@@ -602,12 +648,13 @@ Future<void> getProfileFromDbAndCheckIfExist(String? email, String? displayName 
   if (response.statusCode == 200) {
     // data.map<Item>((json) => Item.fromJson(json)).toList();
     try {
-      data = jsonDecode(response.body);
-      var profile = data['content'];
-      print(response.statusCode);
-    } catch(e){
-      addProfileToDB(email,displayName,firebaseid);
+      getProfileDb(email,displayName,firebaseid);
+      // data = jsonDecode(response.body);
+      // var profile = data['content'];
       // print(response.statusCode);
+    } catch(e){
+      // getProfileDb(email,displayName,firebaseid);
+      print(response.statusCode);
       }
     }
 }

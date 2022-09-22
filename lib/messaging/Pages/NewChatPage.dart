@@ -1,10 +1,12 @@
+import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:student_shopping_v1/pages/ConversationListPage.dart';
-
 import '../../models/chatMessageModel.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
 
 import '../Screens/ChatDetail.dart';
 
@@ -14,11 +16,18 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  int currentUserId = -1;
+  User? currentUser = FirebaseAuth.instance.currentUser;
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getProfileFromDb(currentUser?.uid.toString());
     Provider.of<ChatMessageModel>(context, listen: false).getChatHomeHelper();
   }
+
+
   @override
   Widget build(BuildContext context) {
     var chatProfiles = context.watch<ChatMessageModel>();
@@ -81,6 +90,10 @@ class _ChatPageState extends State<ChatPage> {
               itemBuilder: (context, index){
                 return GestureDetector(
                   onTap: (){
+                    if(chatProfiles.chatHome[index].id != -1 && chatProfiles.chatHome[index].is_message_read == false) {
+                      chatProfiles.changeLatestMessageToRead(chatProfiles.chatHome[index].id);
+                    }
+                    //TODO: if tapped set message to true
                     Navigator.of(context).push(new MaterialPageRoute(
                         builder: (BuildContext context) => new ChatDetailPage(chatProfile: chatProfiles.chatHome[index], currentUserDbId: chatProfiles.chatHome[index].current_user_id!)))
                         .then((value) => Provider.of<ChatMessageModel>(context, listen: false).getChatHomeHelper());
@@ -92,6 +105,8 @@ class _ChatPageState extends State<ChatPage> {
                         Expanded(
                           child: Row(
                             children: <Widget>[
+                              chatProfiles.chatHome[index].is_message_read! || chatProfiles.chatHome[index].creator_user_id == currentUserId  ? SizedBox() : Icon(Icons.circle, color: Colors.blue.shade400, size: 15,),
+                              SizedBox(),
                               CircleAvatar(
                                 radius: 30,
                                 child:
@@ -114,7 +129,9 @@ class _ChatPageState extends State<ChatPage> {
                                       chatProfiles.chatHome[index].creator_profile_name.toString() : chatProfiles.chatHome[index].recipient_profile_name.toString()
                                         , style: TextStyle(fontSize: 16),),
                                       SizedBox(height: 6,),
-                                      Text(chatProfiles.chatHome[index].message_text.toString(), style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: false?FontWeight.bold:FontWeight.normal),),
+                                      Text(chatProfiles.chatHome[index].message_text.toString().length <= 20 ? chatProfiles.chatHome[index].message_text.toString() : '${chatProfiles.chatHome[index].message_text.toString().substring(0, 20)}...', style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: chatProfiles.chatHome[index].is_message_read! || chatProfiles.chatHome[index].creator_user_id == currentUserId
+                                          ? FontWeight.normal
+                                          : FontWeight.bold),),
                                       // Text(widget.chatProfile.message_text.toString(), style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
                                     ],
                                   ),
@@ -125,6 +142,7 @@ class _ChatPageState extends State<ChatPage> {
                         ),
                         // DateTime.parse(chatProfiles.chatHome[index].createdAt+"Z").toLocal().toString()
                         Text(DateFormat('h:mm a').format(DateTime.parse(chatProfiles.chatHome[index].createdAt).toLocal()).toString(),style: TextStyle(fontSize: 12,fontWeight: false ? FontWeight.bold:FontWeight.normal),),
+
                         // Text(DateFormat('h:mm a').format(DateTime.parse(chatProfiles.chatHome[index].createdAt.toString())).toString(),style: TextStyle(fontSize: 12,fontWeight: false ? FontWeight.bold:FontWeight.normal),),
                       ],
                     ),
@@ -137,5 +155,20 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
     );
+  }
+  Future<void> getProfileFromDb(String? firebaseid) async {
+    Map<String, dynamic> data;
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    http.Response response = await http.get(
+        url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      // data.map<Item>((json) => Item.fromJson(json)).toList();
+      data = jsonDecode(response.body);
+      currentUserId = data['id'];
+      // recipientProfileName = data['name'];
+      print(response.statusCode);
+    } else {
+      print(response.statusCode);
+    }
   }
 }

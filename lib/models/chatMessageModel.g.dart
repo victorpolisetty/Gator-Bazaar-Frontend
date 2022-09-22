@@ -14,7 +14,9 @@ ChatMessageHome _$ChatMessageHomeFromJson(Map<String, dynamic> json) =>
       ..item_id = json['item_id'] as int?
       ..creator_user_id = json['creator_user_id'] as int?
       ..recipient_user_id = json['recipient_user_id'] as int?
-      ..createdAt = json['createdAt'] as String;
+      ..createdAt = json['createdAt'] as String
+      ..is_message_read = json['is_message_read'] as bool?
+      ..id = json['id'] as int?;
 
 Map<String, dynamic> _$ChatMessageHomeToJson(ChatMessageHome instance) =>
     <String, dynamic>{
@@ -25,4 +27,6 @@ Map<String, dynamic> _$ChatMessageHomeToJson(ChatMessageHome instance) =>
       'creator_user_id': instance.creator_user_id,
       'recipient_user_id': instance.recipient_user_id,
       'createdAt': instance.createdAt,
+      'is_message_read': instance.is_message_read,
+      'id': instance.id,
     };

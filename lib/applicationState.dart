@@ -42,7 +42,7 @@ class App extends StatelessWidget {
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           // home: snapshot.hasData && snapshot.data != null ? BuyerHomePage("Student Shop") : HomePage(),
-          initialRoute: snapshot.hasData && snapshot.data != null ? '/buyerhome' : '/',
+          // initialRoute: snapshot.hasData && snapshot.data != null ? '/buyerhome' : '/',
           routes: {
             // When navigating to the "/" route, build the FirstScreen widget.
             '/' : (context) =>  HomePage(),
@@ -195,13 +195,19 @@ class ApplicationState extends ChangeNotifier {
 
   Future<void> init() async {
     await Firebase.initializeApp();
+    bool isFirstSignUp = false;
 
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
-        if (user.emailVerified != true)
+        if (user.emailVerified != true) {
           _loginState = ApplicationLoginState.unVerifiedEmail;
-        else
+          isFirstSignUp = true;
+        } else
+        if(isFirstSignUp) {
+          addProfileToDB(user!.email,user?.displayName,user?.uid).then((value) => _loginState = ApplicationLoginState.loggedIn);
+        } else {
           _loginState = ApplicationLoginState.loggedIn;
+        }
       } else {
         _loginState = ApplicationLoginState.loggedOut;
       }
@@ -227,7 +233,8 @@ class ApplicationState extends ChangeNotifier {
       void Function(FirebaseAuthException e) errorCallback,
       ) async {
     try {
-      if (email.endsWith(".edu") != true) email = "";
+      //TODO: UNCOMMENT THIS
+      // if (email.endsWith(".edu") != true) email = "";
       var methods =
       await FirebaseAuth.instance.fetchSignInMethodsForEmail(email); // this will throw an exception if invalid email is supplied
       if (methods.contains('password')) {

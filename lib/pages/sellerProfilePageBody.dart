@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -120,9 +121,10 @@ class _SellerProfilePageBodyState extends State<SellerProfilePageBody> {
                       onPressed: () {
                         // Navigator.of(context).push(new MaterialPageRoute(
                         //     builder: (context) => new HomePage()));
-                        FirebaseAuth.instance.signOut();
-                        Navigator.of(context).push(new MaterialPageRoute(
-                            builder: (context) => new HomePage(), fullscreenDialog: true));
+                        // FirebaseAuth.instance.signOut().then((value) => Navigator.of(context).push(new MaterialPageRoute(
+                        //     builder: (context) => new HomePage(), fullscreenDialog: true)));
+                        _signOut().then((value) => Navigator.of(context).push(new MaterialPageRoute(
+                                builder: (context) => new HomePage(), fullscreenDialog: true)));
                       },
                     )
                   ],
@@ -227,6 +229,9 @@ class _SellerProfilePageBodyState extends State<SellerProfilePageBody> {
       ),
     );
   }
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
 }
 
 class SingleItem extends StatelessWidget {
@@ -264,7 +269,7 @@ class SingleItem extends StatelessWidget {
               width: 80,
               margin: EdgeInsets.only(top: 5, left: 30),
               height: 30,
-              child: Text("\$${item.price}",
+              child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
             ),
             item.isSold
@@ -297,4 +302,5 @@ class SingleItem extends StatelessWidget {
       ],
     );
   }
+
 }

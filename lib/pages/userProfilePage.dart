@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // new
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:provider/provider.dart';
 import '../models/itemModel.dart';
@@ -381,7 +382,7 @@ class SingleItem extends StatelessWidget {
           width: 150,
           margin: EdgeInsets.only(top: 5, left: 15),
           height: 30,
-          child: Text("\$${item.price}",
+          child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
         ),
         Container(

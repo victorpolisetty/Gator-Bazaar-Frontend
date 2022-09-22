@@ -123,7 +123,7 @@ class RecentItemModel extends ChangeNotifier {
       data = jsonDecode(response.body);
       currentUserId = data['id'];
       // recipientProfileName = data['name'];
-      // print(response.statusCode);
+      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
