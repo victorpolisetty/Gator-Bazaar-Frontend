@@ -192,7 +192,7 @@ class _SellerProfilePageBodyState extends State<SellerProfilePageBody> {
                     ) : Container(
                     height: MediaQuery.of(context).size.height - 442,
                     width: MediaQuery.of(context).size.width,
-                    child: Center(child: Text("No Listings!"))
+                    child: Center(child: Text("No Listings!",style: TextStyle(fontWeight: FontWeight.bold),))
                 ),
                 // if(loading)(spinkit),
                 // (isBottom && !allLoaded && !loading) ? ElevatedButton(

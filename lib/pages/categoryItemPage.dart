@@ -200,7 +200,7 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
               children: [
                 Column(
                   children: [
-                    Container(
+                    categoryList.items.length != 0 ? Container(
                         margin: EdgeInsets.only(top: 10),
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height-190,
@@ -217,7 +217,11 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
                               );
                             }
                         )
-                    ),
+                    ) : Container(
+          height: MediaQuery.of(context).size.height * .8,
+        width: MediaQuery.of(context).size.width,
+        child: Center(child: Text("No Listings!", style: TextStyle(fontWeight: FontWeight.bold)))
+    ),
                     if(loading)(spinkit),
                     (isBottom && !allLoaded && !loading && categoryList.totalPages != 1) ? ElevatedButton(
                       style: ElevatedButton.styleFrom(
