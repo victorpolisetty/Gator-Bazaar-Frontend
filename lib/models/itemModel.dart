@@ -26,6 +26,8 @@ class ItemWithImages extends ChangeNotifier{
   int ?seller_id = 0;
   int ?id ;
   String name = "";
+  String? seller_email = "";
+  String? seller_name = "";
   // String imageURL = "";
   String description = "";
   num price = 0;

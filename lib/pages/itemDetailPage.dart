@@ -6,12 +6,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:student_shopping_v1/Authentication/authentication.dart';
 import 'package:student_shopping_v1/Widgets/FavoriteWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:student_shopping_v1/messaging/Screens/ChatDetail.dart';
-import 'package:student_shopping_v1/messaging/Screens/IndividualPage.dart';
-import 'package:student_shopping_v1/messaging/Screens/LoginScreen.dart';
 import 'package:student_shopping_v1/models/chatMessageModel.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
@@ -43,13 +40,13 @@ class _ItemDetailsState extends State<ItemDetails> {
   User? currentUser = FirebaseAuth.instance.currentUser;
   // String recipientProfileName = "";
   int currentUserId = -1;
-  String sellerUserName = "";
+  // String sellerUserName = "";
 
   @override
   void initState() {
     // TODO: implement initState
     getProfileFromDb(currentUser?.uid.toString());
-    getProfileFromDbWithSellerId(widget.item.seller_id);
+    // getProfileFromDbWithSellerId(widget.item.seller_id);
 
     super.initState();
   }
@@ -57,6 +54,8 @@ class _ItemDetailsState extends State<ItemDetails> {
   @override
   Widget build(BuildContext context) {
     var numberOfImagesInItem = widget.item.itemPictureIds.length;
+    List <dynamic> imgList = [];
+    List <dynamic> emptyList = [];
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -74,55 +73,12 @@ class _ItemDetailsState extends State<ItemDetails> {
               ),
             );
           } else {
-            // final List<Object> imgList = [
-            //   numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
-            //       "assets/images/no-picture-available-icon.png"),
-            //   numberOfImagesInItem > 1 ? MemoryImage(snapshot.data[1]) : AssetImage(
-            //       "assets/images/no-picture-available-icon.png"),
-            //   numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
-            //       "assets/images/no-picture-available-icon.png"),
-            // ];
-            // final List<Widget> imageSliders = imgList
-            //     .map((item) => Container(
-            //   child: Container(
-            //     margin: EdgeInsets.all(5.0),
-            //     child: ClipRRect(
-            //         borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            //         child: Stack(
-            //           children: <Widget>[
-            //             MemoryImage(item),
-            //             Positioned(
-            //               bottom: 0.0,
-            //               left: 0.0,
-            //               right: 0.0,
-            //               child: Container(
-            //                 decoration: BoxDecoration(
-            //                   gradient: LinearGradient(
-            //                     colors: [
-            //                       Color.fromARGB(200, 0, 0, 0),
-            //                       Color.fromARGB(0, 0, 0, 0)
-            //                     ],
-            //                     begin: Alignment.bottomCenter,
-            //                     end: Alignment.topCenter,
-            //                   ),
-            //                 ),
-            //                 padding: EdgeInsets.symmetric(
-            //                     vertical: 10.0, horizontal: 20.0),
-            //                 child: Text(
-            //                   'No. ${imgList.indexOf(item)} image',
-            //                   style: TextStyle(
-            //                     color: Colors.white,
-            //                     fontSize: 20.0,
-            //                     fontWeight: FontWeight.bold,
-            //                   ),
-            //                 ),
-            //               ),
-            //             ),
-            //           ],
-            //         )),
-            //   ),
-            // ))
-            //     .toList();
+            for(int i = 0; i < numberOfImagesInItem; i++){
+              imgList.add(snapshot.data[i]);
+            }
+            if (imgList.length == 0) {
+              emptyList.add(1);
+            }
 
           return Container(
             child: SingleChildScrollView(
@@ -138,38 +94,58 @@ class _ItemDetailsState extends State<ItemDetails> {
                         .of(context)
                         .size
                         .width,
-              //     child: CarouselSlider(
-              //     options: CarouselOptions(
-              //     aspectRatio: 2.0,
-              //     enlargeCenterPage: true,
-              //     enableInfiniteScroll: false,
-              //     initialPage: 2,
-              //       autoPlay: true
-              //
-              // ),
-              //       items: [
-              //         imageSliders,
-              //       ],
-              // )
+                  child: CarouselSlider(
+                  options: CarouselOptions(
+                  aspectRatio: 1.0,
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: false,
+                  initialPage: 0,
+                  autoPlay: false
+
+              ),
+                    items: imgList.length != 0 ? imgList
+                        .map((item) => Container(
+                      child: Center(
+                          child:
+                          Image.memory(item)
+                          // MemoryImage(item)
+                      ),
+                    ))
+                        .toList() :
+                    emptyList
+                        .map((item) => Container(
+                      child: Center(
+                          child:
+                          Image.asset("assets/images/no-picture-available-icon.png")
+                        // MemoryImage(item)
+                      ),
+                    ))
+                        .toList(),
+
+
+                    // items: [
+                    //   imageSliders,
+                    // ],
+              )
               //       // decoration: BoxDecoration(
                     //   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
                     //   boxShadow: [BoxShadow(spreadRadius: 0, blurRadius: 19, offset: Offset(0, 4), color: Colors.grey)],
-                    child: Carousel(
-                      boxFit: BoxFit.contain,
-                      images: [
-                        numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
-                            "assets/images/no-picture-available-icon.png"),
-                        numberOfImagesInItem > 1 ? MemoryImage(snapshot.data[1]) : AssetImage(
-                            "assets/images/no-picture-available-icon.png"),
-                        numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
-                            "assets/images/no-picture-available-icon.png"),
-                      ],
-                      autoplay: false,
-
-
-                      //   image: DecorationImage(
-                      //image: MemoryImage(widget.itemPicture), fit: BoxFit.cover),
-                    ),
+                    // child: Carousel(
+                    //   boxFit: BoxFit.contain,
+                    //   images: [
+                    //     numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
+                    //         "assets/images/no-picture-available-icon.png"),
+                    //     numberOfImagesInItem > 1 ? MemoryImage(snapshot.data[1]) : AssetImage(
+                    //         "assets/images/no-picture-available-icon.png"),
+                    //     numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
+                    //         "assets/images/no-picture-available-icon.png"),
+                    //   ],
+                    //   autoplay: false,
+                    //
+                    //
+                    //   //   image: DecorationImage(
+                    //   //image: MemoryImage(widget.itemPicture), fit: BoxFit.cover),
+                    // ),
 
                     //     image: NetworkImage(widget.item_detail_picture),fit: BoxFit.cover)
                   ),
@@ -178,7 +154,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           .of(context)
                           .size
                           .width,
-                      margin: EdgeInsets.only(left: 15, top: 15),
+                      margin: EdgeInsets.only(left: 15, top: 15, right: 15),
                       child: Text(widget.item.name,
                         style: TextStyle(fontSize: 19, color: Colors.grey[700]),
                         textAlign: TextAlign.left,)
@@ -189,9 +165,18 @@ class _ItemDetailsState extends State<ItemDetails> {
                           .size
                           .width,
                       margin: EdgeInsets.only(left: 15, top: 15),
+                      child: Text('Price', style: TextStyle(fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.grey[700]), textAlign: TextAlign.left,)
+                  ),
+                  Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      margin: EdgeInsets.only(left: 10, top: 10, right: 10),
                       child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(widget.item.price)}'),
-
-                        style: TextStyle(fontSize: 19, color: Colors.grey[700]),
+                        style: TextStyle(fontSize: 15, color: Colors.grey[700]),
                         textAlign: TextAlign.left,)
                   ),
                   Container(
@@ -209,7 +194,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           .of(context)
                           .size
                           .width,
-                      margin: EdgeInsets.only(left: 15, top: 15),
+                      margin: EdgeInsets.only(left: 15, top: 15, right: 15),
                       child: Text(widget.item.description,
                         style: TextStyle(fontSize: 15, color: Colors.grey[700]),
                         textAlign: TextAlign.left,)
@@ -220,7 +205,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           .size
                           .width,
                       margin: EdgeInsets.only(left: 15, top: 15),
-                      child: Text('Seller Name', style: TextStyle(fontSize: 15,
+                      child: Text('Seller Information', style: TextStyle(fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: Colors.grey[700]), textAlign: TextAlign.left,)
                   ),
@@ -230,7 +215,17 @@ class _ItemDetailsState extends State<ItemDetails> {
                           .size
                           .width,
                       margin: EdgeInsets.only(left: 15, top: 15),
-                      child: Text(sellerUserName,
+                      child: Text(widget.item.seller_name!,
+                        style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                        textAlign: TextAlign.left,)
+                  ),
+                  Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      margin: EdgeInsets.only(left: 15, top: 15),
+                      child: Text(widget.item.seller_email!,
                         style: TextStyle(fontSize: 15, color: Colors.grey[700]),
                         textAlign: TextAlign.left,)
                   ),
@@ -254,7 +249,7 @@ bottomNavigationBar: Container(
           child: InkWell(
             onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (context) => new ChatDetailPage(chatProfile: new ChatMessageHome.NewChatMessage
-                  ("", sellerUserName, currentUser?.displayName, currentUserId, widget.item.seller_id, "createdAt", currentUserId,widget.item.id, false, -1), currentUserDbId: currentUserId))),
+                  ("", widget.item.seller_name, currentUser?.displayName, currentUserId, widget.item.seller_id, "createdAt", currentUserId,widget.item.id, false, -1), currentUserDbId: currentUserId))),
             child: Text(
               "Click here to buy!",
               textAlign: TextAlign.center,
@@ -293,21 +288,21 @@ bottomNavigationBar: Container(
     }
   }
 
-  Future<void> getProfileFromDbWithSellerId(int? profileId) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      sellerUserName = data['name'];
-      // recipientProfileName = data['name'];
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
-    }
-  }
+  // Future<void> getProfileFromDbWithSellerId(int? profileId) async {
+  //   Map<String, dynamic> data;
+  //   var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
+  //   http.Response response = await http.get(
+  //       url, headers: {"Accept": "application/json"});
+  //   if (response.statusCode == 200) {
+  //     // data.map<Item>((json) => Item.fromJson(json)).toList();
+  //     data = jsonDecode(response.body);
+  //     sellerUserName = data['name'];
+  //     // recipientProfileName = data['name'];
+  //     print(response.statusCode);
+  //   } else {
+  //     print(response.statusCode);
+  //   }
+  // }
 
 
 

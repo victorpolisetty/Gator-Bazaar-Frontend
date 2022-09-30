@@ -85,8 +85,10 @@ class MessageModel extends ChangeNotifier{
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      map = json.decode(responseJson);
       print(response.body);
-      map = jsonDecode(response.body);
+      // map = jsonDecode(response.body);
       messageList = List.from(map['content']).map((msg)=>UserMessage.fromJson(msg)).toList();
       if(messageList.length != 0){
         lastMessageItemId = messageList[0].item_id!;

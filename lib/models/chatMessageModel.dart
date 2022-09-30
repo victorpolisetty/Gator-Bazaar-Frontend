@@ -103,7 +103,8 @@ class ChatMessageModel extends ChangeNotifier{
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
       print(response.body);
-      data = jsonDecode(response.body);
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
       for (int i = 0; i < data.length; i++) {
         ChatMessageHome chatMessage = ChatMessageHome.fromJson(data[i]);
         chatMessage.current_user_id = userIdFromDB;

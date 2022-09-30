@@ -13,7 +13,7 @@ class _addedListingDialogState extends State<addedListingDialog> {
   Widget build(BuildContext context) {
     return new AlertDialog(
       title:
-        widget.itemAddSuccess ? Center(child: const Text('Item Added Successfully')) : Center(child: const Text('Please select a category or enter required fields')),
+        widget.itemAddSuccess ? Center(child: const Text('Item Added Successfully. Check your profile page to see your listing!')) : Center(child: const Text('Please select a category or enter required fields')),
       content: new Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

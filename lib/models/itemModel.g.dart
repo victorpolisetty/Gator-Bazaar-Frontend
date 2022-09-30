@@ -22,6 +22,8 @@ ItemWithImages _$ItemWithImagesFromJson(Map<String, dynamic> json) =>
       ..seller_id = json['seller_id'] as int?
       ..id = json['id'] as int?
       ..name = json['name'] as String
+      ..seller_email = json['seller_email'] as String?
+      ..seller_name = json['seller_name'] as String?
       ..description = json['description'] as String
       ..price = json['price'] as num
       ..isSold = json['isSold'] as bool
@@ -35,6 +37,8 @@ Map<String, dynamic> _$ItemWithImagesToJson(ItemWithImages instance) =>
       'seller_id': instance.seller_id,
       'id': instance.id,
       'name': instance.name,
+      'seller_email': instance.seller_email,
+      'seller_name': instance.seller_name,
       'description': instance.description,
       'price': instance.price,
       'isSold': instance.isSold,

@@ -23,7 +23,7 @@ class App extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, snapshot){
         return MaterialApp(
-            title: 'Student Shop',
+            title: 'Gator Marketplace',
             theme: ThemeData(
               colorScheme: ColorScheme.fromSwatch().copyWith(
 

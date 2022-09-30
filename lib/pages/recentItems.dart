@@ -93,7 +93,7 @@ class _RecentItemsState extends State<RecentItems> {
             // margin: EdgeInsets.only(top: 10),
             width: MediaQuery.of(context).size.width,
             // height: double.,
-          height: MediaQuery.of(context).size.height * .43,
+          height: MediaQuery.of(context).size.height * .47,
           // height: MediaQuery.of(context).size.height - 452,
             child: recentList.items.length > 0 ? Container(
               height: double.infinity,
@@ -193,7 +193,7 @@ class SingleItem extends StatelessWidget {
             child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
 
     // child: Text("\$${item.price.toDouble()}",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
             ),
             item.isSold ? ClipRRect(
               borderRadius: BorderRadius.circular(10),
@@ -225,7 +225,7 @@ class SingleItem extends StatelessWidget {
           margin: EdgeInsets.only(top: 0, left: 15),
           height: 30,
           child: Text("${item.name}",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
         ),
       ],
     );

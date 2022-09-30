@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:another_carousel_pro/another_carousel_pro.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:student_shopping_v1/Authentication/authentication.dart';
 import 'package:student_shopping_v1/Widgets/FavoriteWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:student_shopping_v1/buyerhome.dart';
 import 'package:student_shopping_v1/messaging/Screens/ChatDetail.dart';
 import 'package:student_shopping_v1/messaging/Screens/IndividualPage.dart';
 import 'package:student_shopping_v1/messaging/Screens/LoginScreen.dart';
@@ -57,6 +59,8 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
   @override
   Widget build(BuildContext context) {
     var numberOfImagesInItem = widget.item.itemPictureIds.length;
+    List <dynamic> imgList = [];
+    List <dynamic> emptyList = [];
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -74,40 +78,78 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                 ),
               );
             } else {
+              for(int i = 0; i < numberOfImagesInItem; i++){
+                imgList.add(snapshot.data[i]);
+              }
+              if (imgList.length == 0) {
+                emptyList.add(1);
+              }
 
               return Container(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-
                       Container(
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.4,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        // decoration: BoxDecoration(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * .5,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                                aspectRatio: 1.0,
+                                enlargeCenterPage: true,
+                                enableInfiniteScroll: false,
+                                initialPage: 0,
+                                autoPlay: false
+
+                            ),
+                            items: imgList.length != 0 ? imgList
+                                .map((item) => Container(
+                              child: Center(
+                                  child:
+                                  Image.memory(item)
+                                // MemoryImage(item)
+                              ),
+                            ))
+                                .toList() :
+                            emptyList
+                                .map((item) => Container(
+                              child: Center(
+                                  child:
+                                  Image.asset("assets/images/no-picture-available-icon.png")
+                                // MemoryImage(item)
+                              ),
+                            ))
+                                .toList(),
+
+
+                            // items: [
+                            //   imageSliders,
+                            // ],
+                          )
+                        //       // decoration: BoxDecoration(
                         //   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
                         //   boxShadow: [BoxShadow(spreadRadius: 0, blurRadius: 19, offset: Offset(0, 4), color: Colors.grey)],
-                        child: Carousel(
-                          boxFit: BoxFit.contain,
-                          images: [
-                            numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
-                                "assets/images/no-picture-available-icon.png"),
-                            numberOfImagesInItem > 1 ? MemoryImage(snapshot.data[1]) : AssetImage(
-                                "assets/images/no-picture-available-icon.png"),
-                            numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
-                                "assets/images/no-picture-available-icon.png"),
-                          ],
-                          autoplay: false,
-
-
-                          //   image: DecorationImage(
-                          //image: MemoryImage(widget.itemPicture), fit: BoxFit.cover),
-                        ),
+                        // child: Carousel(
+                        //   boxFit: BoxFit.contain,
+                        //   images: [
+                        //     numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
+                        //         "assets/images/no-picture-available-icon.png"),
+                        //     numberOfImagesInItem > 1 ? MemoryImage(snapshot.data[1]) : AssetImage(
+                        //         "assets/images/no-picture-available-icon.png"),
+                        //     numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
+                        //         "assets/images/no-picture-available-icon.png"),
+                        //   ],
+                        //   autoplay: false,
+                        //
+                        //
+                        //   //   image: DecorationImage(
+                        //   //image: MemoryImage(widget.itemPicture), fit: BoxFit.cover),
+                        // ),
 
                         //     image: NetworkImage(widget.item_detail_picture),fit: BoxFit.cover)
                       ),
@@ -126,9 +168,22 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                               .of(context)
                               .size
                               .width,
-                          child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(widget.item.price)}'),
-                            style: TextStyle(fontSize: 19, color: Colors.grey[700]),
-                            textAlign: TextAlign.left,)
+                          margin: EdgeInsets.only(left: 15, top: 15),
+                          child: Text('Price', style: TextStyle(fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[700]), textAlign: TextAlign.left,)
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(9.0),
+                        child: Container(
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(widget.item.price)}'),
+                              style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                              )
+                        ),
                       ),
                       Container(
                           width: MediaQuery
@@ -145,11 +200,16 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                               .of(context)
                               .size
                               .width,
-                          margin: EdgeInsets.only(left: 15, top: 15),
+                          margin: EdgeInsets.only(left: 15, top: 15, right: 15),
                           child: Text(widget.item.description,
                             style: TextStyle(fontSize: 15, color: Colors.grey[700]),
                             textAlign: TextAlign.left,)
                       ),
+                      // SizedBox(
+                      //   height: 10,
+                      //   width: 10,
+                      // ),
+
                     ],
                   ),
 
@@ -206,5 +266,9 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
       print(response.statusCode);
     }
   }
+
+
+
+
 
 }

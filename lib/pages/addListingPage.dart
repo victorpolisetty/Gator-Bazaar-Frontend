@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:student_shopping_v1/buyerhome.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
+import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
+import 'package:student_shopping_v1/pages/sellerProfilePageBody.dart';
 import '../models/recentItemModel.dart';
 import 'package:heic_to_jpg/heic_to_jpg.dart';
 
@@ -306,7 +309,11 @@ class _AddListingState extends State<AddListing> {
                       _image1 = null;
                       _image2 = null;
                       _image3 = null;
-                      _value = "5";
+                      _value = "-1";
+
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (context) => new BuyerHomePage("Gator Marketplace"
+                          )));
                     });
                   }
                 })
@@ -485,4 +492,7 @@ class _AddListingState extends State<AddListing> {
           ),
         ) );
   }
+
+
+
 }

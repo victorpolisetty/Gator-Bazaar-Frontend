@@ -94,7 +94,9 @@ class RecentItemModel extends ChangeNotifier {
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
+
       var items = data['content'];
       var totalPages = data['totalPages'];
       print(totalPages);

@@ -205,7 +205,8 @@ class CategoryItemModel extends ChangeNotifier {
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      data = jsonDecode(response.body);
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
       var items = data['content'];
       for (int i = 0; i < items.length; i++) {
         // if(items[i]['seller_id'] == userIdFromDb) {

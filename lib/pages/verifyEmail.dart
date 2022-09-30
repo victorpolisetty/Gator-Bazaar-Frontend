@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:student_shopping_v1/applicationState.dart';
 import 'package:student_shopping_v1/buyerhome.dart';
 
 import '../Authentication/authentication.dart';
+import '../widgets.dart';
 
 class VerifyScreen extends StatefulWidget {
   const VerifyScreen({Key? key}) : super(key: key);
@@ -40,7 +42,21 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text("An email has been sent to ${user?.email} please verify"),);
+    return Column(
+      children: [
+        Container(child: Text("An email has been sent to ${user?.email} please verify"),),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+              vertical: 16.0, horizontal: 30),
+          child: StyledButton(
+            onPressed: () {
+              user?.delete();
+            },
+            child: const Text('CANCEL',style: TextStyle(color: Colors.black),),
+          ),
+        ),
+      ],
+    );
   }
   Future<void> checkEmailVerified() async{
     user = auth.currentUser;

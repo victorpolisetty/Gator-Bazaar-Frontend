@@ -52,7 +52,8 @@ class FavoriteModel extends ChangeNotifier {
     var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      data = jsonDecode(response.body) as List;
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
       _favoriteItems = data.map((itm) => new ItemWithImages.fromJson(itm)).toList();
       print(_favoriteItems);
     } else {
