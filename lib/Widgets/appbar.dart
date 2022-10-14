@@ -24,7 +24,7 @@ class _MyAppBarState extends State<MyAppBar> {
       elevation: .1,
       title: Center(
         child: Text(
-          'Student Shop',
+          'Gator Bazaar',
           style: TextStyle(color: Colors.black),
         ),
       ),

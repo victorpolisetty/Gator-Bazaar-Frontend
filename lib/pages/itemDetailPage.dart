@@ -27,10 +27,11 @@ final spinkit = SpinKitFadingCircle(
 
 class ItemDetails extends StatefulWidget {
   ItemWithImages item;
+  int currentUserId = -1;
   ItemDetails(
+      currentUserId,
       item
-  ) : this.item = item{
-  }
+  ) : this.item = item, this.currentUserId = currentUserId;
   @override
   _ItemDetailsState createState() => _ItemDetailsState();
 }
@@ -39,13 +40,13 @@ class _ItemDetailsState extends State<ItemDetails> {
 
   User? currentUser = FirebaseAuth.instance.currentUser;
   // String recipientProfileName = "";
-  int currentUserId = -1;
+  // int currentUserId = -1;
   // String sellerUserName = "";
 
   @override
   void initState() {
     // TODO: implement initState
-    getProfileFromDb(currentUser?.uid.toString());
+    // getProfileFromDb(currentUser?.uid.toString());
     // getProfileFromDbWithSellerId(widget.item.seller_id);
 
     super.initState();
@@ -116,7 +117,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                         .map((item) => Container(
                       child: Center(
                           child:
-                          Image.asset("assets/images/no-picture-available-icon.png")
+                          Image.asset("assets/images/GatorBazaar.jpg")
                         // MemoryImage(item)
                       ),
                     ))
@@ -236,7 +237,7 @@ class _ItemDetailsState extends State<ItemDetails> {
           );}
 
         } ),
-bottomNavigationBar: Container(
+      bottomNavigationBar: widget.item.seller_id != widget.currentUserId ? Container(
   width: MediaQuery.of(context).size.width,
   height: 100,
   child: Container(
@@ -249,7 +250,7 @@ bottomNavigationBar: Container(
           child: InkWell(
             onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (context) => new ChatDetailPage(chatProfile: new ChatMessageHome.NewChatMessage
-                  ("", widget.item.seller_name, currentUser?.displayName, currentUserId, widget.item.seller_id, "createdAt", currentUserId,widget.item.id, false, -1), currentUserDbId: currentUserId))),
+                  ("", widget.item.seller_name, currentUser?.displayName, widget.currentUserId, widget.item.seller_id, "createdAt", widget.currentUserId, widget.item.id, false, -1), currentUserDbId: widget.currentUserId))),
             child: Text(
               "Click here to buy!",
               textAlign: TextAlign.center,
@@ -268,25 +269,25 @@ bottomNavigationBar: Container(
       ],
     ),
   ),
-),
+) : null,
     );
   }
 
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      currentUserId = data['id'];
-      // recipientProfileName = data['name'];
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
-    }
-  }
+  // Future<void> getProfileFromDb(String? firebaseid) async {
+  //   Map<String, dynamic> data;
+  //   var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+  //   http.Response response = await http.get(
+  //       url, headers: {"Accept": "application/json"});
+  //   if (response.statusCode == 200) {
+  //     // data.map<Item>((json) => Item.fromJson(json)).toList();
+  //     data = jsonDecode(response.body);
+  //     currentUserId = data['id'];
+  //     // recipientProfileName = data['name'];
+  //     print(response.statusCode);
+  //   } else {
+  //     print(response.statusCode);
+  //   }
+  // }
 
   // Future<void> getProfileFromDbWithSellerId(int? profileId) async {
   //   Map<String, dynamic> data;

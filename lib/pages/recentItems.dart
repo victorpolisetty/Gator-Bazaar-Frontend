@@ -93,7 +93,7 @@ class _RecentItemsState extends State<RecentItems> {
             // margin: EdgeInsets.only(top: 10),
             width: MediaQuery.of(context).size.width,
             // height: double.,
-          height: MediaQuery.of(context).size.height * .47,
+          height: MediaQuery.of(context).size.height * .57,
           // height: MediaQuery.of(context).size.height - 452,
             child: recentList.items.length > 0 ? Container(
               height: double.infinity,
@@ -127,25 +127,25 @@ class _RecentItemsState extends State<RecentItems> {
               ),
             ),
         ),
-        if(loading)(spinkit),
-        (isBottom && !allLoaded && !loading) ? ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.black
-          ),
-          child: Center(
-           // child: Expanded(
-                child: Text("Show More")
-            //),
-          ),
-          onPressed: (){
-            setState(() {
-              if(recentList.currentPage <= totalPages-1 && !loading){
-                mockFetch(recentList);
-              }
-              //recentList.getNextPage(1);
-            });
-          },
-        ) : Container(),
+        // if(loading)(spinkit),
+        // (isBottom && !allLoaded && !loading) ? ElevatedButton(
+        //   style: ElevatedButton.styleFrom(
+        //     primary: Colors.black
+        //   ),
+        //   child: Center(
+        //    // child: Expanded(
+        //         child: Text("Show More")
+        //     //),
+        //   ),
+        //   onPressed: (){
+        //     setState(() {
+        //       if(recentList.currentPage <= totalPages-1 && !loading){
+        //         mockFetch(recentList);
+        //       }
+        //       //recentList.getNextPage(1);
+        //     });
+        //   },
+        // ) : Container(),
       ],
     );
   }
@@ -165,6 +165,7 @@ class SingleItem extends StatelessWidget {
         InkWell(
           onTap: () => Navigator.of(context).push(new MaterialPageRoute(
               builder: (context) => new ItemDetails(
+                  context.watch<RecentItemModel>().currentUserId,
                   item
               ))),
           child: Container(
@@ -174,7 +175,7 @@ class SingleItem extends StatelessWidget {
             alignment: Alignment.topRight,
             decoration: BoxDecoration(
                 image: DecorationImage(image: item.imageDataList.length > 0 ?
-                MemoryImage(item.imageDataList[0]) : AssetImage('assets/images/no-picture-available-icon.png') as ImageProvider, fit: BoxFit.contain),
+                MemoryImage(item.imageDataList[0]) : AssetImage('assets/images/GatorBazaar.jpg') as ImageProvider, fit: BoxFit.contain),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18)),
             child: Container(
@@ -188,7 +189,7 @@ class SingleItem extends StatelessWidget {
               // color: Colors.black,
               alignment: Alignment.centerLeft,
               width: 80,
-              margin: EdgeInsets.only(top: 5, left: 30),
+              margin: EdgeInsets.only(top: 5, left: 26),
               height: 30,
             child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
 

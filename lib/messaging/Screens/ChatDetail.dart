@@ -218,11 +218,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   FloatingActionButton(
                     onPressed: (){
                       if(_controller.text.trim().isNotEmpty) {
-                        if(userMessagesForSpecificItem.length == 0) {
-                          _sendMessage("Interested in: " + latestItemName, widget.currentUserDbId,
-                              widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
-                              widget.chatProfile.recipient_profile_name);
-                        }
+                        // if(userMessagesForSpecificItem.length == 0) {
+                        //   _sendMessage("Interested in: " + latestItemName, widget.currentUserDbId,
+                        //       widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
+                        //       widget.chatProfile.recipient_profile_name);
+                        // }
                         _sendMessage(_controller.text,widget.currentUserDbId,
                             widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
                             widget.chatProfile.recipient_profile_name);

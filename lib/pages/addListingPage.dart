@@ -57,6 +57,7 @@ class _AddListingState extends State<AddListing> {
     itemAddSuccess = false;
     //   var recentList = context.watch<CategoryItemModel>();
     return Scaffold(
+      backgroundColor: Colors.grey[200],
         appBar: new AppBar(
           automaticallyImplyLeading: false,
           iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
@@ -141,6 +142,8 @@ class _AddListingState extends State<AddListing> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextFormField(
+                keyboardType: TextInputType.multiline,
+                maxLines: 2,
                 controller: itemNameController,
                 decoration: InputDecoration(
                   hintText: 'Item Name',
@@ -151,7 +154,7 @@ class _AddListingState extends State<AddListing> {
               padding: const EdgeInsets.all(12.0),
               child: TextFormField(
                 keyboardType: TextInputType.multiline,
-                maxLines: 3,
+                maxLines: 2,
                 controller: itemDescriptionController,
                 // initialValue: '1',
                 decoration: InputDecoration(
@@ -162,6 +165,7 @@ class _AddListingState extends State<AddListing> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextFormField(
+                maxLines: 2,
                 // initialValue: '0.00',
                 controller: itemPriceController,
                 inputFormatters: [
@@ -179,7 +183,6 @@ class _AddListingState extends State<AddListing> {
                   decimal: true,
                   signed: false,
                 ),
-
                 decoration: InputDecoration(
                   hintText: 'Price',
                 ),
@@ -189,6 +192,7 @@ class _AddListingState extends State<AddListing> {
                 padding: const EdgeInsets.all(12.0),
                 child: Container(
                   child: DropdownButton(
+                      menuMaxHeight: 200,
                       value: _value,
                       items: [
                         DropdownMenuItem(
@@ -209,8 +213,6 @@ class _AddListingState extends State<AddListing> {
                         DropdownMenuItem(child: Text("Electronics"), value: "6"),
                         DropdownMenuItem(child: Text("Books"), value: "7"),
                         DropdownMenuItem(child: Text("Misc."), value: "8"),
-
-
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -218,68 +220,10 @@ class _AddListingState extends State<AddListing> {
                         });
                       }),
                 )),
-            // _value == "1"
-            //     ? Padding(
-            //         padding: const EdgeInsets.all(12.0),
-            //         child: Container(
-            //           child: DropdownButton(
-            //             menuMaxHeight: 300,
-            //               value: clothingVal,
-            //               items: [
-            //                 DropdownMenuItem(
-            //                   child: Text("Select Clothing Type"),
-            //                   value: "5",
-            //                 ),
-            //                 DropdownMenuItem(
-            //                     child: Text("Fraternity Merch"), value: "1"),
-            //                 DropdownMenuItem(
-            //                   child: Text("Formal/Semi-Formal Dresses"),
-            //                   value: "2",
-            //                 ),
-            //                 DropdownMenuItem(
-            //                   child: Text("Graduation Apparel"),
-            //                   value: "3",
-            //                 ),
-            //                 DropdownMenuItem(
-            //                   child: Text("Hat"),
-            //                   value: "4",
-            //                 ),
-            //                 DropdownMenuItem(
-            //                   child: Text("Heels"),
-            //                   value: "6",
-            //                 ),
-            //                 DropdownMenuItem(
-            //                     child: Text("Sorority Merch"), value: "7"),
-            //                 DropdownMenuItem(
-            //                   child: Text("T-shirts"),
-            //                   value: "8",
-            //                 ),
-            //                 DropdownMenuItem(
-            //                   child: Text("UF Merch"),
-            //                   value: "9",
-            //                 ),
-            //                 DropdownMenuItem(
-            //                   child: Text("Skirts"),
-            //                   value: "10",
-            //                 ),
-            //                 DropdownMenuItem(
-            //                   child: Text("Suits"),
-            //                   value: "11",
-            //                 ),
-            //                 DropdownMenuItem(child: Text("Misc."), value: "12")
-            //               ],
-            //               onChanged: (val) {
-            //                 setState(() {
-            //                   clothingVal = val.toString();
-            //                 });
-            //               }),
-            //         ))
-            //     : Container(),
-
             TextButton(
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.grey),
+                      MaterialStateProperty.all<Color>(Colors.black),
                 ),
                 child: Text('Add Product'),
                 onPressed: () {

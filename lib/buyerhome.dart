@@ -4,12 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:student_shopping_v1/Widgets/homePageTab.dart';
-import 'package:student_shopping_v1/applicationState.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
-import 'package:student_shopping_v1/messaging/Screens/MessagingScreen.dart';
 import 'package:student_shopping_v1/pages/favoritePage.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
-import 'pages/userProfilePage.dart';
 import 'pages/addListingPage.dart';
 import 'package:http/http.dart' as http;
 
@@ -138,8 +135,8 @@ class _HomePageState extends State<BuyerHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.favorite,), label: "My Favorites",),
           BottomNavigationBarItem(icon: Icon(Icons.add,), label: "Add Listing",),
-          BottomNavigationBarItem(icon: Icon(Icons.message,), label: "Messaging",),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.message,), label: "Conversations",),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "My Profile"),
         ],
         onTap: (index){
           setState(() {

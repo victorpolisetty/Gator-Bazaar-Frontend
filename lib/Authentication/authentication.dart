@@ -496,18 +496,17 @@ class _RegisterFormState extends State<RegisterForm> {
                             // if(_emailController.text.endsWith('@ufl.edu')){
                             //   widget.registerAccount(
                             //     _emailController.text,
-                            //     _displayNameController.text,
+                            //     _firstNameController.text + " " + _lastNameController.text,
                             //     _passwordController.text,
                             //   );
                             // }
-                              widget.registerAccount(
-                                _emailController.text,
-                                _firstNameController.text + " " + _lastNameController.text,
-                                _passwordController.text,
-                              );
-
-
+                            widget.registerAccount(
+                              _emailController.text,
+                              _firstNameController.text + " " + _lastNameController.text,
+                              _passwordController.text,
+                            );
                           }
+
                         },
                         child: const Text('SAVE',style: TextStyle(color: Colors.black),),
                       ),

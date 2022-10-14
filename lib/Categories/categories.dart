@@ -74,7 +74,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 InkWell(
                     onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                       // builder: (context) => CategoryItemPage(1))),
-                        builder: (context) => CategoryItemPage(1))),
+                        builder: (context) => CategoryItemPage(1, "Clothes"))),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
@@ -105,7 +105,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 InkWell(
                   onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                     // builder: (context) => CategoryItemPage(1))),
-                      builder: (context) => CategoryItemPage(2))),
+                      builder: (context) => CategoryItemPage(2, "Formal Dresses"))),
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
@@ -136,7 +136,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 InkWell(
                     onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                       // builder: (context) => CategoryItemPage(1))),
-                        builder: (context) => CategoryItemPage(3))),
+                        builder: (context) => CategoryItemPage(3, "Student Tickets"))),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
@@ -167,7 +167,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 InkWell(
                     onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                       // builder: (context) => CategoryItemPage(1))),
-                        builder: (context) => CategoryItemPage(4))),
+                        builder: (context) => CategoryItemPage(4, "Furniture"))),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
@@ -197,7 +197,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 InkWell(
                     onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                       // builder: (context) => CategoryItemPage(1))),
-                        builder: (context) => CategoryItemPage(5))),
+                        builder: (context) => CategoryItemPage(5, "Subleases"))),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
@@ -228,7 +228,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 InkWell(
                     onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                       // builder: (context) => CategoryItemPage(1))),
-                        builder: (context) => CategoryItemPage(6))),
+                        builder: (context) => CategoryItemPage(6, "Electronics"))),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
@@ -259,7 +259,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 InkWell(
                     onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                       // builder: (context) => CategoryItemPage(1))),
-                        builder: (context) => CategoryItemPage(7))),
+                        builder: (context) => CategoryItemPage(7, "Books"))),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),
@@ -290,7 +290,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 InkWell(
                     onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                       // builder: (context) => CategoryItemPage(1))),
-                        builder: (context) => CategoryItemPage(8))),
+                        builder: (context) => CategoryItemPage(8, "Misc."))),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(25, 20, 0, 0),

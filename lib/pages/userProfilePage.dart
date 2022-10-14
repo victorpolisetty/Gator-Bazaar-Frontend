@@ -361,6 +361,7 @@ class SingleItem extends StatelessWidget {
         InkWell(
           onTap: () => Navigator.of(context).push(new MaterialPageRoute(
               builder: (context) => new ItemDetails(
+                  context.watch<SellerItemModel>().userIdFromDB,
                   item
               ))),
           child: Container(

@@ -1,24 +1,13 @@
 import 'dart:convert';
 import 'dart:core';
-
-import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:student_shopping_v1/Authentication/authentication.dart';
-import 'package:student_shopping_v1/Widgets/FavoriteWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:student_shopping_v1/buyerhome.dart';
-import 'package:student_shopping_v1/messaging/Screens/ChatDetail.dart';
-import 'package:student_shopping_v1/messaging/Screens/IndividualPage.dart';
-import 'package:student_shopping_v1/messaging/Screens/LoginScreen.dart';
-import 'package:student_shopping_v1/models/chatMessageModel.dart';
 import '../Widgets/isSoldWidget.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
-
-import 'messagePage.dart';
 
 final spinkit = SpinKitFadingCircle(
   itemBuilder: (BuildContext context, int index) {
@@ -120,7 +109,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                                 .map((item) => Container(
                               child: Center(
                                   child:
-                                  Image.asset("assets/images/no-picture-available-icon.png")
+                                  Image.asset("assets/images/GatorBazaar.jpg")
                                 // MemoryImage(item)
                               ),
                             ))

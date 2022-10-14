@@ -97,9 +97,11 @@ class FavoriteItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.grey[210],
       child: InkWell(
         onTap: () => Navigator.of(context).push(new MaterialPageRoute(
             builder: (context) => new ItemDetails(
+                context.watch<FavoriteModel>().userIdFromDb,
               item
             ))),
         child: ListTile(
@@ -114,10 +116,10 @@ class FavoriteItem extends StatelessWidget {
               // ROW INSIDE THE COLUMN
               new Row(
                 children: <Widget>[
-                  new Padding(padding: const EdgeInsets.fromLTRB(10.0, 8.0, 8.0, 8.0),
+                  new Padding(padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                     child: new Text("Price:"),),
                   Padding(
-                      padding: const EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                       child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
                         style:TextStyle(color: Colors.black),)
                   ),

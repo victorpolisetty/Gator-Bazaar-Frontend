@@ -93,7 +93,7 @@ class SellerItemModel extends ChangeNotifier {
         print(_sellerItems);
       } else { // Add default - no image
         data = (await rootBundle.load(
-            'assets/images/no-picture-available-icon.png'))
+            'assets/images/GatorBazaar.jpg'))
             .buffer
             .asUint8List();
       }
@@ -175,7 +175,7 @@ class SellerItemModel extends ChangeNotifier {
         }
         print(_sellerItems);
       } else {   // Add default - no image
-        data = (await rootBundle.load('assets/images/no-picture-available-icon.png'))
+        data = (await rootBundle.load('assets/images/GatorBazaar.jpg'))
             .buffer
             .asUint8List();
       }

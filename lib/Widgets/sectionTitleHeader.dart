@@ -8,12 +8,12 @@ class SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 15, right: 15, top: 25),
+      margin: EdgeInsets.only(left: 15, right: 15, top: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title,
-              style: TextStyle(fontSize: 24,fontWeight: FontWeight.w600)),
+              style: TextStyle(fontSize: 20,fontWeight: FontWeight.w600)),
           // Text("See All")
         ],
       ),

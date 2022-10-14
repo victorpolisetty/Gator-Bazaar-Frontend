@@ -201,7 +201,7 @@ class CategoryItemModel extends ChangeNotifier {
   Future<void> getItemRestList() async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse(CATEGORY_ITEMS_URL+'${categoryId}/items/${userIdFromDb}?size=10&page=0&sort=created_at,desc'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse(CATEGORY_ITEMS_URL+'${categoryId}/items?size=10&page=0&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -281,7 +281,10 @@ class CategoryItemModel extends ChangeNotifier {
         print(categoryItems);
       } else { // Add default - no image
         data = (await rootBundle.load(
-            'assets/images/no-picture-available-icon.png'))
+            // 'assets/images/no-picture-available-icon.png'
+            'assets/images/GatorBazaar.jpg'
+
+        ))
             .buffer
             .asUint8List();
       }

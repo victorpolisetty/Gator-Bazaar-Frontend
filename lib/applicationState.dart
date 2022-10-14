@@ -108,7 +108,7 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/images/StudentShopLogoJPEG.jpeg'),
+                    Image.asset('assets/images/GatorBazaar.jpg'),
                     // SizedBox(height: 30),
                     // Text('Student Shop',style: TextStyle(fontSize: 52),),
 
@@ -118,7 +118,7 @@ class HomePage extends StatelessWidget {
                     // style: TextStyle(
                     //   fontSize: 20
                     // ),),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 5,),
                     Consumer<ApplicationState>(
                       builder: (context, appState, _) => Authentication(
                         email: appState.email,
@@ -234,7 +234,7 @@ class ApplicationState extends ChangeNotifier {
       ) async {
     try {
       //TODO: UNCOMMENT THIS
-      // if (email.endsWith(".edu") != true) email = "";
+      if (email.endsWith(".edu") != true) email = "";
       var methods =
       await FirebaseAuth.instance.fetchSignInMethodsForEmail(email); // this will throw an exception if invalid email is supplied
       if (methods.contains('password')) {

@@ -89,7 +89,7 @@ class RecentItemModel extends ChangeNotifier {
   Future<int> getItemRestList() async {
     Map<String, dynamic> data;
     var url = Uri.parse(
-        'http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/items/$currentUserId?size=10&sort=created_at,desc'); // TODO -  call the recentItem service when it is built
+        'http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/items?size=20&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -147,7 +147,10 @@ class RecentItemModel extends ChangeNotifier {
         }
         print(_recentItems);
       } else {   // Add default - no image
-        data = (await rootBundle.load('assets/images/no-picture-available-icon.png'))
+        data = (await rootBundle.load(
+            // 'assets/images/no-picture-available-icon.png'
+            'assets/images/GatorBazaar.jpg'
+        ))
             .buffer
             .asUint8List();
       }

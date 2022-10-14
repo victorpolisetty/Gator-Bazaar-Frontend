@@ -99,9 +99,6 @@ class MessageModel extends ChangeNotifier{
     }
   }
 
-
-
-  //TODO: when profiles are created update to take in correct query params
   Future<void> sendMessage(UserMessage message)  async {
     Map<String, dynamic> myjson = message.toJson();
     Map<String, dynamic> myjsonNew = {};

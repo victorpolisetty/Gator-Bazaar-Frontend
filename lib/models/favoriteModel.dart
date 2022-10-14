@@ -11,6 +11,8 @@ import 'dart:convert';
 class FavoriteModel extends ChangeNotifier {
   /// Internal, private state of the cart. Stores the ids of each item.
   List<ItemWithImages> _favoriteItems = [];
+  int userIdFromDb = -1;
+
   /// List of items in the cart.
   List<ItemWithImages> get items => _favoriteItems;
   User? currentUser = FirebaseAuth.instance.currentUser;
@@ -68,6 +70,7 @@ class FavoriteModel extends ChangeNotifier {
   }
   Future<void> _getItems() async {
     _favoriteItems.clear();
+    await getProfileFromDb(currentUser?.uid.toString());
     await getItemRestList();
     await get1stImageForItemIfAvailable();
     notifyListeners();
@@ -89,11 +92,25 @@ class FavoriteModel extends ChangeNotifier {
         print(_favoriteItems);
       } else { // Add default - no image
         data = (await rootBundle.load(
-            'assets/images/no-picture-available-icon.png'))
+            'assets/images/GatorBazaar.jpg'))
             .buffer
             .asUint8List();
       }
       _favoriteItems[i].imageDataList.add(data);
+    }
+  }
+  Future<void> getProfileFromDb(String? firebaseid) async {
+    Map<String, dynamic> data;
+    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    http.Response response = await http.get(
+        url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      // data.map<Item>((json) => Item.fromJson(json)).toList();
+      data = jsonDecode(response.body);
+      userIdFromDb = data['id'];
+      print(response.statusCode);
+    } else {
+      print(response.statusCode);
     }
   }
 }

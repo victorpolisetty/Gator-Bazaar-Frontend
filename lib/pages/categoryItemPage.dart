@@ -11,7 +11,8 @@ import 'dart:typed_data';
 
 class CategoryItemPage extends StatefulWidget {
   final int categoryId;
-  CategoryItemPage(this.categoryId);
+  final String categoryName;
+  CategoryItemPage(this.categoryId, this.categoryName);
 
   @override
   _CategoryItemPageState createState() => new _CategoryItemPageState();
@@ -48,23 +49,23 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
       iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
       backgroundColor: Colors.grey[300],
       elevation: .1,
-      title: Center(
-        child: Text(
-          'Student Shop',
+      title:
+        Text(
+          widget.categoryName,
           style: TextStyle(color: Colors.black),
         ),
-      ),
+
 
       actions: [
-        searchBar.getSearchAction(context),
-        Container(
-          margin: EdgeInsets.only(right: 10),
-          child: Icon(
-            Icons.notifications,
-            color: Colors.grey[800],
-            size: 27,
-          ),
-        ),
+        // searchBar.getSearchAction(context),
+        // Container(
+        //   margin: EdgeInsets.only(right: 10),
+        //   child: Icon(
+        //     Icons.notifications,
+        //     color: Colors.grey[800],
+        //     size: 27,
+        //   ),
+        // ),
       ],
     );
     return new AppBar(
@@ -183,16 +184,9 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
   Widget build(BuildContext context) {
     var categoryList = context.watch<CategoryItemModel>();
     var totalPages = categoryList.totalPages;
-    // while(categoryList.items.length == 0){
-    //   return Container(
-    //     color: Colors.white,
-    //     width: MediaQuery.of(context).size.width,
-    //     height: MediaQuery.of(context).size.height,
-    //     child: spinkit,
-    //   );
-    // }
     return new WillPopScope(
       child: new Scaffold(
+        backgroundColor: Colors.grey[200],
           appBar: searchBar.build(context),
           key: _scaffoldKey,
           body: new Center(
@@ -217,11 +211,18 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
                               );
                             }
                         )
-                    ) : Container(
-          height: MediaQuery.of(context).size.height * .8,
-        width: MediaQuery.of(context).size.width,
-        child: Center(child: Text("No Listings!", style: TextStyle(fontWeight: FontWeight.bold)))
-    ),
+                    ) :
+                        Container(
+                  margin: EdgeInsets.only(top: 10),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height-407,
+                  child: spinkit,
+                  ),
+    //                 Container(
+    //       height: MediaQuery.of(context).size.height * .8,
+    //     width: MediaQuery.of(context).size.width,
+    //     child: Center(child: Text("No Listings!", style: TextStyle(fontWeight: FontWeight.bold)))
+    // ),
                     if(loading)(spinkit),
                     (isBottom && !allLoaded && !loading && categoryList.totalPages != 1) ? ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -274,6 +275,7 @@ class singleItem extends StatelessWidget {
         InkWell(
           onTap: () => Navigator.of(context).push(new MaterialPageRoute(
               builder: (context) => new ItemDetails(
+                  context.watch<CategoryItemModel>().userIdFromDb,
                   item
                 //prod_picture ,
               ))),
@@ -293,10 +295,10 @@ class singleItem extends StatelessWidget {
             Container(
               alignment: Alignment.centerLeft,
               width: 80,
-              margin: EdgeInsets.only(top: 5, left: 30),
+              margin: EdgeInsets.only(top: 5, left: 26),
               height: 30,
               child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
             ),
             item.isSold ? ClipRRect(
               borderRadius: BorderRadius.circular(10),
@@ -319,10 +321,10 @@ class singleItem extends StatelessWidget {
         Container(
           alignment: Alignment.topLeft,
           width: 150,
-          margin: EdgeInsets.only(top: 5, left: 15),
-          height: 40,
+          margin: EdgeInsets.only(top: 0, left: 15),
+          height: 30,
           child: Text("${item.name}",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
         ),
       ],
     );
