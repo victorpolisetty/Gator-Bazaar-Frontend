@@ -25,7 +25,7 @@ Future<void> saveTokenToDatabase(String token) async {
   String? firebaseId = FirebaseAuth.instance.currentUser?.uid;
 
   Future<void> updatedUserDeviceToken()  async {
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$currDbId/deviceToken/$token');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$currDbId/deviceToken/$token');
     final http.Response response =  await http.put(url
         , headers: {
           "Accept": "application/json",
@@ -60,7 +60,7 @@ Future<int?> getUserDbIdRealFunc() async {
 
   Future<void> updatedUserDbId()  async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

@@ -7,6 +7,11 @@ import 'package:student_shopping_v1/models/categoryModel.dart';
 import 'package:student_shopping_v1/models/chatMessageModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:student_shopping_v1/notificationService/LocalNotificationService.dart';
+import 'package:student_shopping_v1/utils.dart';
+import 'package:student_shopping_v1/utils.dart';
+import 'package:student_shopping_v1/verify_email_page.dart';
+import 'LoginWidget.dart';
+import 'auth_page.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -115,6 +120,8 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -125,58 +132,6 @@ class MyApp extends StatefulWidget {
 
 
 class _MyAppState extends State<MyApp> {
-  // late int _totalNotifications;
-  // late final FirebaseMessaging _messaging;
-  // PushNotification? _notificationInfo;
-
-  // void requestAndRegisterNotification() async {
-  //   // 1. Initialize the Firebase app
-  //   await Firebase.initializeApp();
-  //
-  //   // 2. Instantiate Firebase Messaging
-  //   _messaging = FirebaseMessaging.instance;
-  //   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  //
-  //   // 3. On iOS, this helps to take the user permissions
-  //   NotificationSettings settings = await _messaging.requestPermission(
-  //     alert: true,
-  //     badge: true,
-  //     provisional: false,
-  //     sound: true,
-  //   );
-  //
-  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //     print('User granted permission');
-  //     //TODO: save token to database
-  //     String? token = await _messaging.getToken();
-  //     print("The token is "+token!);
-  //     // For handling the received notifications
-  //     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //       // Parse the message received
-  //       PushNotification notification = PushNotification(
-  //         title: message.notification?.title,
-  //         body: message.notification?.body,
-  //       );
-  //
-  //       setState(() {
-  //         _notificationInfo = notification;
-  //         _totalNotifications++;
-  //       });
-  //       if (_notificationInfo != null) {
-  //         // For displaying the notification as an overlay
-  //         showSimpleNotification(
-  //           Text(_notificationInfo!.title!),
-  //           leading: NotificationBadge(totalNotifications: _totalNotifications),
-  //           subtitle: Text(_notificationInfo!.body!),
-  //           background: Colors.cyan.shade700,
-  //           duration: Duration(seconds: 2),
-  //         );
-  //       }
-  //     });
-  //   } else {
-  //     print('User declined or has not accepted permission');
-  //   }
-  // }
 
   @override
   void initState(){
@@ -230,10 +185,6 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(
             create: (context) => FavoriteModel(),
           ),
-          // FutureProvider(
-          //   create: (context) async => FavoriteModel().getItemRestList(),
-          //   lazy: false, initialData: null,
-          // ),
           ChangeNotifierProvider(
             create: (context) => MessageModel(),
           ),
@@ -243,10 +194,10 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(
             create: (context) => CategoryItemModel(),
           ),
-          ChangeNotifierProvider(
-            create: (context) => ApplicationState(),
-            //builder: (context, _) => App(),
-          ),
+          // ChangeNotifierProvider(
+          //   create: (context) => ApplicationState(),
+          //   //builder: (context, _) => App(),
+          // ),
           ChangeNotifierProvider(
             create: (context) => CategoryModel(),
             //builder: (context, _) => App(),
@@ -260,62 +211,41 @@ class _MyAppState extends State<MyApp> {
             //builder: (context, _) => App(),
           ),
         ],
-    //     return MaterialApp(
-    //       home: Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: [
-    //           Text(
-    //             'App for capturing Firebase Push Notifications',
-    //             textAlign: TextAlign.center,
-    //             style: TextStyle(
-    //               color: Colors.black,
-    //               fontSize: 20,
-    //             ),
-    //           ),
-    //           SizedBox(height: 16.0),
-    //           NotificationBadge(totalNotifications: _totalNotifications),
-    //           SizedBox(height: 16.0),
-    //           _notificationInfo != null
-    //               ? Column(
-    //             crossAxisAlignment: CrossAxisAlignment.start,
-    //             children: [
-    //               Text(
-    //                 'TITLE: ${_notificationInfo!.title}',
-    //                 style: TextStyle(
-    //                   fontWeight: FontWeight.bold,
-    //                   fontSize: 16.0,
-    //                 ),
-    //               ),
-    //               SizedBox(height: 8.0),
-    //               Text(
-    //                 'BODY: ${_notificationInfo!.body}',
-    //                 style: TextStyle(
-    //                   fontWeight: FontWeight.bold,
-    //                   fontSize: 16.0,
-    //                 ),
-    //               ),
-    //             ],
-    //           )
-    //               : Container(),
-    //         ],
-
-
           child: MaterialApp(
+            scaffoldMessengerKey: Utils.messengerKey,
+            navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primaryColor: Colors.grey,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            home: App(),
+            home: MainPage(),
+            // home: App(),
           )
           );
   }
 }
 
+class MainPage extends StatelessWidget {
+  const MainPage({Key? key}) : super(key: key);
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//
-//   }
-// }
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    body: StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text("Something went wrong!"));
+        } else if (snapshot.hasData) {
+          return VerifyEmailPage();
+        } else {
+          return AuthPage();
+        }
+      },
+    ),
+  );
+}
+
+

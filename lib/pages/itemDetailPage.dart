@@ -13,8 +13,6 @@ import 'package:student_shopping_v1/models/chatMessageModel.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
 
-import 'messagePage.dart';
-
 final spinkit = SpinKitFadingCircle(
   itemBuilder: (BuildContext context, int index) {
     return DecoratedBox(

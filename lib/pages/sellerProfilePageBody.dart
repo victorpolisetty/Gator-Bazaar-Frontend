@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:student_shopping_v1/applicationState.dart';
 import 'package:student_shopping_v1/pages/itemDetailPageSellerView.dart';
+import 'package:student_shopping_v1/signup_widget.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
 final spinkit = SpinKitFadingCircle(
@@ -121,8 +122,10 @@ class _SellerProfilePageBodyState extends State<SellerProfilePageBody> {
                       //     builder: (context) => new HomePage()));
                       // FirebaseAuth.instance.signOut().then((value) => Navigator.of(context).push(new MaterialPageRoute(
                       //     builder: (context) => new HomePage(), fullscreenDialog: true)));
-                      _signOut().then((value) => Navigator.of(context).push(new MaterialPageRoute(
-                              builder: (context) => new HomePage(), fullscreenDialog: true)));
+                      //TODO: FIGURE THIS OUT
+                      FirebaseAuth.instance.signOut();
+                      // _signOut().then((value) => Navigator.of(context).push(new MaterialPageRoute(
+                      //         builder: (context) => new SignUpWidget(onClickedSignIn: toggle), fullscreenDialog: true)));
                     },
                   )
                 ],

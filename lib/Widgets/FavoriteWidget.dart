@@ -68,7 +68,7 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
     Map<String, dynamic> data;
     String firebaseId = currentUser!.uid;
     String itemId = item.id.toString();
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites/$itemId');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites/$itemId');
     // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.post(url
         , headers: {
@@ -91,7 +91,7 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
     Map<String, dynamic> data;
     String firebaseId = currentUser!.uid;
     String itemId = item.id.toString();
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites/$itemId');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites/$itemId');
     // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.delete(url
         , headers: {

@@ -95,7 +95,7 @@ class ChatMessageModel extends ChangeNotifier{
   Future<void> getChatHistory() async {
     String firebaseId = currentUser!.uid;
     List<dynamic> data;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/messages/profile/chathome/$firebaseId');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/messages/profile/chathome/$firebaseId');
 
     // var url = Uri.parse('http://localhost:8080/messages/profile/chathome/$firebaseId');
     // var url = Uri.parse('http://localhost:8080/messages/profile/chathome/$firebaseId');
@@ -117,7 +117,7 @@ class ChatMessageModel extends ChangeNotifier{
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -133,7 +133,7 @@ class ChatMessageModel extends ChangeNotifier{
 
   Future<void> changeLatestMessageToRead(int? userMessageId)  async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/message/readStatus/$userMessageId');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/message/readStatus/$userMessageId');
     // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.put(url
         , headers: {

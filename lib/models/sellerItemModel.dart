@@ -11,7 +11,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'sellerItemModel.g.dart';
 
 
-const String BASE_URI = 'http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/';
+const String BASE_URI = 'http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/';
 const String RECENT_ITEMS_URL = '${BASE_URI}items?size=10&sort=createdAt,desc';  // TODO -  call the recentItem service when it is built
 const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
@@ -103,7 +103,7 @@ class SellerItemModel extends ChangeNotifier {
 
   Future<int> getNextPage(int pageNum) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB&size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB&size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -136,7 +136,7 @@ class SellerItemModel extends ChangeNotifier {
   Future<int> getItemRestList() async {
     Map<String, dynamic> data;
     var url = Uri.parse(
-        'http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB');
+        'http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB');
     // var url = Uri.parse(
     //     'http://localhost:8080/items/profile?profileId=$userIdFromDB&size=10'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
@@ -218,7 +218,7 @@ class SellerItemModel extends ChangeNotifier {
   }
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

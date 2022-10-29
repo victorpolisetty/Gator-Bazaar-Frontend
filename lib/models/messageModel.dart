@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
 part 'messageModel.g.dart';
 
-const String BASE_URI = 'http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/';
+const String BASE_URI = 'http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/';
 const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
 
@@ -81,7 +81,7 @@ class MessageModel extends ChangeNotifier{
   //TODO
   Future<void> getMessages(int creatorId, int recipientId) async {
     Map<String, dynamic> map;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -112,7 +112,7 @@ class MessageModel extends ChangeNotifier{
       myjsonNew["item_id"] = lastMessageItemId;
     }
 
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/messages');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/messages');
     var tmpObj =  json.encode(myjsonNew);
     // var tmpObj =  json.encode(message.toJson());
     final http.Response response =  await http.post(url
@@ -124,7 +124,6 @@ class MessageModel extends ChangeNotifier{
     );
     //  .then((response) {
     if (response.statusCode == 200) {
-      messageList.insert(0,message);
       await sendMessageNotification(myjsonNew["message_text"], myjsonNew["creator_user_id"], myjsonNew["recipient_user_id"]);
       notifyListeners();
     } else {
@@ -142,7 +141,7 @@ class MessageModel extends ChangeNotifier{
     Map<String, dynamic> data;
     // var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/1'); // TODO -  call the recentItem service when it is built
 
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/$recipientUserId'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/id/$recipientUserId'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -186,7 +185,7 @@ class MessageModel extends ChangeNotifier{
     Map<String, dynamic> map;
 
 
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=1&recipientId=3&page=$pageNum');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=1&recipientId=3&page=$pageNum');
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

@@ -223,13 +223,17 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         //       widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
                         //       widget.chatProfile.recipient_profile_name);
                         // }
-                        _sendMessage(_controller.text,widget.currentUserDbId,
+
+                        UserMessage message = new UserMessage.CreateMessage(_controller.text,widget.currentUserDbId,
+                            widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
+                            widget.chatProfile.recipient_profile_name);
+                        messages.messageList.insert(0, message);
+                        String messageText = _controller.text;
+                        _controller.clear();
+                        _sendMessage(messageText,widget.currentUserDbId,
                             widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
                             widget.chatProfile.recipient_profile_name);
                       }
-                      setState(() {
-
-                      });
 
                     },
                     child: Icon(Icons.send,color: Colors.white,size: 18,),
@@ -248,7 +252,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getLatestItemDbId(int? creatorId, int? recipientId) async{
     Map<String, dynamic> map;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -270,7 +274,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getLatestItemInformation(int? latestItemDbId) async{
     Map<String, dynamic> map;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/categories/items/$latestItemDbId');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/categories/items/$latestItemDbId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -290,7 +294,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getMessagesForSpecificItem(int? creatorId, int? recipientId, int? itemId) async {
     Map<String, dynamic> map;
-    var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/messages/profile/itemMessages?creatorId=$creatorId&recipientId=$recipientId&itemId=$itemId');
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/messages/profile/itemMessages?creatorId=$creatorId&recipientId=$recipientId&itemId=$itemId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
 

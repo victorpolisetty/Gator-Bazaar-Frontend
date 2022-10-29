@@ -225,7 +225,7 @@ class _AddListingState extends State<AddListing> {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.black),
                 ),
-                child: Text('Add Product'),
+                child: Text('Add Product', style: TextStyle(color: Colors.white),),
                 onPressed: () {
 
                   _value != "-1" &&
