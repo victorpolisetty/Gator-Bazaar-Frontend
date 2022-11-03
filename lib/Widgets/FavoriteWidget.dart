@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +56,7 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
         padding: const EdgeInsets.fromLTRB(1.0, 2.0, 10.0, 4.0),
         child: Container(
           child: new IconButton(
+            iconSize: 40,
               icon: Icon(isInFavoritesList ? Icons.favorite : Icons.favorite_border),
               color: Colors.black,
               onPressed: () {

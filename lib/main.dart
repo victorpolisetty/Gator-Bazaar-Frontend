@@ -1,16 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:student_shopping_v1/PushNotification.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
 import 'package:student_shopping_v1/models/categoryModel.dart';
 import 'package:student_shopping_v1/models/chatMessageModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:student_shopping_v1/notificationService/LocalNotificationService.dart';
 import 'package:student_shopping_v1/utils.dart';
-import 'package:student_shopping_v1/utils.dart';
 import 'package:student_shopping_v1/verify_email_page.dart';
-import 'LoginWidget.dart';
 import 'auth_page.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +16,6 @@ import 'models/categoryItemModel.dart';
 import 'models/messageModel.dart';
 import 'models/recentItemModel.dart';
 import 'models/favoriteModel.dart';
-import 'applicationState.dart';
-import 'package:http/http.dart' as http;
 
 
 //recieve message when app is in backgorund solutioon for on message

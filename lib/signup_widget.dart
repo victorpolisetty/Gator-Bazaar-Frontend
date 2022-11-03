@@ -66,12 +66,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (email) =>
             //TODO: uncomment this delete underneath this
-               // (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid @ufl.edu email' : null,
-            (email != null && !EmailValidator.validate(email)) ? 'Enter a valid @ufl.edu email' : null,
+               (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid @ufl.edu email' : null,
+            // (email != null && !EmailValidator.validate(email)) ? 'Enter a valid @ufl.edu email' : null,
 
           ),
           SizedBox(height: 4),
           TextFormField(
+            textCapitalization: TextCapitalization.sentences,
             controller: firstNameController,
             cursorColor: Colors.white,
             textInputAction: TextInputAction.next,
@@ -82,6 +83,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           ),
           SizedBox(height: 4),
           TextFormField(
+            textCapitalization: TextCapitalization.sentences,
             controller: lastNameController,
             cursorColor: Colors.white,
             textInputAction: TextInputAction.next,

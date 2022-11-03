@@ -1,10 +1,6 @@
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import '../Widgets/circleIcon.dart';
-import '../models/categoryModel.dart';
 import '../pages/categoryItemPage.dart';
-import 'package:provider/provider.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({Key? key}) : super(key: key);

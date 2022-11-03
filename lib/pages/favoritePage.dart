@@ -13,7 +13,7 @@ class favoritePageTab extends StatelessWidget {
           elevation: .1,
           title: Center(
             child: Text(
-              'My Favorites',
+              'Favorites',
               style: TextStyle(color: Colors.black),
             ),
           ),

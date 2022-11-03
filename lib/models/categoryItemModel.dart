@@ -3,11 +3,8 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import 'package:flutter/foundation.dart';
 import 'package:student_shopping_v1/models/recentItemModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
-import 'package:student_shopping_v1/pages/itemDetailPage.dart';
-import 'package:heic_to_jpg/heic_to_jpg.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -15,7 +12,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:provider/provider.dart';
-import 'package:path/path.dart' as p;
 part 'categoryItemModel.g.dart';
 
 
@@ -84,6 +80,7 @@ class CategoryItemModel extends ChangeNotifier {
          itm = value;
          return itm;
        }) ;
+      return null;
   }
 
 
@@ -115,8 +112,10 @@ class CategoryItemModel extends ChangeNotifier {
     return itm;
   }
 
-  Future<bool?> initNextCatPage(int pageNum) async {
-    await getNextPage(pageNum);
+  Future<bool?> initNextCatPage(int pageNum, int categoryId) async {
+    categoryItems.clear();
+    await getProfileFromDb(currentUser?.uid.toString());
+    await getNextPage(pageNum, categoryId);
     await get1stImageForItemIfAvailable();
     return false;
   }
@@ -126,10 +125,10 @@ class CategoryItemModel extends ChangeNotifier {
     return false;
   }
 
-  Future<int> getNextPage(int pageNum) async {
+  Future<int> getNextPage(int pageNum, int categoryId) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse(CATEGORY_ITEMS_URL+'${categoryId}/items?size=10&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse(CATEGORY_ITEMS_URL+'${categoryId}/items?size=6&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -361,9 +360,10 @@ class CategoryItemModel extends ChangeNotifier {
                }
                categoryItems.add(itmRest);
                Provider.of<SellerItemModel>(context, listen: false).add(itmRest);
+               // Provider.of<RecentItemModel>(context, listen: false).add(itmRest);
+               Provider.of<RecentItemModel>(context, listen: false).shouldReload = true;
              }
-      } );
-
+      });
     } catch (e) {
       print(e);
     }

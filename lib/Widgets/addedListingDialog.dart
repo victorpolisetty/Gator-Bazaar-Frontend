@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../buyerhome.dart';
+
 class addedListingDialog extends StatefulWidget {
   final bool itemAddSuccess;
 
@@ -25,6 +27,8 @@ class _addedListingDialogState extends State<addedListingDialog> {
         new FlatButton(
           onPressed: () {
             Navigator.of(context).pop();
+            Navigator.of(context).push(new MaterialPageRoute(
+            builder: (context) => new BuyerHomePage("Gator Marketplace")));
           },
           textColor: Theme.of(context).primaryColor,
           child: const Text('Ok'),

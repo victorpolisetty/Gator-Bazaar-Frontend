@@ -1,14 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:student_shopping_v1/applicationState.dart';
 import 'package:student_shopping_v1/pages/itemDetailPageSellerView.dart';
-import 'package:student_shopping_v1/signup_widget.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
 final spinkit = SpinKitFadingCircle(
@@ -248,8 +245,8 @@ class SingleItem extends StatelessWidget {
               builder: (context) => new ItemDetailPageSellerView(item))),
           child: Container(
             margin: EdgeInsets.only(left: 15),
-            width: 150,
-            height: 100,
+            width: 130,
+            height: 130,
             alignment: Alignment.topRight,
             decoration: BoxDecoration(
                 image: DecorationImage(
@@ -267,10 +264,10 @@ class SingleItem extends StatelessWidget {
             Container(
               alignment: Alignment.centerLeft,
               width: 80,
-              margin: EdgeInsets.only(top: 5, left: 30),
+              margin: EdgeInsets.only(top: 0, left: 40),
               height: 30,
               child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
             ),
             item.isSold
                 ? ClipRRect(
@@ -294,10 +291,10 @@ class SingleItem extends StatelessWidget {
         Container(
           alignment: Alignment.topLeft,
           width: 150,
-          margin: EdgeInsets.only(top: 0, left: 15),
+          margin: EdgeInsets.only(top: 0, left: 40),
           height: 30,
           child: Text("${item.name}",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
         ),
       ],
     );

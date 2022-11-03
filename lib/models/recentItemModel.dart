@@ -36,6 +36,7 @@ class RecentItemModel extends ChangeNotifier {
   int currentUserId = -1;
   @JsonKey(ignore: true)
   User? currentUser = FirebaseAuth.instance.currentUser;
+  bool shouldReload = true;
 
 
   /// List of items in the cart.
@@ -46,27 +47,40 @@ class RecentItemModel extends ChangeNotifier {
 
   Map<String, dynamic> toJson() => _$RecentItemModelToJson(this);
 
-  Future<void> init() async {
+  void getRecentItems() {
+    if (shouldReload) {
+      var initFuture = getItems();
+      initFuture.then((voidValue) {
+//      notifyListeners();
+      });
+    }
+  }
+
+  Future<void> getItems() async {
+    _recentItems.clear();
     await getProfileFromDb(currentUser?.uid.toString());
     this.totalPages = await getItemRestList();
     await add1stImageToItemIfAvailable();
+    notifyListeners();
   }
 
   Future<void> init1(int pageNum) async {
+    _recentItems.clear();
+    await getProfileFromDb(currentUser?.uid.toString());
     await getNextPage(pageNum);
     await add1stImageToItemIfAvailable();
   }
 
   Future<int> getNextPage(int pageNum) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/items?size=10&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/items?size=6&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       var items = data['content'];
-      var totalPages = data['totalPages'];
+      totalPages = data['totalPages'];
       print(totalPages);
 
 
@@ -166,11 +180,11 @@ class RecentItemModel extends ChangeNotifier {
   }
 
   RecentItemModel() {
-    var initFuture = init();
-    initFuture.then((voidValue) {
-      // state = HomeScreenModelState.initialized;
-      notifyListeners();
-    });
+    // var initFuture = init();
+    // initFuture.then((voidValue) {
+    //   // state = HomeScreenModelState.initialized;
+    //   notifyListeners();
+    // });
   }
 
   /// Adds [item] to cart. This is the only way to modify the cart from outside.

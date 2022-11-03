@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
-import 'package:student_shopping_v1/searchBarClass.dart';
 import 'itemDetailPage.dart';
 import '../models/itemModel.dart';
-import 'dart:typed_data';
 
 
 class CategoryItemPage extends StatefulWidget {
@@ -101,162 +100,220 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
         });
   }
 
-  mockFetch(CategoryItemModel categoryList) async{
-    if(allLoaded){
-      print("ALL LOADED");
-      return;
-    }
-    setState(() {
-      loading = true;
-    });
-    if(categoryList.currentPage != 0){
-      loading = (await categoryList.initNextCatPage(categoryList.currentPage))!;
-    }
-    if(categoryList.currentPage <= categoryList.totalPages-1){
-      categoryList.currentPage++;
-    }
-    if(loading == false){
-      setState(() {
-        allLoaded = categoryList.currentPage == categoryList.totalPages;
-      });
-    }
+  // mockFetch(CategoryItemModel categoryList) async{
+  //   if(allLoaded){
+  //     print("ALL LOADED");
+  //     return;
+  //   }
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   if(categoryList.currentPage != 0){
+  //     loading = (await categoryList.initNextCatPage(categoryList.currentPage))!;
+  //   }
+  //   if(categoryList.currentPage <= categoryList.totalPages-1){
+  //     categoryList.currentPage++;
+  //   }
+  //   if(loading == false){
+  //     setState(() {
+  //       allLoaded = categoryList.currentPage == categoryList.totalPages;
+  //     });
+  //   }
+  //
+  //
+  // }
 
-
-  }
-
-  mockSearchFetch(CategoryItemModel categoryList, String keyword) async{
-    if(allLoaded){
-      print("ALL LOADED");
-      return;
-    }
-    setState(() {
-      loading = true;
-    });
-    if(categoryList.currentPage != 0){
-      loading = (await categoryList.initSearchCat(categoryList.currentPage, keyword))!;
-    }
-    if(categoryList.currentPage <= categoryList.totalPages-1){
-      categoryList.currentPage++;
-    }
-    if(loading == false){
-      setState(() {
-        allLoaded = categoryList.currentPage == categoryList.totalPages;
-      });
-    }
-
-
-  }
+  // mockSearchFetch(CategoryItemModel categoryList, String keyword) async{
+  //   if(allLoaded){
+  //     print("ALL LOADED");
+  //     return;
+  //   }
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   if(categoryList.currentPage != 0){
+  //     loading = (await categoryList.initSearchCat(categoryList.currentPage, keyword))!;
+  //   }
+  //   if(categoryList.currentPage <= categoryList.totalPages-1){
+  //     categoryList.currentPage++;
+  //   }
+  //   if(loading == false){
+  //     setState(() {
+  //       allLoaded = categoryList.currentPage == categoryList.totalPages;
+  //     });
+  //   }
+  //
+  //
+  // }
+  final PagingController<int, ItemWithImages> _pagingController =
+  PagingController(firstPageKey: 0);
+  int totalPages = 0;
 
   @override
   void initState() {
-    super.initState();
-    Provider.of<CategoryItemModel>(context, listen: false).getCategoryItems(widget.categoryId);
-    _controller.addListener((){
-      // reached bottom
-      if (_controller.offset >= _controller.position.maxScrollExtent &&
-          !_controller.position.outOfRange) {
-        setState(() => isBottom = true);
-      }
-
-      // IS SCROLLING
-      if (_controller.offset >= _controller.position.minScrollExtent &&
-          _controller.offset < _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
-        setState(() {
-          isBottom = false;
-        });
-      }
-
-      // REACHED TOP
-      if (_controller.offset <= _controller.position.minScrollExtent &&
-          !_controller.position.outOfRange) {
-        setState(() => isBottom = false);
-      }
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey, widget.categoryId);
     });
+    super.initState();
+    // Provider.of<CategoryItemModel>(context, listen: false).getCategoryItems(widget.categoryId);
+    // _controller.addListener((){
+    //   // reached bottom
+    //   if (_controller.offset >= _controller.position.maxScrollExtent &&
+    //       !_controller.position.outOfRange) {
+    //     setState(() => isBottom = true);
+    //   }
+    //
+    //   // IS SCROLLING
+    //   if (_controller.offset >= _controller.position.minScrollExtent &&
+    //       _controller.offset < _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
+    //     setState(() {
+    //       isBottom = false;
+    //     });
+    //   }
+    //
+    //   // REACHED TOP
+    //   if (_controller.offset <= _controller.position.minScrollExtent &&
+    //       !_controller.position.outOfRange) {
+    //     setState(() => isBottom = false);
+    //   }
+    // });
+  }
+
+  Future<void> _fetchPage(int pageKey, int categoryId) async {
+    try {
+      await Provider.of<CategoryItemModel>(context, listen: false).initNextCatPage(pageKey, categoryId);
+      totalPages = Provider.of<CategoryItemModel>(context, listen: false).totalPages;
+      if(mounted) {
+        final isLastPage = (totalPages-1) == pageKey;
+
+        // final isLastPage = Provider.of<RecentItemModel>(context, listen: false).totalPages == pageKey;
+        // final isLastPage = Provider.of<RecentItemModel>(context, listen: false).items.length < _pageSize;
+        if (isLastPage) {
+          _pagingController.appendLastPage(Provider.of<CategoryItemModel>(context, listen: false).items);
+        } else {
+          final int? nextPageKey = pageKey + 1;
+          _pagingController.appendPage(Provider.of<CategoryItemModel>(context, listen: false).items, nextPageKey);
+        }
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
   }
 
   @override
   void dispose(){
     super.dispose();
-    _controller.dispose();
+    _pagingController.dispose();
+    // _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var categoryList = context.watch<CategoryItemModel>();
-    var totalPages = categoryList.totalPages;
-    return new WillPopScope(
-      child: new Scaffold(
-        backgroundColor: Colors.grey[200],
-          appBar: searchBar.build(context),
-          key: _scaffoldKey,
-          body: new Center(
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    categoryList.items.length != 0 ? Container(
+    // var categoryList = context.watch<CategoryItemModel>();
+    // var totalPages = categoryList.totalPages;
+    return RefreshIndicator(
+      onRefresh: () => Future.sync(() => _pagingController.refresh()),
+      child: new WillPopScope(
+        onWillPop: () async {
+            return true;
+        },
+        child: new Scaffold(
+          backgroundColor: Colors.grey[200],
+            appBar: searchBar.build(context),
+            key: _scaffoldKey,
+            body: new Center(
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      Container(
                         margin: EdgeInsets.only(top: 10),
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height-190,
-                        child: GridView.builder(
-                            controller: _controller,
-                            itemCount: categoryList.items.length == null ? 0 : categoryList.items.length,
-                            physics: ScrollPhysics(),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 0,),
-                            itemBuilder: (BuildContext context, int index) {
+                        height: MediaQuery.of(context).size.height*.82,
+                        child: PagedGridView(
+                          pagingController: _pagingController,
+                          builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
+                            firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                            newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                            itemBuilder: (BuildContext context, item, int index) {
                               return singleItem(
-                                  item: categoryList.items[index]
+                                item: item
                               );
                             }
-                        )
-                    ) :
-                        Container(
-                  margin: EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height-407,
-                  child: spinkit,
-                  ),
-    //                 Container(
-    //       height: MediaQuery.of(context).size.height * .8,
-    //     width: MediaQuery.of(context).size.width,
-    //     child: Center(child: Text("No Listings!", style: TextStyle(fontWeight: FontWeight.bold)))
-    // ),
-                    if(loading)(spinkit),
-                    (isBottom && !allLoaded && !loading && categoryList.totalPages != 1) ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
-                      ),
-                      child: Center(
-                        // child: Expanded(
-                          child: Text("Show More")
-                        //),
-                      ),
-                      onPressed: (){
-                        setState(() {
-                          if(categoryList.currentPage <= totalPages-1 && !loading && isSearching == false){
-                            mockFetch(categoryList);
-                          }
-                          if(categoryList.currentPage <= totalPages-1 && !loading && isSearching == true){
-                            mockSearchFetch(categoryList, keyword);
-                          }
-                          //recentList.getNextPage(1);
-                        });
-                      },
-                    )
-                        : Container(),
-                  ],
-                )
-              ],
-            ),
-          )
+                          ),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 0,),
+                        ),
+                      )
+                    ],
+                  )
+      //             Column(
+      //               children: [
+      //                 categoryList.items.length != 0 ? Container(
+      //                     margin: EdgeInsets.only(top: 10),
+      //                     width: MediaQuery.of(context).size.width,
+      //                     height: MediaQuery.of(context).size.height-190,
+      //                     child: GridView.builder(
+      //                         controller: _controller,
+      //                         itemCount: categoryList.items.length == null ? 0 : categoryList.items.length,
+      //                         physics: ScrollPhysics(),
+      //                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      //                           crossAxisCount: 2,
+      //                           mainAxisSpacing: 0,),
+      //                         itemBuilder: (BuildContext context, int index) {
+      //                           return singleItem(
+      //                               item: categoryList.items[index]
+      //                           );
+      //                         }
+      //                     )
+      //                 ) :
+      //                     Container(
+      //               margin: EdgeInsets.only(top: 10),
+      //               width: MediaQuery.of(context).size.width,
+      //               height: MediaQuery.of(context).size.height-407,
+      //               child: spinkit,
+      //               ),
+      // //                 Container(
+      // //       height: MediaQuery.of(context).size.height * .8,
+      // //     width: MediaQuery.of(context).size.width,
+      // //     child: Center(child: Text("No Listings!", style: TextStyle(fontWeight: FontWeight.bold)))
+      // // ),
+      // //                 if(loading)(spinkit),
+      //                 // (isBottom && !allLoaded && !loading && categoryList.totalPages != 1) ? ElevatedButton(
+      //                 //   style: ElevatedButton.styleFrom(
+      //                 //     primary: Colors.black,
+      //                 //   ),
+      //                 //   child: Center(
+      //                 //     // child: Expanded(
+      //                 //       child: Text("Show More")
+      //                 //     //),
+      //                 //   ),
+      //                 //   onPressed: (){
+      //                 //     setState(() {
+      //                 //       if(categoryList.currentPage <= totalPages-1 && !loading && isSearching == false){
+      //                 //         mockFetch(categoryList);
+      //                 //       }
+      //                 //       if(categoryList.currentPage <= totalPages-1 && !loading && isSearching == true){
+      //                 //         mockSearchFetch(categoryList, keyword);
+      //                 //       }
+      //                 //       //recentList.getNextPage(1);
+      //                 //     });
+      //                 //   },
+      //                 // )
+      //                 //     : Container(),
+      //               ],
+      //             )
+                ],
+              ),
+            )
+        ),
+        // onWillPop: () async {
+        //   categoryList.currentPage = 1;
+        //   isSearching = false;
+        //   return true;
+        // },
       ),
-      onWillPop: () async {
-        categoryList.currentPage = 1;
-        isSearching = false;
-        return true;
-      },
     );
   }
 }
@@ -281,8 +338,8 @@ class singleItem extends StatelessWidget {
               ))),
           child: Container(
             margin: EdgeInsets.only(left: 15),
-            width: 150,
-            height: 100,
+            width: 130,
+            height: 130,
             alignment: Alignment.topRight,
             decoration: BoxDecoration(
                 image: DecorationImage(image: MemoryImage(item.imageDataList[0]), fit: BoxFit.contain),
@@ -295,7 +352,7 @@ class singleItem extends StatelessWidget {
             Container(
               alignment: Alignment.centerLeft,
               width: 80,
-              margin: EdgeInsets.only(top: 5, left: 26),
+              margin: EdgeInsets.only(top: 0, left: 40),
               height: 30,
               child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
@@ -321,7 +378,7 @@ class singleItem extends StatelessWidget {
         Container(
           alignment: Alignment.topLeft,
           width: 150,
-          margin: EdgeInsets.only(top: 0, left: 15),
+          margin: EdgeInsets.only(top: 0, left: 40),
           height: 30,
           child: Text("${item.name}",
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),

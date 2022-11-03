@@ -1,15 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
-import 'package:student_shopping_v1/pinPadPage.dart';
-import 'package:student_shopping_v1/utils.dart';
 import 'package:http/http.dart' as http;
 import 'buyerhome.dart';
-import 'package:firebase_admin/firebase_admin.dart';
 
 class VerifyEmailPage extends StatefulWidget {
   @override

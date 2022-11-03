@@ -1,10 +1,9 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
 import 'package:student_shopping_v1/models/recentItemModel.dart';
-// import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../models/itemModel.dart';
 
 
@@ -15,139 +14,221 @@ class RecentItems extends StatefulWidget {
 }
 
 class _RecentItemsState extends State<RecentItems> {
-  ScrollController _controller = new ScrollController();
-  bool isBottom = false;
-  bool loading = false, allLoaded = false;
+  // ScrollController _controller = new ScrollController();
+  // bool isBottom = false;
+  // bool loading = false, allLoaded = false;
   //var recentList = RecentItemModel();
 
-  mockFetch(RecentItemModel recentList) async{
-    if(allLoaded){
-      print("ALL LOADED");
-      return;
-    }
-    setState(() {
-      loading = true;
-    });
-    if(recentList.currentPage != 0){
-      await recentList.init1(recentList.currentPage);
-    }
-    if(recentList.currentPage <= recentList.totalPages-1){
-      recentList.currentPage++;
-    }
+  // mockFetch(RecentItemModel recentList) async{
+  //   if(allLoaded){
+  //     print("ALL LOADED");
+  //     return;
+  //   }
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   if(recentList.currentPage != 0){
+  //     await recentList.init1(recentList.currentPage);
+  //   }
+  //   if(recentList.currentPage <= recentList.totalPages-1){
+  //     recentList.currentPage++;
+  //   }
+  //
+  //   setState(() {
+  //     loading = false;
+  //     allLoaded = recentList.currentPage == recentList.totalPages;
+  //   });
+  // }
 
-    setState(() {
-      loading = false;
-      allLoaded = recentList.currentPage == recentList.totalPages;
-    });
-  }
+
+  PagingController<int, ItemWithImages> _pagingController =
+  PagingController(firstPageKey: 0);
+  int totalPages = 0;
+
 
   @override
   void initState() {
-    super.initState();
-    _controller.addListener((){
-      // reached bottom
-      if (_controller.offset >= _controller.position.maxScrollExtent &&
-          !_controller.position.outOfRange) {
-        setState(() => isBottom = true);
-      }
-
-      // IS SCROLLING
-        if (_controller.offset >= _controller.position.minScrollExtent &&
-            _controller.offset < _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
-          setState(() {
-            isBottom = false;
-          });
-        }
-
-      // REACHED TOP
-      if (_controller.offset <= _controller.position.minScrollExtent &&
-          !_controller.position.outOfRange) {
-        setState(() {
-          isBottom = false;
-        });
-      }
+    // Provider.of<RecentItemModel>(context, listen: false).getRecentItems();
+    // var _pageSize = Provider.of<RecentItemModel>(context, listen: false).totalPages;
+    // _pagingController.addPageRequestListener((pageKey) {
+    //   _fetchPage(pageKey, recentList,_pageSize);
+    // });
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
     });
-    Provider.of<RecentItemModel>(context, listen: false);
+    super.initState();
+
+
+    // _controller.addListener((){
+    //   // reached bottom
+    //   if (_controller.offset >= _controller.position.maxScrollExtent &&
+    //       !_controller.position.outOfRange) {
+    //     setState(() => isBottom = true);
+    //   }
+    //
+    //   // IS SCROLLING
+    //     if (_controller.offset >= _controller.position.minScrollExtent &&
+    //         _controller.offset < _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
+    //       setState(() {
+    //         isBottom = false;
+    //       });
+    //     }
+    //
+    //   // REACHED TOP
+    //   if (_controller.offset <= _controller.position.minScrollExtent &&
+    //       !_controller.position.outOfRange) {
+    //     setState(() {
+    //       isBottom = false;
+    //     });
+    //   }
+    // });
   }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      await Provider.of<RecentItemModel>(context, listen: false).init1(pageKey);
+      totalPages = Provider.of<RecentItemModel>(context, listen: false).totalPages;
+      if(mounted) {
+        final isLastPage = (totalPages-1) == pageKey;
+
+        // final isLastPage = Provider.of<RecentItemModel>(context, listen: false).totalPages == pageKey;
+        // final isLastPage = Provider.of<RecentItemModel>(context, listen: false).items.length < _pageSize;
+        if (isLastPage) {
+          _pagingController.appendLastPage(Provider.of<RecentItemModel>(context, listen: false).items);
+        } else {
+          final int? nextPageKey = pageKey + 1;
+          _pagingController.appendPage(Provider.of<RecentItemModel>(context, listen: false).items, nextPageKey);
+        }
+      }
+    } catch (error) {
+        _pagingController.error = error;
+    }
+  }
+
   @override
   void dispose(){
     super.dispose();
-    _controller.dispose();
+    _pagingController.dispose();
+    // _controller.dispose();
   }
-
+  // @override
+  // void didUpdateWidget(PagedArticleListView oldWidget) {
+  //   if (oldWidget.listPreferences != widget.listPreferences) {
+  //     _pagingController.refresh();
+  //   }
+  //   super.didUpdateWidget(oldWidget);
+  // }
   @override
   Widget build(BuildContext context) {
-    var recentList = context.watch<RecentItemModel>();
-    var totalPages = recentList.totalPages;
-    while(recentList.items.length == 0){
-      return Container(
-        margin: EdgeInsets.only(top: 10),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height-407,
-        child: spinkit,
-      );
-    }
-    return Column(
-      children: [
-        Container(
+    // var recentList = context.watch<RecentItemModel>();
+    // var totalPages = recentList.totalPages;
+    return RefreshIndicator(
+      onRefresh: () => Future.sync(() => _pagingController.refresh()),
+      child: Column(
+        children: [
+          Container(
             // margin: EdgeInsets.only(top: 10),
             width: MediaQuery.of(context).size.width,
             // height: double.,
-          height: MediaQuery.of(context).size.height * .57,
-          // height: MediaQuery.of(context).size.height - 452,
-            child: recentList.items.length > 0 ? Container(
+            height: MediaQuery.of(context).size.height * .58,
+            // height: MediaQuery.of(context).size.height - 452,
+            child: Container(
               height: double.infinity,
               width: double.infinity,
-              child: GridView.builder(
-                  controller: _controller,
-                  itemCount: recentList.items.length,
-                  itemBuilder: (BuildContext context, int index) {
-                      return SingleItem(
-                          item: recentList.items[index]
-                      );
+              child: PagedGridView(
+                pagingController: _pagingController,
+                builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
+                  firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                  newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                  itemBuilder: (BuildContext context, item, int index) {
+                    return SingleItem(
+                        item: item
+                    );
                     // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
                   },
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 0,),
                 ),
-            ) : Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: GridView.builder(
-                controller: _controller,
-                itemCount: recentList.items.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container();
-                  // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                },
+                // controller: _controller,
+                // itemCount: recentList.items.length,
+
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 0,),
               ),
-            ),
-        ),
-        // if(loading)(spinkit),
-        // (isBottom && !allLoaded && !loading) ? ElevatedButton(
-        //   style: ElevatedButton.styleFrom(
-        //     primary: Colors.black
-        //   ),
-        //   child: Center(
-        //    // child: Expanded(
-        //         child: Text("Show More")
-        //     //),
-        //   ),
-        //   onPressed: (){
-        //     setState(() {
-        //       if(recentList.currentPage <= totalPages-1 && !loading){
-        //         mockFetch(recentList);
-        //       }
-        //       //recentList.getNextPage(1);
-        //     });
-        //   },
-        // ) : Container(),
-      ],
+            )
+          )
+        ],
+      ),
     );
+
+
+
+
+    // return Column(
+    //   children: [
+    //     recentList.items.length != 0 ? Container(
+    //         // margin: EdgeInsets.only(top: 10),
+    //         width: MediaQuery.of(context).size.width,
+    //         // height: double.,
+    //       height: MediaQuery.of(context).size.height * .57,
+    //       // height: MediaQuery.of(context).size.height - 452,
+    //         child: recentList.items.length > 0 ? Container(
+    //           height: double.infinity,
+    //           width: double.infinity,
+    //           child: GridView.builder(
+    //               controller: _controller,
+    //               itemCount: recentList.items.length,
+    //               itemBuilder: (BuildContext context, int index) {
+    //                   return SingleItem(
+    //                       item: recentList.items[index]
+    //                   );
+    //                 // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+    //               },
+    //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //                 crossAxisCount: 2,
+    //                 mainAxisSpacing: 0,),
+    //             ),
+    //         ) : Container(
+    //           height: double.infinity,
+    //           width: double.infinity,
+    //           child: GridView.builder(
+    //             controller: _controller,
+    //             itemCount: recentList.items.length,
+    //             itemBuilder: (BuildContext context, int index) {
+    //               return Container();
+    //               // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+    //             },
+    //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //               crossAxisCount: 2,
+    //               mainAxisSpacing: 0,),
+    //           ),
+    //         ),
+    //     ) : Container(
+    // margin: EdgeInsets.only(top: 10),
+    // width: MediaQuery.of(context).size.width,
+    // height: MediaQuery.of(context).size.height-407,
+    // child: spinkit,
+    // ),
+    //     // if(loading)(spinkit),
+    //     // (isBottom && !allLoaded && !loading) ? ElevatedButton(
+    //     //   style: ElevatedButton.styleFrom(
+    //     //     primary: Colors.black
+    //     //   ),
+    //     //   child: Center(
+    //     //    // child: Expanded(
+    //     //         child: Text("Show More")
+    //     //     //),
+    //     //   ),
+    //     //   onPressed: (){
+    //     //     setState(() {
+    //     //       if(recentList.currentPage <= totalPages-1 && !loading){
+    //     //         mockFetch(recentList);
+    //     //       }
+    //     //       //recentList.getNextPage(1);
+    //     //     });
+    //     //   },
+    //     // ) : Container(),
+    //   ],
+    // );
   }
 }
 
@@ -170,8 +251,8 @@ class SingleItem extends StatelessWidget {
               ))),
           child: Container(
             margin: EdgeInsets.only(left: 15),
-            width: 150,
-            height: 100,
+            width: 130,
+            height: 130,
             alignment: Alignment.topRight,
             decoration: BoxDecoration(
                 image: DecorationImage(image: item.imageDataList.length > 0 ?
@@ -189,7 +270,7 @@ class SingleItem extends StatelessWidget {
               // color: Colors.black,
               alignment: Alignment.centerLeft,
               width: 80,
-              margin: EdgeInsets.only(top: 5, left: 26),
+              margin: EdgeInsets.only(top: 0, left: 40),
               height: 30,
             child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
 
@@ -223,7 +304,7 @@ class SingleItem extends StatelessWidget {
         Container(
           alignment: Alignment.topLeft,
           width: 150,
-          margin: EdgeInsets.only(top: 0, left: 15),
+          margin: EdgeInsets.only(top: 0, left: 40),
           height: 30,
           child: Text("${item.name}",
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),

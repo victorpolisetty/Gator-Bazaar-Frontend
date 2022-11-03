@@ -1,15 +1,13 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:student_shopping_v1/models/favoriteModel.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
-import '../buyerhome.dart';
+import '../models/recentItemModel.dart';
 import '../models/sellerItemModel.dart';
 
 class isSoldWidget extends StatefulWidget {
@@ -140,8 +138,7 @@ class _isSoldWidgetState extends State<isSoldWidget> {
                 title: Text("Yes"),
                 onTap: (){
                   // _loadPicker(ImageSource.gallery, imageNumber);
-                  deleteListing(itemId).then((value) => Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (context) => new BuyerHomePage("Gator Marketplace"))),);
+                  deleteListing(itemId).then((value) => Provider.of<RecentItemModel>(context, listen: false).shouldReload = true);
                 },
               ),
               ListTile(

@@ -22,21 +22,20 @@ class _MyAppBarState extends State<MyAppBar> {
       iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
       backgroundColor: Colors.grey[300],
       elevation: .1,
-      title: Center(
-        child: Text(
+      title: Text(
           'Gator Bazaar',
           style: TextStyle(color: Colors.black),
         ),
-      ),
+
       actions: [
-        Container(
-          margin: EdgeInsets.only(right: 10),
-          child: Icon(
-            Icons.notifications,
-            color: Colors.grey[800],
-            size: 27,
-          ),
-        ),
+        // Container(
+        //   margin: EdgeInsets.only(right: 10),
+        //   child: Icon(
+        //     Icons.notifications,
+        //     color: Colors.grey[800],
+        //     size: 27,
+        //   ),
+        // ),
       ],
     );
   }

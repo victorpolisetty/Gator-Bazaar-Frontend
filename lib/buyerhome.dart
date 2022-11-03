@@ -1,12 +1,13 @@
 import 'dart:convert';
-
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:student_shopping_v1/Widgets/homePageTab.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
+import 'package:student_shopping_v1/models/recentItemModel.dart';
 import 'package:student_shopping_v1/pages/favoritePage.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
+import 'HomePageContent.dart';
 import 'pages/addListingPage.dart';
 import 'package:http/http.dart' as http;
 
@@ -76,6 +77,7 @@ Future<int?> getUserDbIdRealFunc() async {
   }
 
   await updatedUserDbId();
+  return null;
 
   // await FirebaseFirestore.instance
   //     .collection('users')
@@ -85,8 +87,10 @@ Future<int?> getUserDbIdRealFunc() async {
   // });
 }
 
-class _HomePageState extends State<BuyerHomePage> {
+class _HomePageState extends State<BuyerHomePage> with SingleTickerProviderStateMixin {
+
   int _currentIndex = 0;
+  int _selectedPage = 0;
 
 
   Future<void> setupToken(int? currDbId) async {
@@ -104,15 +108,20 @@ class _HomePageState extends State<BuyerHomePage> {
     return await getUserDbIdRealFunc();
   }
 
+  late TabController _controller;
 
   @override
   void initState(){
     getUserDbId().then((value) => setupToken(currDbId));
+    _controller = TabController(length: 5, vsync: this);
+    _controller.addListener(_handleSelected);
     super.initState();
   }
 
+  static bool shouldReload = false;
+
   final List<Widget> tabs = [
-    homePageTab(),
+    HomePageBody(),
     favoritePageTab(),
     AddListing(),
     ChatPage(),
@@ -126,25 +135,61 @@ class _HomePageState extends State<BuyerHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body:
-          tabs[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite,), label: "My Favorites",),
-          BottomNavigationBarItem(icon: Icon(Icons.add,), label: "Add Listing",),
-          BottomNavigationBarItem(icon: Icon(Icons.message,), label: "Conversations",),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "My Profile"),
+      bottomNavigationBar: TabBar(
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
+        isScrollable: false,
+        indicatorColor: Colors.black,
+        controller: _controller,
+        tabs: [
+              Tab(icon: Icon(Icons.home), child: Text("Home", textAlign: TextAlign.center,style: TextStyle(fontSize: 10),)),
+              Tab(icon: Icon(Icons.favorite,), child: Text("Favorites", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
+              Tab(icon: Icon(Icons.add,), child: Text("Add Item", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
+              Tab(icon: Icon(Icons.message,), child: Text("Messaging", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
+              Tab(icon: Icon(Icons.person), child: Text("Profile", textAlign: TextAlign.center,style: TextStyle(fontSize: 10))),
         ],
-        onTap: (index){
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: Colors.black,),
+      ),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.grey[200],
+      body: IndexedStack(
+        index: _selectedPage,
+        children: [
+          HomePageBody(),
+          favoritePageTab(),
+          AddListing(),
+          ChatPage(),
+          StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                return sellerProfilePage();
+              }
+          ),
+        ],
+      ),
+      // body:
+      //     tabs[_currentIndex],
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _currentIndex,
+      //   items: [
+      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+      //     BottomNavigationBarItem(icon: Icon(Icons.favorite,), label: "My Favorites",),
+      //     BottomNavigationBarItem(icon: Icon(Icons.add,), label: "Add Listing",),
+      //     BottomNavigationBarItem(icon: Icon(Icons.message,), label: "Conversations",),
+      //     BottomNavigationBarItem(icon: Icon(Icons.person), label: "My Profile"),
+      //   ],
+      //   onTap: (index){
+      //     setState(() {
+      //       _currentIndex = index;
+      //       Provider.of<RecentItemModel>(context, listen: false).shouldReload = false;
+      //     });
+      //   },
+      //   unselectedItemColor: Colors.grey,
+      //   selectedItemColor: Colors.black,),
     );
+  }
+  void _handleSelected () async {
+    int index = _controller.index;// get index from controller (I am not sure about exact parameter name for selected index) ;
+    setState((){
+      _selectedPage = index;
+    });
   }
 }
