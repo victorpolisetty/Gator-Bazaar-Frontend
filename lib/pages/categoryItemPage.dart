@@ -211,9 +211,7 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
   Widget build(BuildContext context) {
     // var categoryList = context.watch<CategoryItemModel>();
     // var totalPages = categoryList.totalPages;
-    return RefreshIndicator(
-      onRefresh: () => Future.sync(() => _pagingController.refresh()),
-      child: new WillPopScope(
+    return WillPopScope(
         onWillPop: () async {
             return true;
         },
@@ -221,33 +219,35 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
           backgroundColor: Colors.grey[200],
             appBar: searchBar.build(context),
             key: _scaffoldKey,
-            body: new Center(
-              child: Column(
-                children: [
-                  Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height*.82,
-                        child: PagedGridView(
-                          pagingController: _pagingController,
-                          builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
-                            firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                            newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                            itemBuilder: (BuildContext context, item, int index) {
-                              return singleItem(
-                                item: item
-                              );
-                            }
+            body: RefreshIndicator(
+              onRefresh: () => Future.sync(() => _pagingController.refresh()),
+              child: new Center(
+                child: Column(
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height*.82,
+                          child: PagedGridView(
+                            pagingController: _pagingController,
+                            builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
+                              firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                              newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                              itemBuilder: (BuildContext context, item, int index) {
+                                return singleItem(
+                                  item: item
+                                );
+                              }
+                            ),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 0,),
                           ),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 0,),
-                        ),
-                      )
-                    ],
-                  )
+                        )
+                      ],
+                    )
       //             Column(
       //               children: [
       //                 categoryList.items.length != 0 ? Container(
@@ -304,7 +304,8 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
       //                 //     : Container(),
       //               ],
       //             )
-                ],
+                  ],
+                ),
               ),
             )
         ),
@@ -313,8 +314,8 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
         //   isSearching = false;
         //   return true;
         // },
-      ),
-    );
+      );
+
   }
 }
 

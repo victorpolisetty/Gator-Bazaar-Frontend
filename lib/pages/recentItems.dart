@@ -85,7 +85,6 @@ class _RecentItemsState extends State<RecentItems> {
   }
 
   Future<void> _fetchPage(int pageKey) async {
-    try {
       await Provider.of<RecentItemModel>(context, listen: false).init1(pageKey);
       totalPages = Provider.of<RecentItemModel>(context, listen: false).totalPages;
       if(mounted) {
@@ -100,9 +99,6 @@ class _RecentItemsState extends State<RecentItems> {
           _pagingController.appendPage(Provider.of<RecentItemModel>(context, listen: false).items, nextPageKey);
         }
       }
-    } catch (error) {
-        _pagingController.error = error;
-    }
   }
 
   @override

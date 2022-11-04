@@ -227,7 +227,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                           UserMessage message = new UserMessage.CreateMessage(_controller.text,widget.currentUserDbId,
                               widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
                               widget.chatProfile.recipient_profile_name);
-                          messages.messageList.insert(0, message);
+                          setState(() {
+                            setState(() {
+                              Provider.of<MessageModel>(context, listen: false).messageList.insert(0, message);
+                            });
+                          });
                           String messageText = _controller.text;
                           _controller.clear();
                           _sendMessage(messageText,widget.currentUserDbId,

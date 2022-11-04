@@ -21,7 +21,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getProfileFromDb(currentUser?.uid.toString());
     Provider.of<ChatMessageModel>(context, listen: false).getChatHomeHelper();

@@ -8,6 +8,7 @@ import 'package:student_shopping_v1/models/recentItemModel.dart';
 import 'package:student_shopping_v1/pages/favoritePage.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
 import 'HomePageContent.dart';
+import 'models/chatMessageModel.dart';
 import 'pages/addListingPage.dart';
 import 'package:http/http.dart' as http;
 
@@ -137,15 +138,15 @@ class _HomePageState extends State<BuyerHomePage> with SingleTickerProviderState
     return Scaffold(
       bottomNavigationBar: TabBar(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
-        isScrollable: false,
+        isScrollable: true,
         indicatorColor: Colors.black,
         controller: _controller,
         tabs: [
-              Tab(icon: Icon(Icons.home), child: Text("Home", textAlign: TextAlign.center,style: TextStyle(fontSize: 10),)),
-              Tab(icon: Icon(Icons.favorite,), child: Text("Favorites", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
-              Tab(icon: Icon(Icons.add,), child: Text("Add Item", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
-              Tab(icon: Icon(Icons.message,), child: Text("Messaging", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
-              Tab(icon: Icon(Icons.person), child: Text("Profile", textAlign: TextAlign.center,style: TextStyle(fontSize: 10))),
+              Tab(icon: Icon(Icons.home), child: Text("Home", textAlign: TextAlign.center,style: TextStyle(fontSize: 12),)),
+              Tab(icon: Icon(Icons.favorite,), child: Text("Favorites", textAlign: TextAlign.center,style: TextStyle(fontSize: 12)),),
+              Tab(icon: Icon(Icons.add,), child: Text("Add Item", textAlign: TextAlign.center,style: TextStyle(fontSize: 12)),),
+              Tab(icon: Icon(Icons.message,), child: Text("Messaging", textAlign: TextAlign.center,style: TextStyle(fontSize: 12)),),
+              Tab(icon: Icon(Icons.person), child: Text("Profile", textAlign: TextAlign.center,style: TextStyle(fontSize: 12))),
         ],
       ),
       resizeToAvoidBottomInset: false,
@@ -187,9 +188,16 @@ class _HomePageState extends State<BuyerHomePage> with SingleTickerProviderState
     );
   }
   void _handleSelected () async {
-    int index = _controller.index;// get index from controller (I am not sure about exact parameter name for selected index) ;
-    setState((){
-      _selectedPage = index;
-    });
+    int index = _controller.index;
+    if (_selectedPage == 3) {
+      Provider.of<ChatMessageModel>(context, listen: false).getChatHomeHelper().then((value) =>     setState((){
+        _selectedPage = index;
+      }));
+    } else {
+      setState((){
+        _selectedPage = index;
+      });
+    }
+    // get index from controller (I am not sure about exact parameter name for selected index) ;
   }
 }

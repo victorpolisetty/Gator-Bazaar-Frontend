@@ -7,6 +7,7 @@ import 'package:student_shopping_v1/models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
+import '../buyerhome.dart';
 import '../models/recentItemModel.dart';
 import '../models/sellerItemModel.dart';
 
@@ -138,7 +139,10 @@ class _isSoldWidgetState extends State<isSoldWidget> {
                 title: Text("Yes"),
                 onTap: (){
                   // _loadPicker(ImageSource.gallery, imageNumber);
-                  deleteListing(itemId).then((value) => Provider.of<RecentItemModel>(context, listen: false).shouldReload = true);
+                  deleteListing(itemId).then((value) => Provider.of<RecentItemModel>(context, listen: false).shouldReload = true)
+                      .then((value) => Navigator.pop(context)).then((value) =>
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (context) => BuyerHomePage("Gator Bazaar"))),);
                 },
               ),
               ListTile(

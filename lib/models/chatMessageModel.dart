@@ -73,14 +73,14 @@ class ChatMessageModel extends ChangeNotifier{
   }
 
   Future<void> _getChatHomeHelper() async {
-    ChatMessageHomeList.clear();
     await getProfileFromDb(currentUser!.uid);
     await getChatHistory();
     notifyListeners();
 
   }
 
-  void getChatHomeHelper() {
+  Future<void> getChatHomeHelper() async {
+    ChatMessageHomeList.clear();
     var initFuture = _getChatHomeHelper();
     initFuture.then((voidValue) {
       // state = HomeScreenModelState.initialized;
@@ -104,11 +104,15 @@ class ChatMessageModel extends ChangeNotifier{
       print(response.body);
       String responseJson = Utf8Decoder().convert(response.bodyBytes);
       data = json.decode(responseJson);
+      if (data.length == ChatMessageHomeList.length) {
+          ChatMessageHomeList.clear();
+      }
       for (int i = 0; i < data.length; i++) {
         ChatMessageHome chatMessage = ChatMessageHome.fromJson(data[i]);
         chatMessage.current_user_id = userIdFromDB;
         ChatMessageHomeList.add(chatMessage);
       }
+      print("THE CHAT MESSAGE HOME LIST IS NOW OF LENGTH : " + ChatMessageHomeList.length.toString());
     } else {
       print (response.statusCode);
     }
