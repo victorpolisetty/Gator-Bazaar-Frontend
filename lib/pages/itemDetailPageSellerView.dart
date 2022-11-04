@@ -226,7 +226,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -242,7 +242,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
 
   Future<void> getProfileFromDbWithSellerId(int? profileId) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

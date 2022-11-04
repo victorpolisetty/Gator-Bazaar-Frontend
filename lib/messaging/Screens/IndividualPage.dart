@@ -233,6 +233,7 @@ class _IndividualPageState extends State<IndividualPage> {
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25),
                                   ),
                                   child: TextFormField(
+                                    textCapitalization: TextCapitalization.characters,
                                     autofocus:true,
                                     controller: _controller,
                                     // focusNode: focusNode,

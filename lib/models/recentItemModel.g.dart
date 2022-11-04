@@ -22,11 +22,13 @@ RecentItemModel _$RecentItemModelFromJson(Map<String, dynamic> json) =>
     RecentItemModel()
       ..totalPages = json['totalPages'] as int
       ..currentPage = json['currentPage'] as int
-      ..currentUserId = json['currentUserId'] as int;
+      ..currentUserId = json['currentUserId'] as int
+      ..shouldReload = json['shouldReload'] as bool;
 
 Map<String, dynamic> _$RecentItemModelToJson(RecentItemModel instance) =>
     <String, dynamic>{
       'totalPages': instance.totalPages,
       'currentPage': instance.currentPage,
       'currentUserId': instance.currentUserId,
+      'shouldReload': instance.shouldReload,
     };

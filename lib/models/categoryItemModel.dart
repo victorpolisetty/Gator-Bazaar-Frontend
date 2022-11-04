@@ -16,7 +16,7 @@ part 'categoryItemModel.g.dart';
 
 
 
-const String BASE_URI = 'http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/';
+const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
 const String CATEGORY_ITEMS_URL = '${BASE_URI}categories/';  // TODO -  call the CategoryItem service when it is built
 const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
@@ -159,7 +159,7 @@ class CategoryItemModel extends ChangeNotifier {
   Future<int> getNextSearchedPage(int categoryId, String searchWord, int pageNum) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$searchWord?size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$searchWord?size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -226,7 +226,7 @@ class CategoryItemModel extends ChangeNotifier {
   Future<void> getSearchedItemRestList() async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$keyword'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$keyword'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -323,7 +323,7 @@ class CategoryItemModel extends ChangeNotifier {
     var stream  = new http.ByteStream(imageFile.openRead()); stream.cast();
     var length = await imageFile.length();
     var itemId = itmRest.id!;
-    var uri = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/items/$itemId/itemImages');
+    var uri = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/$itemId/itemImages');
 
     var request = new http.MultipartRequest("POST", uri);
     var multipartFile = new http.MultipartFile('file', stream, length,
@@ -388,7 +388,7 @@ class CategoryItemModel extends ChangeNotifier {
   }
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

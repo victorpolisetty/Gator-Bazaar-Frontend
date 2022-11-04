@@ -51,7 +51,7 @@ class FavoriteModel extends ChangeNotifier {
   Future<void> getItemRestList() async {
     List data;
     String firebaseId = currentUser!.uid;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites');
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       String responseJson = Utf8Decoder().convert(response.bodyBytes);
@@ -101,7 +101,7 @@ class FavoriteModel extends ChangeNotifier {
   }
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

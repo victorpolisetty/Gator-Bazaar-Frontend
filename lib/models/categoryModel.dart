@@ -62,7 +62,7 @@ class CategoryModel extends ChangeNotifier{
   Future<void> getCategories() async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/categories');
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categories');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -85,7 +85,7 @@ class CategoryModel extends ChangeNotifier{
     int? categoryId = -1;
     for (int i = 0; i < categoryList.length; i++) {
         categoryId = categoryList[i].id;
-        String urlString = "http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/categoryImage/$categoryId";
+        String urlString = "http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categoryImage/$categoryId";
         var url = Uri.parse(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});

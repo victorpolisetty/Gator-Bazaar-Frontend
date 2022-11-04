@@ -27,7 +27,7 @@ Future<void> saveTokenToDatabase(String token) async {
   String? firebaseId = FirebaseAuth.instance.currentUser?.uid;
 
   Future<void> updatedUserDeviceToken()  async {
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$currDbId/deviceToken/$token');
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$currDbId/deviceToken/$token');
     final http.Response response =  await http.put(url
         , headers: {
           "Accept": "application/json",
@@ -62,7 +62,7 @@ Future<int?> getUserDbIdRealFunc() async {
 
   Future<void> updatedUserDbId()  async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -138,15 +138,16 @@ class _HomePageState extends State<BuyerHomePage> with SingleTickerProviderState
     return Scaffold(
       bottomNavigationBar: TabBar(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
-        isScrollable: true,
+        // isScrollable: true,
         indicatorColor: Colors.black,
+        labelPadding: EdgeInsets.only(left: MediaQuery.of(context).size.width * .02,),
         controller: _controller,
         tabs: [
-              Tab(icon: Icon(Icons.home), child: Text("Home", textAlign: TextAlign.center,style: TextStyle(fontSize: 12),)),
-              Tab(icon: Icon(Icons.favorite,), child: Text("Favorites", textAlign: TextAlign.center,style: TextStyle(fontSize: 12)),),
-              Tab(icon: Icon(Icons.add,), child: Text("Add Item", textAlign: TextAlign.center,style: TextStyle(fontSize: 12)),),
-              Tab(icon: Icon(Icons.message,), child: Text("Messaging", textAlign: TextAlign.center,style: TextStyle(fontSize: 12)),),
-              Tab(icon: Icon(Icons.person), child: Text("Profile", textAlign: TextAlign.center,style: TextStyle(fontSize: 12))),
+              Tab(icon: Icon(Icons.home), child: Text("Home", textAlign: TextAlign.center,style: TextStyle(fontSize: 10),)),
+              Tab(icon: Icon(Icons.favorite,), child: Text("Favorites", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
+              Tab(icon: Icon(Icons.add,), child: Text("Add Item", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
+              Tab(icon: Icon(Icons.message,), child: Text("Messaging", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
+              Tab(icon: Icon(Icons.person), child: Text("Profile", textAlign: TextAlign.center,style: TextStyle(fontSize: 10))),
         ],
       ),
       resizeToAvoidBottomInset: false,

@@ -78,11 +78,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         .setTransports(['websocket']).setQuery({'username': widget.chatProfile.recipient_profile_name}).build());
     _connectSocket();
     Provider.of<MessageModel>(context, listen: false).getMessagesHelper(widget.chatProfile.creator_user_id!, widget.chatProfile.recipient_user_id!);
-    if(widget.chatProfile.item_id == -1) {
-      getLatestItemDbId(widget.chatProfile.creator_user_id, widget.chatProfile.recipient_user_id).then((value) => getLatestItemInformation(latestItemDbId).then((value) => getMessagesForSpecificItem(widget.chatProfile.creator_user_id,widget.chatProfile.recipient_user_id,latestItemDbId)));
-    } else {
-      getLatestItemInformation(widget.chatProfile.item_id).then((value) => getMessagesForSpecificItem(widget.chatProfile.creator_user_id,widget.chatProfile.recipient_user_id, widget.chatProfile.item_id));
-    }
+    // if(widget.chatProfile.item_id == -1) {
+    //   getLatestItemDbId(widget.chatProfile.creator_user_id, widget.chatProfile.recipient_user_id).then((value) => getLatestItemInformation(latestItemDbId).then((value) => getMessagesForSpecificItem(widget.chatProfile.creator_user_id,widget.chatProfile.recipient_user_id,latestItemDbId)));
+    // } else {
+    //   getLatestItemInformation(widget.chatProfile.item_id).then((value) => getMessagesForSpecificItem(widget.chatProfile.creator_user_id,widget.chatProfile.recipient_user_id, widget.chatProfile.item_id));
+    // }
   }
 
 
@@ -257,7 +257,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getLatestItemDbId(int? creatorId, int? recipientId) async{
     Map<String, dynamic> map;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -279,7 +279,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getLatestItemInformation(int? latestItemDbId) async{
     Map<String, dynamic> map;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/categories/items/$latestItemDbId');
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categories/items/$latestItemDbId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -299,7 +299,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getMessagesForSpecificItem(int? creatorId, int? recipientId, int? itemId) async {
     Map<String, dynamic> map;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/messages/profile/itemMessages?creatorId=$creatorId&recipientId=$recipientId&itemId=$itemId');
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile/itemMessages?creatorId=$creatorId&recipientId=$recipientId&itemId=$itemId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
 

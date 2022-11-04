@@ -163,7 +163,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   Future<void> addProfileToDB(String? email, String? name, String? uid) async {
     final http.Response response =  await http.post(
       // Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles'),
-      Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles'),
+      Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles'),
 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -185,7 +185,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   }
 
   Future<void> createAuthPinAndVerificationCode( String? uid, String? email) async {
-    String url = 'http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/setPinAndSendEmail/$uid/$email';
+    String url = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/setPinAndSendEmail/$uid/$email';
     final http.Response response =  await http.post(
       Uri.parse(url),
         headers: {
@@ -202,7 +202,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

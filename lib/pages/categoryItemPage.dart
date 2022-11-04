@@ -321,8 +321,6 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
 
 class singleItem extends StatelessWidget {
   ItemWithImages item;
-
-
   singleItem({
     required this.item,
   });
@@ -352,21 +350,22 @@ class singleItem extends StatelessWidget {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              width: 80,
-              margin: EdgeInsets.only(top: 0, left: 40),
-              height: 30,
+              width: MediaQuery.of(context).size.width * .19999,
+              margin: EdgeInsets.only(top: 0, left: MediaQuery.of(context).size.width * .12),
+              height: MediaQuery.of(context).size.height * .035,
               child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
             ),
             item.isSold ? ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Container(
-                width: 60,
-                height: 20,
-                // color: Colors.black,
+                width: MediaQuery.of(context).size.width * .10,
+                height: MediaQuery.of(context).size.height * .02,
+                margin: EdgeInsets.only(top: 0, left: MediaQuery.of(context).size.width * .0001),
                 child: Center(
                   child: Text(
-                      "SOLD!"
+                      "SOLD!",
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
                     // margin: EdgeInsets.all(8),
                     // color: Colors.blue,
                   ),
@@ -378,9 +377,9 @@ class singleItem extends StatelessWidget {
         ),
         Container(
           alignment: Alignment.topLeft,
-          width: 150,
-          margin: EdgeInsets.only(top: 0, left: 40),
-          height: 30,
+          width: MediaQuery.of(context).size.width * .59,
+          margin: EdgeInsets.only(top: 0, left: MediaQuery.of(context).size.width * .13),
+          height: MediaQuery.of(context).size.height * .035,
           child: Text("${item.name}",
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
         ),

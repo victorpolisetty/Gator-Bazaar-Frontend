@@ -49,7 +49,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   Future<void> updatedUserDbId() async {
     Map<String, dynamic> data;
     var url = Uri.parse(
-        'http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
     http.Response response =
         await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -312,7 +312,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   Future<void> setEmailVerification(String? uid, String? providedAuthPin, BuildContext context) async {
     //TODO: need to call this somewhere
     var url = Uri.parse(
-        'http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/emailVerifiedStatus/$uid/$providedAuthPin');
+        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/emailVerifiedStatus/$uid/$providedAuthPin');
     final http.Response response = await http.post(url, headers: {
       "Accept": "application/json",
       "Content-Type": "application/json"
@@ -347,7 +347,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

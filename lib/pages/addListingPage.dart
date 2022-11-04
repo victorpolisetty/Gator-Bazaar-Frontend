@@ -182,7 +182,7 @@ class _AddListingState extends State<AddListing> {
                         // initialValue: '0.00',
                         controller: itemPriceController,
                         inputFormatters: [
-                          LengthLimitingTextInputFormatter(6),
+                          LengthLimitingTextInputFormatter(5),
                           FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
                           TextInputFormatter.withFunction((oldValue, newValue) {
                             try {
