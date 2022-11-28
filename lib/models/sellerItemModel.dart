@@ -195,7 +195,8 @@ class SellerItemModel extends ChangeNotifier {
   }
 
   SellerItemModel() {
-  //   var initFuture = init();
+    FirebaseAuth.instance.currentUser?.reload();
+    //   var initFuture = init();
   //   initFuture.then((voidValue) {
   //     // state = HomeScreenModelState.initialized;
   //     notifyListeners();

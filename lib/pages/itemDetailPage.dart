@@ -54,8 +54,34 @@ class _ItemDetailsState extends State<ItemDetails> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.grey[200],
         elevation: 0,
+        actions: [
+          PopupMenuButton(
+            // add icon, by default "3 dot" icon
+            // icon: Icon(Icons.book)
+              itemBuilder: (context){
+                return [
+                  PopupMenuItem<int>(
+                    value: 0,
+                    child: Text("Report"),
+                  ),
+
+                  PopupMenuItem<int>(
+                    value: 1,
+                    child: Text("Block"),
+                  ),
+                ];
+              },
+              onSelected:(value){
+                if(value == 0){
+                  showAlertDialogReportUser(context);
+                }else if(value == 1){
+                  showAlertDialogBlockUser(context);
+                }
+              }
+          ),
+        ],
       ),
       body: FutureBuilder(
           future: widget.item.getAllImagesForItem(),
@@ -266,6 +292,75 @@ class _ItemDetailsState extends State<ItemDetails> {
               ),
             )
           : null,
+    );
+  }
+
+  showAlertDialogReportUser(BuildContext context) {
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("No"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Yes"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Report User"),
+      content: Text("Are you sure you want to REPORT this user for this specific listing?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  showAlertDialogBlockUser(BuildContext context) {
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("No"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Yes"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Block User"),
+      content: Text("Are you sure you want to BLOCK this user?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 

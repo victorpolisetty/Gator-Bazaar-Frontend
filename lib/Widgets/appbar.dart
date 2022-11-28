@@ -20,7 +20,7 @@ class _MyAppBarState extends State<MyAppBar> {
         ),
       ),
       iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[200],
       elevation: .1,
       title: Text(
           'Gator Bazaar',

@@ -46,7 +46,7 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
         // ),
       ),
       iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[200],
       elevation: .1,
       title:
         Text(

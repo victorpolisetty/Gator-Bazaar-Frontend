@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -107,7 +109,7 @@ class FavoriteItem extends StatelessWidget {
         child: ListTile(
           //=======LEADING SECTION=========
           //DecorationImage(image: MemoryImage(item_picture), fit: BoxFit.cover),
-          trailing: Image.memory(item.imageDataList[0]),
+          trailing: Image.memory(item.imageDataList.length > 0 ? item.imageDataList[0] : AssetImage('assets/images/GatorBazaar.jpg') as Uint8List),
           //============TITLE SECTION============
           title: new Text(item.name),
           //SUBTITLE SECTION=============

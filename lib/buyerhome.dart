@@ -136,56 +136,44 @@ class _HomePageState extends State<BuyerHomePage> with SingleTickerProviderState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: TabBar(
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
-        // isScrollable: true,
-        indicatorColor: Colors.black,
-        labelPadding: EdgeInsets.only(left: MediaQuery.of(context).size.width * .02,),
-        controller: _controller,
-        tabs: [
-              Tab(icon: Icon(Icons.home), child: Text("Home", textAlign: TextAlign.center,style: TextStyle(fontSize: 10),)),
-              Tab(icon: Icon(Icons.favorite,), child: Text("Favorites", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
-              Tab(icon: Icon(Icons.add,), child: Text("Add Item", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
-              Tab(icon: Icon(Icons.message,), child: Text("Messaging", textAlign: TextAlign.center,style: TextStyle(fontSize: 10)),),
-              Tab(icon: Icon(Icons.person), child: Text("Profile", textAlign: TextAlign.center,style: TextStyle(fontSize: 10))),
-        ],
-      ),
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.grey[200],
-      body: IndexedStack(
-        index: _selectedPage,
-        children: [
-          HomePageBody(),
-          favoritePageTab(),
-          AddListing(),
-          ChatPage(),
-          StreamBuilder<User?>(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (context, snapshot) {
-                return sellerProfilePage();
-              }
+      bottomNavigationBar: SizedBox(
+        height: MediaQuery.of(context).size.height * .09,
+            child: TabBar(
+                // isScrollable: true,
+                indicatorColor: Colors.black,
+                labelPadding: EdgeInsets.only(left: MediaQuery.of(context).size.width * .015, ),
+                controller: _controller,
+                tabs: [
+                      Tab(icon: Icon(Icons.home, size: MediaQuery.of(context).size.width *.05,), child: Text("Home", textAlign: TextAlign.center,style: TextStyle(fontSize: MediaQuery.of(context).size.width *.025),)),
+                      Tab(icon: Icon(Icons.favorite,size: MediaQuery.of(context).size.width *.05,), child: Text("Favorites", textAlign: TextAlign.center,style: TextStyle(fontSize: MediaQuery.of(context).size.width *.025)),),
+                      Tab(icon: Icon(Icons.add,size: MediaQuery.of(context).size.width *.05,), child: Text("Add Item", textAlign: TextAlign.center,style: TextStyle(fontSize: MediaQuery.of(context).size.width *.025)),),
+                      Tab(icon: Icon(Icons.message,size: MediaQuery.of(context).size.width *.05,), child: Text("Messaging", textAlign: TextAlign.center,style: TextStyle(fontSize: MediaQuery.of(context).size.width *.025)),),
+                      Tab(icon: Icon(Icons.person,size: MediaQuery.of(context).size.width *.05,), child: Text("Profile", textAlign: TextAlign.center,style: TextStyle(fontSize: MediaQuery.of(context).size.width *.025))),
+                ],
+              ),
           ),
-        ],
+
+
+      // resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.grey[200],
+      body: SafeArea(
+        child: IndexedStack(
+          index: _selectedPage,
+          children: [
+            HomePageBody(),
+            favoritePageTab(),
+            AddListing(),
+            ChatPage(),
+            StreamBuilder<User?>(
+                stream: FirebaseAuth.instance.authStateChanges(),
+                builder: (context, snapshot) {
+                  return sellerProfilePage();
+                }
+            ),
+          ],
+        ),
       ),
-      // body:
-      //     tabs[_currentIndex],
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: _currentIndex,
-      //   items: [
-      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-      //     BottomNavigationBarItem(icon: Icon(Icons.favorite,), label: "My Favorites",),
-      //     BottomNavigationBarItem(icon: Icon(Icons.add,), label: "Add Listing",),
-      //     BottomNavigationBarItem(icon: Icon(Icons.message,), label: "Conversations",),
-      //     BottomNavigationBarItem(icon: Icon(Icons.person), label: "My Profile"),
-      //   ],
-      //   onTap: (index){
-      //     setState(() {
-      //       _currentIndex = index;
-      //       Provider.of<RecentItemModel>(context, listen: false).shouldReload = false;
-      //     });
-      //   },
-      //   unselectedItemColor: Colors.grey,
-      //   selectedItemColor: Colors.black,),
+
     );
   }
   void _handleSelected () async {

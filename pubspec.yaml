@@ -34,6 +34,7 @@ dependencies:
   pinput: ^2.2.16
   heic_to_jpg: ^0.2.0
   flutter_search_bar: ^3.0.0-dev.1
+  url_launcher: ^6.1.6
 #  firebase_auth: ^3.0.1
   firebase_auth: ^3.3.4
   email_validator: ^2.0.1

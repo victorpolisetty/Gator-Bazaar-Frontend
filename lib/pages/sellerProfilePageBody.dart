@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -8,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:student_shopping_v1/pages/itemDetailPageSellerView.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
+import 'package:http/http.dart' as http;
 final spinkit = SpinKitFadingCircle(
   itemBuilder: (BuildContext context, int index) {
     return DecoratedBox(
@@ -98,137 +101,247 @@ class _SellerProfilePageBodyState extends State<SellerProfilePageBody> {
   Widget build(BuildContext context) {
     var userItemList = context.watch<SellerItemModel>();
     var totalPages = userItemList.totalPages;
-    return new FutureBuilder<User?>(
-      future: isSignedIn(),
-      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.hasData) {
-          String? dname = snapshot.data!.displayName;
-          String? email = snapshot.data!.email;
-          return Column(
-            children: [
-              AppBar(
-                iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-                backgroundColor: Colors.grey[300],
-                elevation: .1,
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.exit_to_app_outlined),
-                    color: Colors.black,
-                    onPressed: () {
-                      // Navigator.of(context).push(new MaterialPageRoute(
-                      //     builder: (context) => new HomePage()));
-                      // FirebaseAuth.instance.signOut().then((value) => Navigator.of(context).push(new MaterialPageRoute(
-                      //     builder: (context) => new HomePage(), fullscreenDialog: true)));
-                      //TODO: FIGURE THIS OUT
-                      FirebaseAuth.instance.signOut();
-                      // _signOut().then((value) => Navigator.of(context).push(new MaterialPageRoute(
-                      //         builder: (context) => new SignUpWidget(onClickedSignIn: toggle), fullscreenDialog: true)));
-                    },
-                  )
-                ],
-              ),
-              SizedBox(height: 25),
-              Container(
-                  height: 100,
-                  // width: MediaQuery.of(context).size.width,
-                  child: Hero(
-                    tag:
-                        'https://images.unsplash.com/photo-1598369685311-a22ca3406009?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1234&q=80',
-                    // child: InkWell(
-                    // onTap: (){
-                    //   // _showPickOptionsDialog(context);
-                    //   print("HIT ME");
-                    // },
-                    child: CircleAvatar(
-                      radius: 50,
-                      // child: _pickedImage == null ? Text("Picture") : null,
-                      backgroundImage: _pickedImage != null
-                          ? FileImage(File(_pickedImage!.path))
-                          : AssetImage('assets/images/defaultPic.png')
-                              as ImageProvider,
-                    )
-                    // )
-                    ,
-                  )),
-              SizedBox(height: 25.0),
-              Text(
-                dname.toString(),
-                style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 4.0),
-              Text(
-                email.toString(),
-                style: TextStyle(fontFamily: 'Montserrat', color: Colors.grey),
-              ),
-              SizedBox(height: 20.0),
-              Text(
-                'LISTINGS',
-                style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: Colors.black),
-              ),
-              userItemList.items.length != 0 ? Container(
-                  height: MediaQuery.of(context).size.height *.50,
-                  width: MediaQuery.of(context).size.width,
-                  child: GridView.builder(
-                    controller: _controller,
-                    itemCount: userItemList.items.length == null
-                        ? 0
-                        : userItemList.items.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return SingleItem(item: userItemList.items[index]);
-                      // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                    },
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 0,
-                    ),
-                  )
-                  ) : Container(
-                  height: MediaQuery.of(context).size.height - 442,
-                  width: MediaQuery.of(context).size.width,
-                  child: Center(child: Text("No Listings!",style: TextStyle(fontWeight: FontWeight.bold),))
-              ),
-              // if(loading)(spinkit),
-              // (isBottom && !allLoaded && !loading) ? ElevatedButton(
-              //   style: ElevatedButton.styleFrom(
-              //       primary: Colors.black
-              //   ),
-              //   child: Center(
-              //     // child: Expanded(
-              //       child: Text("Show More")
-              //     //),
-              //   ),
-              //   onPressed: (){
-              //     setState(() {
-              //       if(userItemList.currentPage <= totalPages-1 && !loading){
-              //         mockFetch(userItemList);
-              //       }
-              //       //recentList.getNextPage(1);
-              //     });
-              //   },
-              // ) : Container(),
-            ],
-          );
-        } else {
-          return Container(
-            color: Colors.grey[300],
-            height: 350,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height,
+      return new FutureBuilder<User?>(
+        future: isSignedIn(),
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.hasData) {
+            String? dname = snapshot.data!.displayName;
+            String? email = snapshot.data!.email;
+            return Column(
+              children: [
+                AppBar(
+                  iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
+                  backgroundColor: Colors.grey[200],
+                  elevation: .1,
+                  actions: [
+                    PopupMenuButton(
+                      // add icon, by default "3 dot" icon
+                      // icon: Icon(Icons.book)
+                        itemBuilder: (context){
+                          return [
+                            PopupMenuItem<int>(
+                              value: 0,
+                              child: Text("Sign Out"),
+                            ),
 
-            child: spinkit,
-          );
-        }
-      },
-    );
+                            PopupMenuItem<int>(
+                              value: 1,
+                              child: Text("Delete Account"),
+                            ),
+                          ];
+                        },
+                        onSelected:(value){
+                          if(value == 0){
+                            showAlertDialogSignOut(context);
+                          }else if(value == 1){
+                            showAlertDialogDeleteAccount(context);
+                          }
+                        }
+                    ),
+                    // IconButton(
+                    //   icon: Icon(Icons.exit_to_app_outlined),
+                    //   color: Colors.black,
+                    //   onPressed: () {
+                    //     showAlertDialog(context);
+                    //   },
+                    // )
+                  ],
+                ),
+                Container(
+                    height: 80,
+                    // width: MediaQuery.of(context).size.width,
+                    child: Hero(
+                      tag:
+                          'https://images.unsplash.com/photo-1598369685311-a22ca3406009?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1234&q=80',
+                      // child: InkWell(
+                      // onTap: (){
+                      //   // _showPickOptionsDialog(context);
+                      //   print("HIT ME");
+                      // },
+                      child: CircleAvatar(
+                        radius: 40,
+                        // child: _pickedImage == null ? Text("Picture") : null,
+                        backgroundImage: _pickedImage != null
+                            ? FileImage(File(_pickedImage!.path))
+                            : AssetImage('assets/images/defaultPic.png')
+                                as ImageProvider,
+                      )
+                      // )
+                      ,
+                    )),
+                SizedBox(height: 25.0),
+                Text(
+                  dname.toString(),
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4.0),
+                Text(
+                  email.toString(),
+                  style: TextStyle(fontFamily: 'Montserrat', color: Colors.grey),
+                ),
+                SizedBox(height: 20.0),
+                Text(
+                  'LISTINGS',
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      color: Colors.black),
+                ),
+                userItemList.items.length != 0 ? SingleChildScrollView(
+                  child: Container(
+                      height: (MediaQuery.of(context).size.height * .72)-20-4-25-80,
+                      width: MediaQuery.of(context).size.width,
+                      child: GridView.builder(
+                        controller: _controller,
+                        itemCount: userItemList.items.length == null
+                            ? 0
+                            : userItemList.items.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return SingleItem(item: userItemList.items[index]);
+                          // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                        },
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                        ),
+                      )
+                      ),
+                ) :
+                SingleChildScrollView(
+                  child:Container(
+                      height: MediaQuery.of(context).size.height - 442,
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(child: Text("No Listings!",style: TextStyle(fontWeight: FontWeight.bold),))
+                  ),
+                ),
+                // if(loading)(spinkit),
+                // (isBottom && !allLoaded && !loading) ? ElevatedButton(
+                //   style: ElevatedButton.styleFrom(
+                //       primary: Colors.black
+                //   ),
+                //   child: Center(
+                //     // child: Expanded(
+                //       child: Text("Show More")
+                //     //),
+                //   ),
+                //   onPressed: (){
+                //     setState(() {
+                //       if(userItemList.currentPage <= totalPages-1 && !loading){
+                //         mockFetch(userItemList);
+                //       }
+                //       //recentList.getNextPage(1);
+                //     });
+                //   },
+                // ) : Container(),
+              ],
+            );
+          } else {
+            return Container(
+              color: Colors.grey[300],
+              height: 350,
+              width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height,
+
+              child: spinkit,
+            );
+          }
+        },
+      );
   }
   Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
   }
+
+  showAlertDialogSignOut(BuildContext context) {
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("No"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Yes"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+        FirebaseAuth.instance.signOut();
+        FirebaseAuth.instance.authStateChanges();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Sign out?"),
+      content: Text("Are you sure you want to SIGN OUT?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  showAlertDialogDeleteAccount(BuildContext context) async {
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("No"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Yes"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+        FirebaseAuth.instance.signOut();
+        FirebaseAuth.instance.currentUser?.delete();
+        FirebaseAuth.instance.authStateChanges();
+        deleteUserFromDB(Provider.of<SellerItemModel>(context, listen: false).userIdFromDB);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete Account?"),
+      content: Text("Are you sure you want to DELETE ACCOUNT?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  Future<void> deleteUserFromDB(int? id) async {
+    // String firebaseId = currentUser!.uid;
+    Map<String, dynamic> data;
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$id');
+    http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      // data.map<Item>((json) => Item.fromJson(json)).toList();
+      print(response.body);
+    } else {
+      print (response.statusCode);
+    }
+  }
+
 }
 
 class SingleItem extends StatelessWidget {
@@ -301,5 +414,7 @@ class SingleItem extends StatelessWidget {
       ],
     );
   }
+
+
 
 }

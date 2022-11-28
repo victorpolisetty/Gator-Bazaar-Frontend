@@ -54,7 +54,7 @@ class _AddListingState extends State<AddListing> {
         appBar: new AppBar(
           automaticallyImplyLeading: false,
           iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-          backgroundColor: Colors.grey[300],
+          backgroundColor: Colors.grey[200],
           elevation: 0,
           // title: Center(
           title: Text(

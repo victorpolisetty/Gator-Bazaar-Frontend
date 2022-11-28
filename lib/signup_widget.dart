@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class SignUpWidget extends StatefulWidget {
   final VoidCallback onClickedSignIn;
@@ -22,25 +24,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   int userIdFromDb = -1;
+  bool? checkBoxValue = false;
   @override
-  // void initState() {
-  //   Future<void> createAuthPinAndVerificationCode( String? uid, String? email) async {
-  //     String url = 'http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/setPinAndSendEmail/$uid/$email';
-  //     final http.Response response =  await http.post(
-  //         Uri.parse(url),
-  //         headers: {
-  //           "Accept": "application/json",
-  //           "Content-Type": "application/json"
-  //         });
-  //     if (response.statusCode == 200) {
-  //       print(response.statusCode);
-  //       print("Sent email");
-  //     } else {
-  //       print(response.statusCode);
-  //     }
-  //   }
-  //   createAuthPinAndVerificationCode("pjT5CDwY5STAwP7LGvIAOnQTHfm2", "victorpolisetty@ufl.edu");
-  // }
 
   void dispose() {
     emailController.dispose();
@@ -66,9 +51,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (email) =>
             //TODO: uncomment this delete underneath this
-               (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid @ufl.edu email' : null,
-            // (email != null && !EmailValidator.validate(email)) ? 'Enter a valid @ufl.edu email' : null,
-
+               (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
           ),
           SizedBox(height: 4),
           TextFormField(
@@ -77,9 +60,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             cursorColor: Colors.white,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(labelText: 'First Name'),
-            // autovalidateMode: AutovalidateMode.onUserInteraction,
-            // validator: (email) =>
-            // email != null && !EmailValidator.validate(email) ? 'Enter a valid email' : null,
           ),
           SizedBox(height: 4),
           TextFormField(
@@ -102,6 +82,29 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
           ),
           SizedBox(height: 20),
+          ElevatedButton(  style:ElevatedButton.styleFrom(
+              primary: Colors.black
+          ),onPressed: () { _launchUrl("https://docs.google.com/document/d/1Au1nHDDSdrnfFZFROdV6aSrVBg0tnemU8PJ-6c1oHfQ/edit#heading=h.5wn9zmiu3ly6"); },
+              child: Text("Terms of Service")),
+          ElevatedButton(  style:ElevatedButton.styleFrom(
+              primary: Colors.black
+          ),onPressed: () { _launchUrl("https://docs.google.com/document/d/1K0FeDwN0YmE13Hbf3FZA77Q4sLiRmw2cz3C7Xd28GJ4/edit#heading=h.eykxcvd8q5gq"); },
+              child: Text("End User License Agreement")),
+          Row(
+            children: [
+              Expanded(child: Text("I agree to the Terms of Service and End User License Agreement")),
+              Checkbox(
+                  value: checkBoxValue,
+                  activeColor: Colors.black,
+                  onChanged:(bool? newValue){
+                    setState(() {
+                      checkBoxValue = newValue;
+                    });
+                  }
+                  ),
+            ],
+          ),
+
           ElevatedButton.icon(
             style:
             ElevatedButton.styleFrom(
@@ -141,28 +144,32 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   Future signUp() async {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(child: CircularProgressIndicator()));
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim()
-      )
-          .then((value) => FirebaseAuth.instance.currentUser?.updateDisplayName(firstNameController.text.trim() + " " + lastNameController.text.trim()))
-          .then((value) => addProfileToDB(FirebaseAuth.instance.currentUser?.email,FirebaseAuth.instance.currentUser?.displayName,FirebaseAuth.instance.currentUser?.uid));
-         await createAuthPinAndVerificationCode(FirebaseAuth.instance.currentUser!.uid, FirebaseAuth.instance.currentUser!.email);
-    } on FirebaseAuthException catch (e) {
-      print(e);
-
-      Utils.showSnackBar(e.message);
+    if (checkBoxValue == false) {
+      showAlertDialogUserAgreement(context);
     }
-    navigatorKey.currentState!.popUntil((route) => route.isFirst);
+    else {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => Center(child: CircularProgressIndicator()));
+      try {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim()
+        )
+            .then((value) => FirebaseAuth.instance.currentUser?.updateDisplayName(firstNameController.text.trim() + " " + lastNameController.text.trim()))
+            .then((value) => addProfileToDB(FirebaseAuth.instance.currentUser?.email,FirebaseAuth.instance.currentUser?.displayName,FirebaseAuth.instance.currentUser?.uid));
+        await createAuthPinAndVerificationCode(FirebaseAuth.instance.currentUser!.uid, FirebaseAuth.instance.currentUser!.email);
+      } on FirebaseAuthException catch (e) {
+        print(e);
+
+        Utils.showSnackBar(e.message);
+      }
+      navigatorKey.currentState!.popUntil((route) => route.isFirst);
+    }
   }
   Future<void> addProfileToDB(String? email, String? name, String? uid) async {
     final http.Response response =  await http.post(
-      // Uri.parse('http://Gatorbazaarbackendtested2-env.eba-g27rcqgs.us-east-1.elasticbeanstalk.com/profiles'),
       Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles'),
 
       headers: <String, String>{
@@ -214,5 +221,38 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       print(response.statusCode);
     }
   }
+  showAlertDialogUserAgreement(BuildContext context) async {
 
+    // set up the buttons
+    Widget okButton = TextButton(
+      child: Text("Ok"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+        return;
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Terms of Service and End User License"),
+      content: Text("You must accept the Terms of Service and End User License Agreement to use Gator Bazaar"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw 'Could not launch';
+    }
+  }
 }
