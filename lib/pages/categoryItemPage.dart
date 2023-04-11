@@ -4,6 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
+import '../new/components/product_card.dart';
 import 'itemDetailPage.dart';
 import '../models/itemModel.dart';
 
@@ -45,8 +46,8 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
         //   // ),
         // ),
       ),
-      iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-      backgroundColor: Colors.grey[200],
+      // iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
+      // backgroundColor: Colors.grey[200],
       elevation: .1,
       title:
         Text(
@@ -100,51 +101,6 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
         });
   }
 
-  // mockFetch(CategoryItemModel categoryList) async{
-  //   if(allLoaded){
-  //     print("ALL LOADED");
-  //     return;
-  //   }
-  //   setState(() {
-  //     loading = true;
-  //   });
-  //   if(categoryList.currentPage != 0){
-  //     loading = (await categoryList.initNextCatPage(categoryList.currentPage))!;
-  //   }
-  //   if(categoryList.currentPage <= categoryList.totalPages-1){
-  //     categoryList.currentPage++;
-  //   }
-  //   if(loading == false){
-  //     setState(() {
-  //       allLoaded = categoryList.currentPage == categoryList.totalPages;
-  //     });
-  //   }
-  //
-  //
-  // }
-
-  // mockSearchFetch(CategoryItemModel categoryList, String keyword) async{
-  //   if(allLoaded){
-  //     print("ALL LOADED");
-  //     return;
-  //   }
-  //   setState(() {
-  //     loading = true;
-  //   });
-  //   if(categoryList.currentPage != 0){
-  //     loading = (await categoryList.initSearchCat(categoryList.currentPage, keyword))!;
-  //   }
-  //   if(categoryList.currentPage <= categoryList.totalPages-1){
-  //     categoryList.currentPage++;
-  //   }
-  //   if(loading == false){
-  //     setState(() {
-  //       allLoaded = categoryList.currentPage == categoryList.totalPages;
-  //     });
-  //   }
-  //
-  //
-  // }
   final PagingController<int, ItemWithImages> _pagingController =
   PagingController(firstPageKey: 0);
   int totalPages = 0;
@@ -155,28 +111,6 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
       _fetchPage(pageKey, widget.categoryId);
     });
     super.initState();
-    // Provider.of<CategoryItemModel>(context, listen: false).getCategoryItems(widget.categoryId);
-    // _controller.addListener((){
-    //   // reached bottom
-    //   if (_controller.offset >= _controller.position.maxScrollExtent &&
-    //       !_controller.position.outOfRange) {
-    //     setState(() => isBottom = true);
-    //   }
-    //
-    //   // IS SCROLLING
-    //   if (_controller.offset >= _controller.position.minScrollExtent &&
-    //       _controller.offset < _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
-    //     setState(() {
-    //       isBottom = false;
-    //     });
-    //   }
-    //
-    //   // REACHED TOP
-    //   if (_controller.offset <= _controller.position.minScrollExtent &&
-    //       !_controller.position.outOfRange) {
-    //     setState(() => isBottom = false);
-    //   }
-    // });
   }
 
   Future<void> _fetchPage(int pageKey, int categoryId) async {
@@ -186,8 +120,6 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
       if(mounted) {
         final isLastPage = (totalPages-1) == pageKey;
 
-        // final isLastPage = Provider.of<RecentItemModel>(context, listen: false).totalPages == pageKey;
-        // final isLastPage = Provider.of<RecentItemModel>(context, listen: false).items.length < _pageSize;
         if (isLastPage) {
           _pagingController.appendLastPage(Provider.of<CategoryItemModel>(context, listen: false).items);
         } else {
@@ -216,105 +148,33 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
             return true;
         },
         child: new Scaffold(
-          backgroundColor: Colors.grey[200],
             appBar: searchBar.build(context),
             key: _scaffoldKey,
-            body: RefreshIndicator(
-              onRefresh: () => Future.sync(() => _pagingController.refresh()),
-              child: new Center(
-                child: Column(
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height*.82,
-                          child: PagedGridView(
-                            pagingController: _pagingController,
-                            builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
-                              firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                              newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                              itemBuilder: (BuildContext context, item, int index) {
-                                return singleItem(
-                                  item: item
-                                );
-                              }
+            body:
+    // RefreshIndicator(
+    //           onRefresh: () => Future.sync(() => _pagingController.refresh()),
+              Center(
+                child: new
+                    PagedGridView(
+                              pagingController: _pagingController,
+                              builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
+                                firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                                newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                                noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Yet :)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
+                                itemBuilder: (BuildContext context, item, int index) {
+                                  return ProductCard(
+                                    product: item,
+                                    uniqueIdentifier: "categoryItem",
+                                  );
+                                }
+                              ),
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 0,),
                             ),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 0,),
-                          ),
-                        )
-                      ],
-                    )
-      //             Column(
-      //               children: [
-      //                 categoryList.items.length != 0 ? Container(
-      //                     margin: EdgeInsets.only(top: 10),
-      //                     width: MediaQuery.of(context).size.width,
-      //                     height: MediaQuery.of(context).size.height-190,
-      //                     child: GridView.builder(
-      //                         controller: _controller,
-      //                         itemCount: categoryList.items.length == null ? 0 : categoryList.items.length,
-      //                         physics: ScrollPhysics(),
-      //                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      //                           crossAxisCount: 2,
-      //                           mainAxisSpacing: 0,),
-      //                         itemBuilder: (BuildContext context, int index) {
-      //                           return singleItem(
-      //                               item: categoryList.items[index]
-      //                           );
-      //                         }
-      //                     )
-      //                 ) :
-      //                     Container(
-      //               margin: EdgeInsets.only(top: 10),
-      //               width: MediaQuery.of(context).size.width,
-      //               height: MediaQuery.of(context).size.height-407,
-      //               child: spinkit,
-      //               ),
-      // //                 Container(
-      // //       height: MediaQuery.of(context).size.height * .8,
-      // //     width: MediaQuery.of(context).size.width,
-      // //     child: Center(child: Text("No Listings!", style: TextStyle(fontWeight: FontWeight.bold)))
-      // // ),
-      // //                 if(loading)(spinkit),
-      //                 // (isBottom && !allLoaded && !loading && categoryList.totalPages != 1) ? ElevatedButton(
-      //                 //   style: ElevatedButton.styleFrom(
-      //                 //     primary: Colors.black,
-      //                 //   ),
-      //                 //   child: Center(
-      //                 //     // child: Expanded(
-      //                 //       child: Text("Show More")
-      //                 //     //),
-      //                 //   ),
-      //                 //   onPressed: (){
-      //                 //     setState(() {
-      //                 //       if(categoryList.currentPage <= totalPages-1 && !loading && isSearching == false){
-      //                 //         mockFetch(categoryList);
-      //                 //       }
-      //                 //       if(categoryList.currentPage <= totalPages-1 && !loading && isSearching == true){
-      //                 //         mockSearchFetch(categoryList, keyword);
-      //                 //       }
-      //                 //       //recentList.getNextPage(1);
-      //                 //     });
-      //                 //   },
-      //                 // )
-      //                 //     : Container(),
-      //               ],
-      //             )
-                  ],
-                ),
-              ),
-            )
-        ),
-        // onWillPop: () async {
-        //   categoryList.currentPage = 1;
-        //   isSearching = false;
-        //   return true;
-        // },
-      );
+              )
+        // ),
+      ));
 
   }
 }

@@ -47,6 +47,19 @@ class RecentItemModel extends ChangeNotifier {
 
   Map<String, dynamic> toJson() => _$RecentItemModelToJson(this);
 
+  RecentItemModel() {
+    var initFuture = init();
+    initFuture.then((voidValue) {
+      // state = HomeScreenModelState.initialized;
+      notifyListeners();
+    });
+  }
+  Future<void> init() async {
+    await getProfileFromDb(currentUser?.uid.toString());
+    this.totalPages = await getItemRestList();
+    await add1stImageToItemIfAvailable();
+  }
+
   void getRecentItems() {
     if (shouldReload) {
       var initFuture = getItems();
@@ -103,7 +116,7 @@ class RecentItemModel extends ChangeNotifier {
   Future<int> getItemRestList() async {
     Map<String, dynamic> data;
     var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items?size=20&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items?size=10&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -179,13 +192,6 @@ class RecentItemModel extends ChangeNotifier {
     });
   }
 
-  RecentItemModel() {
-    // var initFuture = init();
-    // initFuture.then((voidValue) {
-    //   // state = HomeScreenModelState.initialized;
-    //   notifyListeners();
-    // });
-  }
 
   /// Adds [item] to cart. This is the only way to modify the cart from outside.
   void add(ItemWithImages item) {

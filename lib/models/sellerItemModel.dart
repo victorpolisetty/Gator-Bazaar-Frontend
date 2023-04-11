@@ -61,6 +61,14 @@ class SellerItemModel extends ChangeNotifier {
     await add1stImageToItemIfAvailable();
   }
 
+  Future<bool?> initNextCatPage(int pageNum) async {
+    _sellerItems.clear();
+    await getProfileFromDb(currentUser?.uid.toString());
+    totalPages = await getNextPage(pageNum);
+    await get1stImageForItemIfAvailable();
+    return false;
+  }
+
   void getProfileIdAndItems () {
     var initFuture = _getItems();
     initFuture.then((voidValue) {
@@ -103,7 +111,7 @@ class SellerItemModel extends ChangeNotifier {
 
   Future<int> getNextPage(int pageNum) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB&size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB&size=5&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

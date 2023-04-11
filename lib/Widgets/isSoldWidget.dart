@@ -65,24 +65,24 @@ class _isSoldWidgetState extends State<isSoldWidget> {
           padding: const EdgeInsets.fromLTRB(30.0,0,0,0),
           child: Container(
             child: widget.isSold == false ? Text(
-              "Click here to mark item as Sold!",
+              "Mark Item as Sold!",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 15, color: Colors.black),
             ) : Text(
-              "Click here to mark item as Available!",
+              "Mark Item as Available!",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 15, color: Colors.black),
             ),
           ),
         ),
         Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, .0),
+            padding: const EdgeInsets.fromLTRB(30.0, 0.0, 0.0, .0),
             child: Container(
               child: new IconButton(
                   icon: Icon(widget.isSold ? Icons.check_box : Icons.check_box_outlined),
                   color: Colors.black,
                   onPressed: () {
-                    updateIsSoldStatus();
+                    updateIsSoldStatus().then((value) => Provider.of<RecentItemModel>(context, listen: false).getRecentItems());
                     _toggleIsSold(widget.isSold, item);
                     Provider.of<SellerItemModel>(context, listen: false).getProfileIdAndItems();
                   }),
@@ -129,30 +129,33 @@ class _isSoldWidgetState extends State<isSoldWidget> {
   void _showConfirmDeleteButton(BuildContext context, int? itemId){
     BuildContext dialogContext;
     showDialog(context: context,
-        builder: (context) => AlertDialog(
-          // dialogContext = context;
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Are you sure?"),
-              ListTile(
-                title: Text("Yes"),
-                onTap: (){
-                  // _loadPicker(ImageSource.gallery, imageNumber);
-                  deleteListing(itemId).then((value) => Provider.of<RecentItemModel>(context, listen: false).shouldReload = true)
-                      .then((value) => Navigator.pop(context)).then((value) =>
-                  Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (context) => BuyerHomePage("Gator Bazaar"))),);
-                },
-              ),
-              ListTile(
-                title: Text("No"),
-                onTap: (){
-                  // _loadPicker(ImageSource.gallery, imageNumber);
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+        builder: (context) => WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            // dialogContext = context;
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Are you sure?"),
+                ListTile(
+                  title: Text("Yes"),
+                  onTap: (){
+                    // _loadPicker(ImageSource.gallery, imageNumber);
+                    // Provider.of<RecentItemModel>(context, listen: false).getRecentItems();
+                    deleteListing(itemId).then((value) => Provider.of<RecentItemModel>(context, listen: false).getRecentItems())
+                        .then((value) => Navigator.pop(context)).then((value) =>
+                        Navigator.pushReplacementNamed(context, "/home"));
+                  },
+                ),
+                ListTile(
+                  title: Text("No"),
+                  onTap: (){
+                    // _loadPicker(ImageSource.gallery, imageNumber);
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
           ),
         ) );
   }

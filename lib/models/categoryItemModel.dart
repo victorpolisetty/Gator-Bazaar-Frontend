@@ -85,10 +85,8 @@ class CategoryItemModel extends ChangeNotifier {
 
 
 
-  //TODO: fix api endpoint for user
   Future<Item> postItemSingle(Item itm)  async {
     Map<String, dynamic> data;
-    //TODO: need to call this somewhere
     var url = Uri.parse(CATEGORY_ITEMS_URL +
         '${categoryId}/items?profileId=$userIdFromDb');
     var tmpObj =  json.encode(itm.toJson());

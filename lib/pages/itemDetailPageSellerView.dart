@@ -21,10 +21,10 @@ final spinkit = SpinKitFadingCircle(
 
 class ItemDetailPageSellerView extends StatefulWidget {
   ItemWithImages item;
-  ItemDetailPageSellerView(
-      item
-      ) : this.item = item{
-  }
+  int currentUserId = -1;
+  ItemDetailPageSellerView(currentUserId, item)
+      : this.item = item,
+        this.currentUserId = currentUserId;
   @override
   _ItemDetailPageSellerViewState createState() => _ItemDetailPageSellerViewState();
 }
@@ -51,10 +51,10 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
     List <dynamic> imgList = [];
     List <dynamic> emptyList = [];
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: FutureBuilder(
@@ -73,8 +73,8 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
               if (imgList.length == 0) {
                 emptyList.add(1);
               }
-
               return Container(
+                color: Colors.white,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -198,20 +198,21 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                       //   height: 10,
                       //   width: 10,
                       // ),
-
                     ],
                   ),
 
                 ),
-              );}
+              );
+            }
 
           } ),
       bottomNavigationBar: Container(
+        color: Colors.white,
         width: MediaQuery.of(context).size.width,
         height: 100,
         child: Container(
           margin: EdgeInsets.only(left: 10, right:10, bottom: 10),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
+          decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(50)),
                 child: Container(
                   child: isSoldWidget(
                     isSold: widget.item.isSold,

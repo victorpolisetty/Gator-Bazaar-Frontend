@@ -100,6 +100,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget build(BuildContext context) {
     var messages = context.watch<MessageModel>();
     return Scaffold(
+      extendBody: false,
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
@@ -127,7 +128,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       height: 36,
                     ),
                     radius: 20,
-                    backgroundColor: Colors.blueGrey,
                   ),
                   SizedBox(width: 12),
                   Expanded(
@@ -136,9 +136,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(widget.chatProfile.current_user_id == widget.chatProfile.recipient_user_id ?
-                        widget.chatProfile.creator_profile_name.toString() : widget.chatProfile.recipient_profile_name.toString(),style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600),),
+                        widget.chatProfile.creator_profile_name.toString() : widget.chatProfile.recipient_profile_name.toString(),style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600, color: Colors.black),),
                         SizedBox(height: 6,),
-                        Text("Online",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
+                        Text("Online",style: TextStyle(fontSize: 13),),
                       ],
                     ),
                   ),
@@ -198,7 +198,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                           color: (messages.messageList[index].creator_user_id != widget.currentUserDbId ? Colors.grey.shade200:Colors.blue[200]),
                         ),
                         padding: EdgeInsets.all(16),
-                        child: Text(messages.messageList[index].message_text.toString(), style: TextStyle(fontSize: 15),),
+                        child: Text(messages.messageList[index].message_text.toString(), style: TextStyle(fontSize: 15, color: Colors.black),),
                       ),
                     ),
                   );

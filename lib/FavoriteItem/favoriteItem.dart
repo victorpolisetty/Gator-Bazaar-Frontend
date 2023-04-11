@@ -23,7 +23,6 @@ class _FavoriteItemState extends State<FavoriteItem> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       body: new FavoriteItems(
         itemName: widget.itemName,
         itemPrice: widget.itemPrice,

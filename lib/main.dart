@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:student_shopping_v1/buyerhome.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
 import 'package:student_shopping_v1/models/categoryModel.dart';
 import 'package:student_shopping_v1/models/chatMessageModel.dart';
+import 'package:student_shopping_v1/models/groupModel.dart';
+import 'package:student_shopping_v1/models/groupRequestModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:student_shopping_v1/notificationService/LocalNotificationService.dart';
 import 'package:student_shopping_v1/utils.dart';
@@ -12,10 +15,14 @@ import 'auth_page.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'models/adminProfileModel.dart';
 import 'models/categoryItemModel.dart';
 import 'models/messageModel.dart';
 import 'models/recentItemModel.dart';
 import 'models/favoriteModel.dart';
+import 'new/theme.dart';
+import 'package:student_shopping_v1/new/size_config.dart';
+
 
 
 //recieve message when app is in backgorund solutioon for on message
@@ -43,11 +50,6 @@ Future<void> main() async {
     sound: true,
   );
 
-  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-  //   alert: true, // Required to display a heads up notification
-  //   badge: true,
-  //   sound: true,
-  // );
 
 
 
@@ -76,40 +78,6 @@ Future<void> main() async {
     await Firebase.initializeApp();
 
     print("Handling a background message: ${message.messageId}");
-    // }
-    //
-    // // final fcmToken = await FirebaseMessaging.instance.getToken();
-    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    //
-    // String _token;
-    //
-    //
-    //
-    // Future<void> saveTokenToDatabase(String token) async {
-    //   // Assume user is logged in for this example
-    //   String? userId = FirebaseAuth.instance.currentUser?.uid;
-    //
-    //   await FirebaseFirestore.instance
-    //       .collection('users')
-    //       .doc(userId)
-    //       .update({
-    //     'tokens': FieldValue.arrayUnion([token]),
-    //   });
-    // }
-    //
-    // Future<void> setupToken() async {
-    //   // Get the token each time the application loads
-    //   String? token = await FirebaseMessaging.instance.getToken();
-    //
-    //   // Save the initial token to the database
-    //   await saveTokenToDatabase(token!);
-    //
-    //   // Any time the token refreshes, store this in the database too.
-    //   FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
-    // }
-
-
-
 
   }
   runApp(MyApp());
@@ -130,16 +98,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState(){
-    // requestAndRegisterNotification();
-    // _totalNotifications = 0;
     super.initState();
 
-
-
-
-
     LocalNotificationService.initialize(context);
-
 
     //gives you the message on which the user taps and it opens the app from terminated state
     FirebaseMessaging.instance.getInitialMessage().then((message) {
@@ -205,15 +166,27 @@ class _MyAppState extends State<MyApp> {
             create: (context) => ChatMessageModel(),
             //builder: (context, _) => App(),
           ),
+          ChangeNotifierProvider(
+            create: (context) => GroupModel(),
+            //builder: (context, _) => App(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => GroupRequestModel(),
+            //builder: (context, _) => App(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => AdminProfileModel(),
+            //builder: (context, _) => App(),
+          ),
         ],
           child: MaterialApp(
+            routes: {
+              "/home": (_) => new BuyerHomePage("Gator Bazaar"),
+            },
             scaffoldMessengerKey: Utils.messengerKey,
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              primaryColor: Colors.grey,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
+            theme: theme(),
             home: MainPage(),
             // home: App(),
           )
@@ -225,22 +198,25 @@ class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text("Something went wrong!"));
-        } else if (snapshot.hasData) {
-          return VerifyEmailPage();
-        } else {
-          return AuthPage();
-        }
-      },
-    ),
-  );
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    return Scaffold(
+        body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Something went wrong!"));
+            } else if (snapshot.hasData) {
+              return VerifyEmailPage();
+            } else {
+              return AuthPage();
+            }
+          },
+        ),
+      );
+}
 }
 
 

@@ -6,8 +6,9 @@ import 'package:student_shopping_v1/utils.dart';
 
 class LoginWidget extends StatefulWidget {
   final VoidCallback onClickedSignUp;
+  final VoidCallback onClickedForgotPassword;
 
-  const LoginWidget({Key? key, required this.onClickedSignUp}) : super(key: key);
+  const LoginWidget({Key? key, required this.onClickedSignUp, required this.onClickedForgotPassword}) : super(key: key);
   @override
   State<LoginWidget> createState() => _LoginWidgetState();
 }
@@ -73,6 +74,24 @@ class _LoginWidgetState extends State<LoginWidget> {
                   )
                 )
               ]
+            )
+        ),
+        SizedBox(height: 10),
+        RichText(
+            text: TextSpan (
+                style: TextStyle(color: Colors.black),
+                text: 'Forgot Password?  ',
+                children: [
+                  TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = widget.onClickedForgotPassword,
+                      text: 'Reset',
+                      style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.black
+                      )
+                  )
+                ]
             )
         )
       ],

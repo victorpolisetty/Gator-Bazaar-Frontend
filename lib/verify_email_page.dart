@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:http/http.dart' as http;
+import 'package:student_shopping_v1/HomePageContent.dart';
+import 'package:student_shopping_v1/new/screens/home/home_screen.dart';
 import 'buyerhome.dart';
 
 class VerifyEmailPage extends StatefulWidget {

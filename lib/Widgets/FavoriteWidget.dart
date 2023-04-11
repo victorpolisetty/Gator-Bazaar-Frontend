@@ -1,11 +1,15 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:student_shopping_v1/models/favoriteModel.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
+
+import '../new/constants.dart';
+import '../new/size_config.dart';
 
 class FavoriteWidget extends StatefulWidget {
   final item;
@@ -52,17 +56,42 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
     var isInFavoritesList = context.select<FavoriteModel, bool>(
           (favorite) => inFavorites(favorite, item)
     );
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(1.0, 2.0, 10.0, 4.0),
-        child: Container(
-          child: new IconButton(
-            iconSize: 40,
-              icon: Icon(isInFavoritesList ? Icons.favorite : Icons.favorite_border),
-              color: Colors.black,
-              onPressed: () {
-                _toggleFavorite(isInFavoritesList, item);
-              }),
-        ));
+    return InkWell(
+      borderRadius: BorderRadius.circular(50),
+      onTap: () {
+
+        _toggleFavorite(isInFavoritesList, item);
+        isInFavoritesList = !isInFavoritesList;
+      },
+      child: Container(
+        padding: EdgeInsets.all(getProportionateScreenWidth(8)),
+        height: getProportionateScreenWidth(28),
+        width: getProportionateScreenWidth(28),
+        decoration: BoxDecoration(
+          color: isInFavoritesList
+              ? kPrimaryColor.withOpacity(0.15)
+              : kSecondaryColor.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: SvgPicture.asset(
+          "assets/icons/Heart Icon_2.svg",
+          color: isInFavoritesList
+              ? Color(0xFFFF4848)
+              : Color(0xFFDBDEE4),
+        ),
+      ),
+    );
+    // return Padding(
+    //     padding: const EdgeInsets.fromLTRB(1.0, 2.0, 10.0, 4.0),
+    //     child: Container(
+    //       child: new IconButton(
+    //         iconSize: 40,
+    //           icon: Icon(isInFavoritesList ? Icons.favorite : Icons.favorite_border),
+    //           color: Colors.black,
+    //           onPressed: () {
+    //             _toggleFavorite(isInFavoritesList, item);
+    //           }),
+    //     ));
   }
   Future<void> addUserFavoriteToDb()  async {
     Map<String, dynamic> data;

@@ -51,10 +51,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     List<dynamic> imgList = [];
     List<dynamic> emptyList = [];
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-        backgroundColor: Colors.grey[200],
         elevation: 0,
         actions: [
           PopupMenuButton(
@@ -163,7 +160,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           child: Text(
                             widget.item.name,
                             style: TextStyle(
-                                fontSize: 19, color: Colors.grey[700]),
+                                fontSize: 19, color: Colors.black),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -173,8 +170,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                             'Price',
                             style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.grey[700]),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -183,7 +180,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           child: Text(
                             (' \$${NumberFormat('#,##0.00', 'en_US').format(widget.item.price)}'),
                             style: TextStyle(
-                                fontSize: 15, color: Colors.grey[700]),
+                                fontSize: 15, color: Colors.black),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -193,8 +190,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                             'Description',
                             style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.grey[700]),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -203,7 +200,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           child: Text(
                             widget.item.description,
                             style: TextStyle(
-                                fontSize: 15, color: Colors.grey[700]),
+                                fontSize: 15, color: Colors.black),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -213,8 +210,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                             'Seller Information',
                             style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.grey[700]),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -223,7 +220,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           child: Text(
                             widget.item.seller_name!,
                             style: TextStyle(
-                                fontSize: 15, color: Colors.grey[700]),
+                                fontSize: 15, color: Colors.black),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -232,7 +229,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           child: Text(
                             widget.item.seller_email!,
                             style: TextStyle(
-                                fontSize: 15, color: Colors.grey[700]),
+                                fontSize: 15, color: Colors.black),
                             textAlign: TextAlign.left,
                           )),
                     ],

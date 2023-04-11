@@ -12,15 +12,57 @@ class FavoriteModel extends ChangeNotifier {
   /// Internal, private state of the cart. Stores the ids of each item.
   List<ItemWithImages> _favoriteItems = [];
   int userIdFromDb = -1;
+  int totalPages = 0;
 
   /// List of items in the cart.
   List<ItemWithImages> get items => _favoriteItems;
   User? currentUser = FirebaseAuth.instance.currentUser;
+  String? firebaseId = "";
 
 
 
-  FavoriteModel(){
+  // FavoriteModel(){
+  //
+  // }
 
+  Future<bool?> initNextCatPage(int pageNum) async {
+    _favoriteItems.clear();
+    await getProfileFromDb(currentUser?.uid.toString());
+    await getNextPage(pageNum);
+    await get1stImageForItemIfAvailable();
+    return false;
+  }
+
+  Future<int> getNextPage(int pageNum) async {
+    Map<String, dynamic> data;
+
+    // var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites?page=$pageNum&size=5'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://localhost:5000/profiles/$firebaseId/favorites?page=$pageNum&size=5&sort=createdAt,desc');
+    http.Response response = await http.get(
+        url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      data = json.decode(response.body);
+      var items = data['content'];
+      totalPages = data['totalPages'];
+      for (int i = 0; i < items.length; i++) {
+        ItemWithImages itm = ItemWithImages.fromJson(items[i]);
+        _favoriteItems.add(itm);
+        //Provider.of<RecentItemModel>(context, listen: false).add(itm);
+
+
+        // for (int imgId in itm.itemImageList) {
+        //   var url = Uri.parse(
+        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
+        // }
+      }
+      return totalPages;
+
+      //     notifyListeners();
+      //print(categoryItems);
+    } else {
+      print(response.statusCode);
+      return -1;
+    }
   }
 
   // FavoriteModel() {
@@ -100,6 +142,7 @@ class FavoriteModel extends ChangeNotifier {
     }
   }
   Future<void> getProfileFromDb(String? firebaseid) async {
+    firebaseId = firebaseid;
     Map<String, dynamic> data;
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(

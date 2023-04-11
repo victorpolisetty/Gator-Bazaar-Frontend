@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
-
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
 
 import '../models/itemModel.dart';
+import '../new/size_config.dart';
 
 class AddListing extends StatefulWidget {
   @override
@@ -38,8 +38,8 @@ class _AddListingState extends State<AddListing> {
 
   Future getImage(int type) async {
     PickedFile pickedImage = (await ImagePicker().getImage(
-        source: type == 1 ? ImageSource.camera : ImageSource.gallery,
-        // imageQuality: 50
+      source: type == 1 ? ImageSource.camera : ImageSource.gallery,
+      // imageQuality: 50
     ))!;
     return pickedImage;
   }
@@ -47,235 +47,258 @@ class _AddListingState extends State<AddListing> {
   @override
   Widget build(BuildContext context) {
     itemAddSuccess = false;
+    final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
+      onPrimary: Colors.black87,
+      primary: Colors.grey[300],
+      minimumSize: Size(88, 36),
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(2)),
+      ),
+    );
     //   var recentList = context.watch<CategoryItemModel>();
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.grey[200],
-        appBar: new AppBar(
-          automaticallyImplyLeading: false,
-          iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-          backgroundColor: Colors.grey[200],
-          elevation: 0,
-          // title: Center(
-          title: Text(
-            'Add Item',
-            style: TextStyle(color: Colors.black),
-          ),
-          // ),
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      appBar: new AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        iconTheme: new IconThemeData(color: Colors.black, size: 27),
+        elevation: 0,
+        title: Text(
+          'Add Listing',
+          style: TextStyle(color: Colors.black),
         ),
-        body: GestureDetector(
-          onTap: FocusScope.of(context).unfocus,
-          child: SingleChildScrollView(
-            physics: ClampingScrollPhysics(),
-            child: Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
-            width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-                child: Form(
-                  key: _formKey,
-                  child: ListView
-                    (
-                      children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  primary: Colors.grey.withOpacity(0.5),
-                                  side: BorderSide(color: Colors.black, width: 5),
-                                ),
-                                onPressed: () async {
-                                  //TODO
-                                  // _selectImage(
-                                  //     ImagePicker()
-                                  //         .pickImage(source: ImageSource.gallery),
-                                  //     1);
-                                  _showPickOptionsDialog(context,1);
-                                  // _showChoiceDialog(context);
-                                },
-                                child: _displayChild1()),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  primary: Colors.grey.withOpacity(0.5),
-                                  side: BorderSide(color: Colors.black, width: 5),
-                                ),
-                                onPressed: () async {
-                                  // _selectImage(
-                                  //     ImagePicker()
-                                  //         .pickImage(source: ImageSource.gallery),
-                                  //     2);
-                                  _showPickOptionsDialog(context,2);
-
-                                },
-                                child: _displayChild2()),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  primary: Colors.grey.withOpacity(0.5),
-                                  side: BorderSide(color: Colors.black, width: 5),
-                                ),
-                                onPressed: () async {
-                                  // _selectImage(
-                                  //     ImagePicker()
-                                  //         .pickImage(source: ImageSource.gallery),
-                                  //     3);
-                                  _showPickOptionsDialog(context,3);
-                                },
-                                child: _displayChild3()),
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Text(
-                    //   'Enter the product name with 10 characters maximum',
-                    //   textAlign: TextAlign.center,
-                    //   style: TextStyle(color: Colors.red, fontSize: 12),
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 2,
-                        controller: itemNameController,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(19),
-                        ],
-                        textCapitalization: TextCapitalization.sentences,
-                        decoration: InputDecoration(
-                          hintText: 'Item Name',
-                        ),
+      ),
+      body: GestureDetector(
+        onTap: FocusScope.of(context).unfocus,
+        child: SingleChildScrollView(
+          physics: ClampingScrollPhysics(),
+          child: Container(
+            height: getProportionateScreenHeight(800),
+            padding: EdgeInsets.symmetric(horizontal: 16), // Added padding
+            child: Form(
+              key: _formKey,
+              child: Column(children: <Widget>[
+                SizedBox(height: 16), // Added space
+                Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly, // Space images evenly
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              primary: Colors.grey.withOpacity(0.5),
+                              side: BorderSide(color: Colors.black, width: 5),
+                            ),
+                            onPressed: () async {
+                              _showPickOptionsDialog(context, 1);
+                            },
+                            child: _displayChild1()),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 2,
-                        controller: itemDescriptionController,
-                        textCapitalization: TextCapitalization.sentences,
-                        // initialValue: '1',
-                        decoration: InputDecoration(
-                          hintText: 'Description',
-                        ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              primary: Colors.grey.withOpacity(0.5),
+                              side: BorderSide(color: Colors.black, width: 5),
+                            ),
+                            onPressed: () async {
+                              _showPickOptionsDialog(context, 2);
+                            },
+                            child: _displayChild2()),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextFormField(
-                        maxLines: 2,
-                        // initialValue: '0.00',
-                        controller: itemPriceController,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(5),
-                          FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
-                          TextInputFormatter.withFunction((oldValue, newValue) {
-                            try {
-                              final text = newValue.text;
-                              if (text.isNotEmpty) double.parse(text);
-                              return newValue;
-                            } catch (e) {}
-                            return oldValue;
-                          }),
-                        ],
-                        keyboardType: TextInputType.numberWithOptions(
-                          decimal: true,
-                          signed: false,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Price',
-                        ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              primary: Colors.grey.withOpacity(0.5),
+                              side: BorderSide(color: Colors.black, width: 5),
+                            ),
+                            onPressed: () async {
+                              _showPickOptionsDialog(context, 3);
+                            },
+                            child: _displayChild3()),
                       ),
                     ),
-                    Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Container(
-                          child: DropdownButton(
-                              menuMaxHeight: 200,
-                              value: _value,
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text("Select Category"),
-                                  value: "-1",
-                                ),
-                                DropdownMenuItem(
-                                  child: Text("Clothes"),
-                                  value: "1",
-                                ),
-                                DropdownMenuItem(child: Text("Formal Dresses"), value: "2"),
-                                DropdownMenuItem(
-                                  child: Text("Student Tickets"),
-                                  value: "3",
-                                ),
-                                DropdownMenuItem(child: Text("Furniture"), value: "4"),
-                                DropdownMenuItem(child: Text("Subleases"), value: "5"),
-                                DropdownMenuItem(child: Text("Electronics"), value: "6"),
-                                DropdownMenuItem(child: Text("Books"), value: "7"),
-                                DropdownMenuItem(child: Text("Misc."), value: "8"),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  _value = value.toString();
-                                });
-                              }),
-                        )),
-                    TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
-                        ),
-                        child: Text('Add Product', style: TextStyle(color: Colors.white),),
-                        onPressed: () {
-
-                          _value != "-1" &&
-                                  itemNameController.text.isNotEmpty &&
-                                  itemDescriptionController.text.isNotEmpty &&
-                                  itemPriceController.text.isNotEmpty
-                              ? itemAddSuccess = addNewItemToDB(
-                                  context,
-                                  itemNameController.text,
-                                  itemDescriptionController.text,
-                                  itemPriceController.text,
-                                  _value, // _value = categoryid
-                                  _image1,
-                                  _image2,
-                                  _image3)
-                              : null;
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => addedListingDialog(itemAddSuccess));
-                          if(itemAddSuccess){
-                            itemNameController.clear();
-                            itemDescriptionController.clear();
-                            itemPriceController.clear();
-                            setState(() {
-                              _image1 = null;
-                              _image2 = null;
-                              _image3 = null;
-                              _value = "-1";
-                            });
-                          }
-                        })
-                  ]),
+                  ],
                 ),
+                SizedBox(height: 16), // Added space
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 2,
+                    controller: itemNameController,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(19),
+                    ],
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      hintText: 'Item Name',
+                      fillColor: Colors.black,
+                      focusColor: Colors.black,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 2,
+                    controller: itemDescriptionController,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      hintText: 'Description',
+                      fillColor: Colors.black,
+                      focusColor: Colors.black,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextFormField(
+                    maxLines: 2,
+                    controller: itemPriceController,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(5),
+                      FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+                      TextInputFormatter.withFunction((oldValue, newValue) {
+                        try {
+                          final text = newValue.text;
+                          if (text.isNotEmpty) double.parse(text);
+                          return newValue;
+                        } catch (e) {}
+                        return oldValue;
+                      }),
+                    ],
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                      signed: false,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Price',
+                      fillColor: Colors.black,
+                      focusColor: Colors.black,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: DropdownButton(
+                          menuMaxHeight: 200,
+                          value: _value,
+                          items: [
+                            DropdownMenuItem(
+                              child: Text("Select Category"),
+                              value: "-1",
+                            ),
+                            DropdownMenuItem(
+                              child: Text("Clothes"),
+                              value: "1",
+                            ),
+                            DropdownMenuItem(
+                                child: Text("Formal Dresses"), value: "2"),
+                            DropdownMenuItem(
+                              child: Text("Student Tickets"),
+                              value: "3",
+                            ),
+                            DropdownMenuItem(
+                                child: Text("Furniture"), value: "4"),
+                            DropdownMenuItem(
+                                child: Text("Subleases"), value: "5"),
+                            DropdownMenuItem(
+                                child: Text("Electronics"), value: "6"),
+                            DropdownMenuItem(child: Text("Books"), value: "7"),
+                            DropdownMenuItem(child: Text("Misc."), value: "8"),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _value = value.toString();
+                            });
+                          }),
+                    )),
+                SizedBox(height: 16), // Added space
+                FloatingActionButton.extended(
+                  backgroundColor: Colors.black,
+                  onPressed: () {
+                    _value != "-1" &&
+                            itemNameController.text.isNotEmpty &&
+                            itemDescriptionController.text.isNotEmpty &&
+                            itemPriceController.text.isNotEmpty
+                        ? itemAddSuccess = addNewItemToDB(
+                            context,
+                            itemNameController.text,
+                            itemDescriptionController.text,
+                            itemPriceController.text,
+                            _value, // _value = categoryid
+                            _image1,
+                            _image2,
+                            _image3)
+                        : null;
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            addedListingDialog(itemAddSuccess));
+                    if (itemAddSuccess) {
+                      itemNameController.clear();
+                      itemDescriptionController.clear();
+                      itemPriceController.clear();
+                      setState(() {
+                        _image1 = null;
+                        _image2 = null;
+                        _image3 = null;
+                        _value = "-1";
+                      });
+                    }
+                  },
+                  icon: Icon(Icons.add),
+                  label: Text("Add Listing"),
+                ),
+              ]),
             ),
           ),
-        )
+        ),
+      ),
     );
   }
 
@@ -360,6 +383,7 @@ class _AddListingState extends State<AddListing> {
       );
     }
   }
+
   //TODO: add clothing filters
   bool addNewItemToDB(
       BuildContext context,
@@ -386,7 +410,7 @@ class _AddListingState extends State<AddListing> {
     }
 
     Provider.of<CategoryItemModel>(context, listen: false)
-        .addCategoryItem(int.parse(categoryId), item, imageDataList,context);
+        .addCategoryItem(int.parse(categoryId), item, imageDataList, context);
 
     return true;
   }
@@ -402,9 +426,11 @@ class _AddListingState extends State<AddListing> {
       file = File(path!);
     });
   }
-  void _loadPicker(ImageSource source, int imageNumber) async{
-    XFile? picked = await ImagePicker().pickImage(source: source, maxHeight: 600, maxWidth: 600);
-    if(picked != null){
+
+  void _loadPicker(ImageSource source, int imageNumber) async {
+    XFile? picked = await ImagePicker()
+        .pickImage(source: source, maxHeight: 600, maxWidth: 600);
+    if (picked != null) {
       switch (imageNumber) {
         case 1:
           setState(() {
@@ -426,31 +452,29 @@ class _AddListingState extends State<AddListing> {
     Navigator.of(context, rootNavigator: true).pop();
   }
 
-  void _showPickOptionsDialog(BuildContext context, int imageNumber){
+  void _showPickOptionsDialog(BuildContext context, int imageNumber) {
     BuildContext dialogContext;
-    showDialog(context: context,
+    showDialog(
+        context: context,
         builder: (context) => AlertDialog(
-          // dialogContext = context;
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text("Pick from Gallery"),
-                onTap: (){
-                  _loadPicker(ImageSource.gallery, imageNumber);
-                },
+              // dialogContext = context;
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text("Pick from Gallery"),
+                    onTap: () {
+                      _loadPicker(ImageSource.gallery, imageNumber);
+                    },
+                  ),
+                  ListTile(
+                    title: Text("Take a picture"),
+                    onTap: () {
+                      _loadPicker(ImageSource.camera, imageNumber);
+                    },
+                  )
+                ],
               ),
-              ListTile(
-                title: Text("Take a picture"),
-                onTap: (){
-                  _loadPicker(ImageSource.camera, imageNumber);
-                },
-              )
-            ],
-          ),
-        ) );
+            ));
   }
-
-
-
 }

@@ -4,26 +4,37 @@ import 'package:student_shopping_v1/FavoriteItem/favoriteItem.dart';
 class favoritePageTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-          backgroundColor: Colors.grey[200],
-          elevation: .1,
-          title: Center(
-            child: Text(
-              'Favorites',
-              style: TextStyle(color: Colors.black),
+    return WillPopScope(
+      onWillPop: () async {
+        return true;
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black54,
+              ),
             ),
+            automaticallyImplyLeading: false,
+            elevation: .1,
+              title: Text(
+                'Favorites',
+                style: TextStyle(color: Colors.black),
+              ),
+
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 10),
+              ),
+            ],
           ),
-          actions: [
-            Container(
-              margin: EdgeInsets.only(right: 10),
-            ),
-          ],
-        ),
-        body: FavoriteItem()
+          body: FavoriteItem()
+
+      ),
     );
   }
 }
