@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
 import 'package:student_shopping_v1/pages/favoritePage.dart';
+import 'package:student_shopping_v1/pages/manageGroupsPage.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePageBody.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePageNew.dart';
@@ -168,9 +169,9 @@ class _HomePageState extends State<BuyerHomePage>
                   "Messaging"),
               GButton(
                   icon:
-                  Icons.person,
+                  Icons.group,
                   text:
-                  "Profile"),
+                  "Groups"),
             ],
 
 
@@ -249,11 +250,7 @@ class _HomePageState extends State<BuyerHomePage>
             // favoritePageTab(),
             AddListing(),
             ChatPage(),
-            StreamBuilder<User?>(
-                stream: FirebaseAuth.instance.authStateChanges(),
-                builder: (context, snapshot) {
-                  return SellerProfilePageNew();
-                }),
+            manageGroupsPage()
           ],
         ),
       ),

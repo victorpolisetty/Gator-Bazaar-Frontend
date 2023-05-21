@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:student_shopping_v1/Widgets/addedListingDialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
+import 'package:student_shopping_v1/pages/MulitSelectAddListingView.dart';
 
+import '../Widgets/MultiSelectDialog.dart';
+import '../models/adminProfileModel.dart';
+import '../models/groupModel.dart';
 import '../models/itemModel.dart';
 import '../new/size_config.dart';
+import 'itemDetailPage.dart';
 
 class AddListing extends StatefulWidget {
   @override
@@ -25,6 +31,8 @@ class _AddListingState extends State<AddListing> {
   bool itemAddSuccess = false;
   String _value = "-1";
   bool dialogShowed = false;
+  Set<int> _selectedGroupIds = {};
+
   // String clothingVal = "5";
   //late String imageUrl;
   late Future<File> imageFile;
@@ -35,6 +43,43 @@ class _AddListingState extends State<AddListing> {
   String userEmail = "";
   late Map data;
   late File file;
+  final PagingController<int, Group> _pagingControllerMyGroups =
+  PagingController(firstPageKey: 0);
+  int totalPages = 0;
+  Set<int> resultOfGroupsSelected = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingControllerMyGroups.addPageRequestListener((pageKey) {
+      _fetchPageMyGroups(pageKey, 1);
+    });
+  }
+
+  @override
+  void dispose() {
+    if(!mounted) _pagingControllerMyGroups.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchPageMyGroups(int pageKey, int categoryId) async {
+    try {
+      await Provider.of<GroupModel>(context, listen: false).getGroupsUserInAndImages(pageKey);
+      totalPages = Provider.of<GroupModel>(context, listen: false).totalPages;
+      if(mounted) {
+        final isLastPage = (totalPages-1) == pageKey;
+
+        if (isLastPage) {
+          _pagingControllerMyGroups.appendLastPage(Provider.of<GroupModel>(context, listen: false).groupListMyGroups);
+        } else {
+          final int? nextPageKey = pageKey + 1;
+          _pagingControllerMyGroups.appendPage(Provider.of<GroupModel>(context, listen: false).groupListMyGroups, nextPageKey);
+        }
+      }
+    } catch (error) {
+      _pagingControllerMyGroups.error = error;
+    }
+  }
 
   Future getImage(int type) async {
     PickedFile pickedImage = (await ImagePicker().getImage(
@@ -79,8 +124,8 @@ class _AddListingState extends State<AddListing> {
             padding: EdgeInsets.symmetric(horizontal: 16), // Added padding
             child: Form(
               key: _formKey,
-              child: Column(children: <Widget>[
-                SizedBox(height: 16), // Added space
+              child: ListView(
+                  children: <Widget>[
                 Row(
                   mainAxisAlignment:
                       MainAxisAlignment.spaceEvenly, // Space images evenly
@@ -257,44 +302,57 @@ class _AddListingState extends State<AddListing> {
                             });
                           }),
                     )),
-                SizedBox(height: 16), // Added space
-                FloatingActionButton.extended(
-                  backgroundColor: Colors.black,
-                  onPressed: () {
-                    _value != "-1" &&
-                            itemNameController.text.isNotEmpty &&
-                            itemDescriptionController.text.isNotEmpty &&
-                            itemPriceController.text.isNotEmpty
-                        ? itemAddSuccess = addNewItemToDB(
-                            context,
-                            itemNameController.text,
-                            itemDescriptionController.text,
-                            itemPriceController.text,
-                            _value, // _value = categoryid
-                            _image1,
-                            _image2,
-                            _image3)
-                        : null;
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            addedListingDialog(itemAddSuccess));
-                    if (itemAddSuccess) {
-                      itemNameController.clear();
-                      itemDescriptionController.clear();
-                      itemPriceController.clear();
-                      setState(() {
-                        _image1 = null;
-                        _image2 = null;
-                        _image3 = null;
-                        _value = "-1";
-                      });
-                    }
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text("Add Listing"),
+                Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: ElevatedButton(
+                      onPressed: (){
+                        _showPagedListViewDialog(context);
+                      },
+                      child: Text('Select Groups'),
+                    ),
                 ),
-              ]),
+                SizedBox(height: 16), // Added space
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 200.0), // adjust this value as needed
+                      child: FloatingActionButton.extended(
+                        backgroundColor: Colors.black,
+                        onPressed: () {
+                          _value != "-1" &&
+                              itemNameController.text.isNotEmpty &&
+                              itemDescriptionController.text.isNotEmpty &&
+                              itemPriceController.text.isNotEmpty && resultOfGroupsSelected.length != 0
+                              ? itemAddSuccess = addNewItemToDB(
+                              context,
+                              itemNameController.text,
+                              itemDescriptionController.text,
+                              itemPriceController.text,
+                              _value, // _value = categoryid
+                              _image1,
+                              _image2,
+                              _image3,
+                              resultOfGroupsSelected)
+                              : null;
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  addedListingDialog(itemAddSuccess));
+                          if (itemAddSuccess) {
+                            itemNameController.clear();
+                            itemDescriptionController.clear();
+                            itemPriceController.clear();
+                            setState(() {
+                              _image1 = null;
+                              _image2 = null;
+                              _image3 = null;
+                              _value = "-1";
+                            });
+                          }
+                        },
+                        icon: Icon(Icons.add),
+                        label: Text("Add Listing"),
+                      ),
+                    ),
+                  ]),
             ),
           ),
         ),
@@ -393,7 +451,8 @@ class _AddListingState extends State<AddListing> {
       String categoryId,
       File? image1,
       File? image2,
-      File? image3) {
+      File? image3,
+      Set<int> groupIdsForItem) {
     var item = Item(int.parse(categoryId), name, num.parse(price), description);
     List<File> imageDataList = [];
 
@@ -410,7 +469,7 @@ class _AddListingState extends State<AddListing> {
     }
 
     Provider.of<CategoryItemModel>(context, listen: false)
-        .addCategoryItem(int.parse(categoryId), item, imageDataList, context);
+        .addCategoryItem(int.parse(categoryId), item, imageDataList, context, groupIdsForItem);
 
     return true;
   }
@@ -476,5 +535,61 @@ class _AddListingState extends State<AddListing> {
                 ],
               ),
             ));
+  }
+
+  void _showPagedListViewDialog(BuildContext context) async {
+    resultOfGroupsSelected = (await showDialog<Set<int>>(
+      context: context,
+      barrierDismissible: true, // Allows tapping outside to close the dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Options'),
+          content: Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * .58,
+                child: PagedListView(
+                  pagingController: _pagingControllerMyGroups,
+                  shrinkWrap: true,
+                  builderDelegate:
+                  PagedChildBuilderDelegate<Group>(
+                    firstPageProgressIndicatorBuilder: (_) =>
+                        Center(child: spinkit),
+                    newPageProgressIndicatorBuilder: (_) =>
+                        Center(child: spinkit),
+                    itemBuilder: (BuildContext context, group, int index) {
+                      return MultiSelectAddListingView(
+                        group: group,
+                        uniqueIdentifier: "groupCardFindGroups",
+                        onCheckboxChanged: (int groupId) {
+                          setState(() {
+                            if (_selectedGroupIds.contains(groupId)) {
+                              _selectedGroupIds.remove(groupId);
+                            } else {
+                              _selectedGroupIds.add(groupId);
+                            }
+                          });
+                        },
+                        selectedGroupIds: _selectedGroupIds,
+                      );
+                    },
+
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(_selectedGroupIds);
+              },
+              child: Text('Done'),
+            ),
+          ],
+        );
+      },
+    )) ?? resultOfGroupsSelected;
   }
 }

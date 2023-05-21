@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
+import 'package:student_shopping_v1/pages/specificGroupPage.dart';
 import '../../Widgets/FavoriteWidget.dart';
 import '../../models/itemModel.dart';
 import '../../models/recentItemModel.dart';
@@ -23,11 +24,13 @@ class GroupsCardViewMyGroups extends StatelessWidget {
     required this.pagingControllerFindGroups,
     required this.pagingControllerMyGroups,
     required this.pagingControllerAdminGroups,
+    required this.context,
   }) : super(key: key);
 
   final double width, aspectRetio;
   final Group group;
   final String uniqueIdentifier;
+  final BuildContext context;
   final PagingController<int, Group> pagingControllerFindGroups;
   final PagingController<int, Group> pagingControllerMyGroups;
   final PagingController<int, Group> pagingControllerAdminGroups;
@@ -41,7 +44,11 @@ class GroupsCardViewMyGroups extends StatelessWidget {
         child: AspectRatio(
           aspectRatio: aspectRetio,
           child: InkWell(
-            onTap: (){},
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SpecificGroupPage(groupId: group.id!, groupName: group.name!)),);
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

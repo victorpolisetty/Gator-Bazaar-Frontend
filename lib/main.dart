@@ -5,6 +5,7 @@ import 'package:student_shopping_v1/buyerhome.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
 import 'package:student_shopping_v1/models/categoryModel.dart';
 import 'package:student_shopping_v1/models/chatMessageModel.dart';
+import 'package:student_shopping_v1/models/groupItemModel.dart';
 import 'package:student_shopping_v1/models/groupModel.dart';
 import 'package:student_shopping_v1/models/groupRequestModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
@@ -176,6 +177,10 @@ class _MyAppState extends State<MyApp> {
           ),
           ChangeNotifierProvider(
             create: (context) => AdminProfileModel(),
+            //builder: (context, _) => App(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => GroupItemModel(),
             //builder: (context, _) => App(),
           ),
         ],

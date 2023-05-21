@@ -13,7 +13,6 @@ class Categories1 extends StatelessWidget {
       {"icon": "assets/icons/misc.svg", "text": "Misc.", "pressNumber" : 7},
       {"icon": "assets/icons/free.svg", "text": "Free", "pressNumber" : 9},
 
-
     ];
     List<Map<String, dynamic>> categories2 = [
 

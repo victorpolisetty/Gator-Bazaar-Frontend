@@ -12,45 +12,45 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:provider/provider.dart';
-part 'categoryItemModel.g.dart';
+part 'groupItemModel.g.dart';
 
 
 
-const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
+const String BASE_URI = 'http://localhost:5000/';
 const String CATEGORY_ITEMS_URL = '${BASE_URI}categories/';  // TODO -  call the CategoryItem service when it is built
 const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
 
 @JsonSerializable(explicitToJson: true)
-class CategoryItemModel extends ChangeNotifier {
+class GroupItemModel extends ChangeNotifier {
   /// Internal, private state of the cart. Stores the ids of each item.
   String keyword = "";
   int categoryId = 0;
   int totalPages = 0;
   int currentPage = 1;
   int userIdFromDb = -1;
+  Set<int> groupIds = {};
   @JsonKey(ignore: true)
   User? currentUser = FirebaseAuth.instance.currentUser;
-  List<ItemWithImages> categoryItems = [];
-  List<ItemWithImages> categorySearchedItems = [];
+  List<ItemWithImages> groupItems = [];
+  List<ItemWithImages> groupSearchedItems = [];
 
   /// List of items in the cart.
-  List<ItemWithImages> get items => categoryItems;
+  List<ItemWithImages> get items => groupItems;
   //Add categoryItem
 
+  GroupItemModel(){}
 
 
-  factory CategoryItemModel.fromJson(Map<String, dynamic> parsedJson) =>
-      _$CategoryItemModelFromJson(parsedJson);
+  factory GroupItemModel.fromJson(Map<String, dynamic> parsedJson) =>
+      _$GroupItemModelFromJson(parsedJson);
 
-  Map<String, dynamic> toJson() => _$CategoryItemModelToJson(this);
-
-// Todo -- Move below to service class
+  Map<String, dynamic> toJson() => _$GroupItemModelToJson(this);
 
   Future<void> _getItems() async {
-    categoryItems.clear();
+    groupItems.clear();
     await getProfileFromDb(currentUser?.uid.toString());
-    await getItemRestList();
+    await getItemRestList(groupIds);
     await get1stImageForItemIfAvailable();
     notifyListeners();
   }
@@ -65,22 +65,22 @@ class CategoryItemModel extends ChangeNotifier {
 
 
   Future<void> _getSearchedItems() async {
-    categoryItems.clear();
+    groupItems.clear();
     await getSearchedItemRestList();
     await get1stImageForItemIfAvailable();
     notifyListeners();
   }
 
   Future <Item?> postItem(Item itm) async  {
-      await init2();
-      itm = await postItemSingle(itm) //;
-   //   notifyListeners();
-     // return itm;
-       .then((value)  {
-         itm = value;
-         return itm;
-       }) ;
-      return null;
+    await init2();
+    itm = await postItemSingle(itm) //;
+    //   notifyListeners();
+    // return itm;
+        .then((value)  {
+      itm = value;
+      return itm;
+    }) ;
+    return null;
   }
 
 
@@ -96,63 +96,115 @@ class CategoryItemModel extends ChangeNotifier {
           "Content-Type": "application/json"
         }
         , body: tmpObj
-        );
+    );
 
-  //  .then((response) {
-      if (response.statusCode == 200) {
-        data = jsonDecode(response.body);
-        itm.id = data['id'];
-     //   return itm;
-      } else {
-        print(response.statusCode);
-      }
-  //  });
+    //  .then((response) {
+    if (response.statusCode == 200) {
+      data = jsonDecode(response.body);
+      itm.id = data['id'];
+      //   return itm;
+    } else {
+      print(response.statusCode);
+    }
+    //  });
     return itm;
   }
 
-  Future<bool?> initNextCatPage(int pageNum, int categoryId) async {
-    categoryItems.clear();
+  Future<bool?> initNextCatPage(int pageNum, Set<int> groupIds, int resultOfCatSelected) async {
+    groupItems.clear();
     await getProfileFromDb(currentUser?.uid.toString());
-    await getNextPage(pageNum, categoryId);
+    if(resultOfCatSelected == 10) {
+      await getNextPageAll(pageNum, groupIds, resultOfCatSelected);
+    } else {
+      await getNextPageCat(pageNum, groupIds, resultOfCatSelected);
+    }
     await get1stImageForItemIfAvailable();
     return false;
   }
+
   Future<bool?> initSearchCat(int pageNum, String keyword) async {
     await getNextSearchedPage(categoryId, keyword, pageNum,);
     await get1stImageForItemIfAvailable();
     return false;
   }
 
-  Future<int> getNextPage(int pageNum, int categoryId) async {
+  // Future<int> getNextPage(int pageNum, int categoryId) async {
+  //   Map<String, dynamic> data;
+  //
+  //   var url = Uri.parse('http://localhost:5000/getItemsByGroupIds?size=6&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+  //   http.Response response = await http.post(
+  //       url, headers: {"Accept": "application/json"});
+  //   if (response.statusCode == 200) {
+  //
+  //   } else {
+  //     print(response.statusCode);
+  //     return -1;
+  //   }
+  // }
+
+  Future<int> getNextPageAll(int pageNum, Set<int> groupIds, resultOfCatSelected) async {  // groupIds parameter added here
     Map<String, dynamic> data;
 
-    var url = Uri.parse(CATEGORY_ITEMS_URL+'${categoryId}/items?size=6&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
+    var url = Uri.parse('http://localhost:5000/getItemsByGroupIds?size=6&page=$pageNum&sort=createdAt,desc');
+
+    Map<String, dynamic> bodyData = {
+      "groupIds": groupIds.toList(),
+    };
+
+    http.Response response = await http.post(
+      url,
+      headers: {"Accept": "application/json",
+        "Content-Type": "application/json"},
+      body: json.encode(bodyData), // Added the body data here
+    );
+
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       var items = data['content'];
       totalPages = data['totalPages'];
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
-        categoryItems.add(itm);
-        //Provider.of<RecentItemModel>(context, listen: false).add(itm);
-
-
-        // for (int imgId in itm.itemImageList) {
-        //   var url = Uri.parse(
-        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
-        // }
+        groupItems.add(itm);
       }
       return totalPages;
-
-      //     notifyListeners();
-      //print(categoryItems);
     } else {
       print(response.statusCode);
       return -1;
     }
   }
+
+  Future<int> getNextPageCat(int pageNum, Set<int> groupIds, int selectedCategoryId) async {
+    Map<String, dynamic> data;
+
+    var url = Uri.parse('http://localhost:5000/getItemsByGroupAndCategoryIds?size=6&page=$pageNum&sort=createdAt,desc');
+
+    Map<String, dynamic> bodyData = {
+      "groupIds": groupIds.toList(),
+      "categoryIds": [selectedCategoryId],  // assuming single selected category
+    };
+
+    http.Response response = await http.post(
+      url,
+      headers: {"Accept": "application/json",
+        "Content-Type": "application/json"},
+      body: json.encode(bodyData),
+    );
+
+    if (response.statusCode == 200) {
+      data = jsonDecode(response.body);
+      var items = data['content'];
+      totalPages = data['totalPages'];
+      for (int i = 0; i < items.length; i++) {
+        ItemWithImages itm = ItemWithImages.fromJson(items[i]);
+        groupItems.add(itm);
+      }
+      return totalPages;
+    } else {
+      print(response.statusCode);
+      return -1;
+    }
+  }
+
 
   Future<int> getNextSearchedPage(int categoryId, String searchWord, int pageNum) async {
     Map<String, dynamic> data;
@@ -166,19 +218,9 @@ class CategoryItemModel extends ChangeNotifier {
       totalPages = data['totalPages'];
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
-        categoryItems.add(itm);
-        //Provider.of<RecentItemModel>(context, listen: false).add(itm);
-
-
-        // for (int imgId in itm.itemImageList) {
-        //   var url = Uri.parse(
-        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
-        // }
+        groupItems.add(itm);
       }
       return totalPages;
-
-      //     notifyListeners();
-      //print(categoryItems);
     } else {
       print(response.statusCode);
       return -1;
@@ -195,31 +237,27 @@ class CategoryItemModel extends ChangeNotifier {
     }
   }
 
-  Future<void> getItemRestList() async {
-    Map<String, dynamic> data;
+  Future<void> getItemRestList(Set<int> groupIds) async {
+    var url = Uri.parse('http://localhost:5000/getItemsByGroupIds');
+    String jsonBody = json.encode({'groupIds': groupIds.toList()});
+    final http.Response response = await http.post(
+      url,
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: jsonBody,
+    );
 
-    var url = Uri.parse(CATEGORY_ITEMS_URL+'${categoryId}/items?size=10&page=0&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      String responseJson = Utf8Decoder().convert(response.bodyBytes);
-      data = json.decode(responseJson);
-      var items = data['content'];
-      for (int i = 0; i < items.length; i++) {
-        // if(items[i]['seller_id'] == userIdFromDb) {
-        //   continue;
-        // }
-        ItemWithImages itm = ItemWithImages.fromJson(items[i]);
-        categoryItems.add(itm);
-        totalPages = data['totalPages'];
-        // Provider.of<RecentItemModel>(context, listen: false).add(itm);
-      }
- //     notifyListeners();
-      print(categoryItems);
+      List<dynamic> data = json.decode(response.body);
+      print("Received Item IDs: $data");
+      // Process item IDs as needed
     } else {
       print(response.statusCode);
     }
   }
+
 
   Future<void> getSearchedItemRestList() async {
     Map<String, dynamic> data;
@@ -232,7 +270,7 @@ class CategoryItemModel extends ChangeNotifier {
       var items = data['content'];
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
-        categoryItems.add(itm);
+        groupItems.add(itm);
         totalPages = data['totalPages'];
         //Provider.of<RecentItemModel>(context, listen: false).add(itm);
 
@@ -244,7 +282,7 @@ class CategoryItemModel extends ChangeNotifier {
       }
 
       //     notifyListeners();
-      print(categoryItems);
+      print(groupItems);
     } else {
       print(response.statusCode);
     }
@@ -262,30 +300,30 @@ class CategoryItemModel extends ChangeNotifier {
 
 
   Future<void> get1stImageForItemIfAvailable() async {
-    if (categoryItems.isEmpty) return;
+    if (groupItems.isEmpty) return;
     Uint8List data = new Uint8List(0);
 
-    for (int i = 0; i < categoryItems.length; i++) {
-      if (categoryItems[i].itemPictureIds.isNotEmpty) {
+    for (int i = 0; i < groupItems.length; i++) {
+      if (groupItems[i].itemPictureIds.isNotEmpty) {
         String urlString = ITEMS_IMAGES_URL +
-            (categoryItems[i].itemPictureIds[0]).toString();
+            (groupItems[i].itemPictureIds[0]).toString();
         var url = Uri.parse(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {
           data = response.bodyBytes;
         }
-        print(categoryItems);
+        print(groupItems);
       } else { // Add default - no image
         data = (await rootBundle.load(
-            // 'assets/images/no-picture-available-icon.png'
+          // 'assets/images/no-picture-available-icon.png'
             'assets/images/GatorBazaar.jpg'
 
         ))
             .buffer
             .asUint8List();
       }
-      categoryItems[i].imageDataList.add(data);
+      groupItems[i].imageDataList.add(data);
     }
   }
 
@@ -337,8 +375,8 @@ class CategoryItemModel extends ChangeNotifier {
       itmRest.imageDataList.add(data);
       //response.transform(utf8.decoder).listen((value) {
       return itmRest;
-        print(data);
-      }
+      print(data);
+    }
     return null;
   }
 
@@ -350,17 +388,17 @@ class CategoryItemModel extends ChangeNotifier {
     try {
       postItem(itm)
           .then((retItm) async {
-             if (itm.id != null) {
-               //TODO: put seller_id instead of 1
-               ItemWithImages itmRest = new ItemWithImages.CreateItem(itm.category_id, 1 ,itm.name,itm.price,itm.description,itm.id, new List.empty());
-               for (File img in imageDataList) { // Insert images
-                  uploadItemImageToDB(img, itmRest);
-               }
-               categoryItems.add(itmRest);
-               Provider.of<SellerItemModel>(context, listen: false).add(itmRest);
-               Provider.of<RecentItemModel>(context, listen: false).shouldReload = true;
-             }
-             //TODO: add logic here to put group ids inside item
+        if (itm.id != null) {
+          //TODO: put seller_id instead of 1
+          ItemWithImages itmRest = new ItemWithImages.CreateItem(itm.category_id, 1 ,itm.name,itm.price,itm.description,itm.id, new List.empty());
+          for (File img in imageDataList) { // Insert images
+            uploadItemImageToDB(img, itmRest);
+          }
+          groupItems.add(itmRest);
+          Provider.of<SellerItemModel>(context, listen: false).add(itmRest);
+          Provider.of<RecentItemModel>(context, listen: false).shouldReload = true;
+        }
+        //TODO: add logic here to put group ids inside item
       }).then((value) => addItemToGroups(itm.id,groupIdsForItem));
     } catch (e) {
       print(e);
@@ -398,17 +436,17 @@ class CategoryItemModel extends ChangeNotifier {
 
   /// Adds [item] to cart. This is the only way to modify the cart from outside.
   void add(ItemWithImages item) {
-    categoryItems.add(item);
+    groupItems.add(item);
     // This line tells [Model] that it should rebuild the widgets that
     // depend on it.
-   notifyListeners();
+    notifyListeners();
   }
 
   void remove(ItemWithImages item) {
-    categoryItems.remove(item);
+    groupItems.remove(item);
     // Don't forget to tell dependent widgets to rebuild _every time_
     // you change the model.
-   notifyListeners();
+    notifyListeners();
   }
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
@@ -430,13 +468,16 @@ class CategoryItemModel extends ChangeNotifier {
 
 // Handle one Page of Items
 @JsonSerializable(explicitToJson: true)
-class CategoryItemPage {
-  List<ItemWithImages> categoryItemList = [];
-  List<ItemWithImages> get categoryItems => categoryItemList;
+class GroupItemPage {
+
+  GroupItemPage(){}
+
+  List<ItemWithImages> groupItemList = [];
+  List<ItemWithImages> get groupItems => groupItemList;
 
   CategoryItemPage(List<ItemWithImages> categoryItemList){
-    this.categoryItemList = categoryItemList;
+    this.groupItemList = categoryItemList;
   }
-  factory CategoryItemPage.fromJson(Map<String, dynamic> parsedJson) => _$CategoryItemPageFromJson(parsedJson);
-  Map<String, dynamic> toJson() => _$CategoryItemPageToJson(this);
+  factory GroupItemPage.fromJson(Map<String, dynamic> parsedJson) => _$GroupItemPageFromJson(parsedJson);
+  Map<String, dynamic> toJson() => _$GroupItemPageToJson(this);
 }

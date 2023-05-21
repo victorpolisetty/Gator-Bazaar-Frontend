@@ -182,8 +182,8 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
   @override
   Widget build(BuildContext context) {
     final upperTab = new TabBar(labelColor: Colors.black, tabs: <Tab>[
-      new Tab(text: "Find Groups"),
       new Tab(text: "My Groups"),
+      new Tab(text: "Find Groups"),
       new Tab(text: "Admin Groups"),
     ]);
     return WillPopScope(
@@ -194,10 +194,54 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
           length: 3,
           child: Scaffold(
             appBar: AppBar(
+              title: Text("Manage Groups", style: TextStyle(color: Colors.black),),
               bottom: upperTab,
             ),
             body: TabBarView(
               children: [
+                //MY GROUPS
+                RefreshIndicator(
+                  onRefresh: () =>
+                      Future.sync(() => _pagingControllerMyGroups.refresh()),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * .58,
+                        child: PagedGridView(
+                          pagingController: _pagingControllerMyGroups,
+                          shrinkWrap: true,
+                          builderDelegate:
+                          PagedChildBuilderDelegate<Group>(
+                            firstPageProgressIndicatorBuilder: (_) =>
+                                Center(child: spinkit),
+                            newPageProgressIndicatorBuilder: (_) =>
+                                Center(child: spinkit),
+                            itemBuilder:
+                                (BuildContext context, group, int index) {
+                              return GroupsCardViewMyGroups(
+                                  group: group,
+                                  pagingControllerFindGroups: _pagingControllerFindGroups,
+                                  pagingControllerMyGroups: _pagingControllerMyGroups,
+                                  pagingControllerAdminGroups: _pagingControllerAdminGroups,
+                                  uniqueIdentifier: "groupCardMyGroups",
+                                  context: context);
+                              // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                            },
+                          ),
+                          // controller: _controller,
+                          // itemCount: recentList.items.length,
+
+                          gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 //FIND GROUPS
                 RefreshIndicator(
                   onRefresh: () {
@@ -235,48 +279,6 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                                 isRequested: isRequested,
                                 uniqueIdentifier: "groupCardFindGroups",);
                             },
-                          ),
-                          // controller: _controller,
-                          // itemCount: recentList.items.length,
-
-                          gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 0,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                //MY GROUPS
-                RefreshIndicator(
-                  onRefresh: () =>
-                      Future.sync(() => _pagingControllerMyGroups.refresh()),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * .58,
-                        child: PagedGridView(
-                          pagingController: _pagingControllerMyGroups,
-                          shrinkWrap: true,
-                          builderDelegate:
-                          PagedChildBuilderDelegate<Group>(
-                            firstPageProgressIndicatorBuilder: (_) =>
-                                Center(child: spinkit),
-                            newPageProgressIndicatorBuilder: (_) =>
-                                Center(child: spinkit),
-                            itemBuilder:
-                                (BuildContext context, group, int index) {
-                              return GroupsCardViewMyGroups(
-                                  group: group,
-                                pagingControllerFindGroups: _pagingControllerFindGroups,
-                                pagingControllerMyGroups: _pagingControllerMyGroups,
-                                pagingControllerAdminGroups: _pagingControllerAdminGroups,
-                                uniqueIdentifier: "groupCardMyGroups",);
-                                  // padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                              },
                           ),
                           // controller: _controller,
                           // itemCount: recentList.items.length,
