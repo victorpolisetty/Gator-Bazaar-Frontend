@@ -27,27 +27,10 @@ class _PopularProductsState extends State<PopularProducts> {
 
   @override
   void initState() {
-    // _pagingController.addPageRequestListener((pageKey) {
-    //   _fetchPage(pageKey);
-    // });
     Provider.of<RecentItemModel>(context, listen: false);
     Provider.of<FavoriteModel>(context, listen: false).getCategoryItems();
     super.initState();
   }
-
-  // Future<void> _fetchPage(int pageKey) async {
-  //   await Provider.of<RecentItemModel>(context, listen: false).init1(pageKey);
-  //   totalPages = Provider.of<RecentItemModel>(context, listen: false).totalPages;
-  //   // if(mounted) {
-  //   final isLastPage = (totalPages-1) == pageKey;
-  //   if (isLastPage) {
-  //     _pagingController.appendLastPage(Provider.of<RecentItemModel>(context, listen: false).items);
-  //   } else {
-  //     final int? nextPageKey = pageKey + 1;
-  //     _pagingController.appendPage(Provider.of<RecentItemModel>(context, listen: false).items, nextPageKey);
-  //   }
-  //   // }
-  // }
 
   @override
   void dispose(){
@@ -72,19 +55,9 @@ class _PopularProductsState extends State<PopularProducts> {
               ...List.generate(
                 itemList.items.length,
                     (index) {
-                  // if (demoProducts[index].isPopular)
-                  //     final int id;
-                  //     final String title, description;
-                  //     final List<String> images;
-                  //     final List<Color> colors;
-                  //     final double rating, price;
-                  //     final bool isFavourite, isPopular;
                   return ProductCard(
                       product: itemList.items[index],
                   uniqueIdentifier: "recentProduct",);
-
-                  return SizedBox
-                      .shrink(); // here by default width and height is 0
                 },
               ),
               SizedBox(width: getProportionateScreenWidth(20)),

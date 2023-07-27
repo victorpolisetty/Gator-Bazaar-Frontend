@@ -5,17 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
-import 'package:student_shopping_v1/pages/favoritePage.dart';
 import 'package:student_shopping_v1/pages/manageGroupsPage.dart';
-import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
-import 'package:student_shopping_v1/pages/sellerProfilePageBody.dart';
-import 'package:student_shopping_v1/pages/sellerProfilePageNew.dart';
 import 'HomePageContent.dart';
 import 'models/chatMessageModel.dart';
-import 'new/size_config.dart';
 import 'pages/addListingPage.dart';
 import 'package:http/http.dart' as http;
-import '../constants.dart';
 
 
 class BuyerHomePage extends StatefulWidget {
@@ -28,9 +22,6 @@ class BuyerHomePage extends StatefulWidget {
 int? currDbId = -1;
 
 Future<void> saveTokenToDatabase(String token) async {
-  // Assume user is logged in for this example
-  String? firebaseId = FirebaseAuth.instance.currentUser?.uid;
-
   Future<void> updatedUserDeviceToken() async {
     var url = Uri.parse(
         'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$currDbId/deviceToken/$token');
@@ -61,26 +52,16 @@ Future<int?> getUserDbIdRealFunc() async {
     http.Response response =
         await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       currDbId = data['id'];
-      // recipientProfileName = data['name'];
       print(response.statusCode);
     } else {
       print(response.statusCode);
     }
-    //  });
   }
 
   await updatedUserDbId();
   return null;
-
-  // await FirebaseFirestore.instance
-  //     .collection('users')
-  //     .doc(userId)
-  //     .update({
-  //   'tokens': FieldValue.arrayUnion([token]),
-  // });
 }
 
 class _HomePageState extends State<BuyerHomePage>
@@ -102,30 +83,11 @@ class _HomePageState extends State<BuyerHomePage>
     return await getUserDbIdRealFunc();
   }
 
-  // late TabController _controller;
-
   @override
   void initState() {
     getUserDbId().then((value) => setupToken(currDbId));
-    print("HERE");
-    // _controller = TabController(length: 5, vsync: this);
-    // _controller.addListener(_handleSelected);
     super.initState();
   }
-
-  // static bool shouldReload = false;
-
-  // final List<Widget> tabs = [
-  //   HomePageBody(),
-  //   favoritePageTab(),
-  //   AddListing(),
-  //   ChatPage(),
-  //   StreamBuilder<User?>(
-  //       stream: FirebaseAuth.instance.authStateChanges(),
-  //       builder: (context, snapshot) {
-  //         return sellerProfilePage();
-  //       }),
-  // ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,11 +114,6 @@ class _HomePageState extends State<BuyerHomePage>
                         Icons.home,
                       text:
                           "Home"),
-              // GButton(
-              //     icon:
-              //     Icons.favorite,
-              //     text:
-              //     "Favorites"),
               GButton(
                   icon:
                   Icons.add,
@@ -178,76 +135,11 @@ class _HomePageState extends State<BuyerHomePage>
           ),
         ),
       ),
-      // bottomNavigationBar: TabBar(
-      //   padding: EdgeInsets.symmetric(vertical: 14),
-      //   labelColor: Colors.black,
-      //   indicatorColor: Colors.black,
-      //   unselectedLabelColor: Color(0xFF000000),
-      //   labelPadding: EdgeInsets.only(
-      //     left: getProportionateScreenWidth(10),
-      //   ),
-      //   controller: _controller,
-      //   tabs: [
-      //     Tab(
-      //         icon: Icon(
-      //           Icons.home,
-      //           size: getProportionateScreenWidth(20),
-      //         ),
-      //         child: Text(
-      //           "Home",
-      //           textAlign: TextAlign.center,
-      //           style: TextStyle(
-      //               fontSize: getProportionateScreenWidth(10)),
-      //         )),
-      //     Tab(
-      //       icon: Icon(
-      //         Icons.favorite,
-      //         size: getProportionateScreenWidth(20),
-      //       ),
-      //       child: Text("Favorites",
-      //           textAlign: TextAlign.center,
-      //           style: TextStyle(
-      //               fontSize: getProportionateScreenWidth(10))),
-      //     ),
-      //     Tab(
-      //       icon: Icon(
-      //         Icons.add,
-      //         size: getProportionateScreenWidth(20),
-      //       ),
-      //       child: Text("Add Item",
-      //           textAlign: TextAlign.center,
-      //           style: TextStyle(
-      //               fontSize: getProportionateScreenWidth(10))),
-      //     ),
-      //     Tab(
-      //       icon: Icon(
-      //         Icons.message,
-      //         size: getProportionateScreenWidth(20),
-      //       ),
-      //       child: Text("Messaging",
-      //           textAlign: TextAlign.center,
-      //           style: TextStyle(
-      //               fontSize: getProportionateScreenWidth(10))),
-      //     ),
-      //     Tab(
-      //         icon: Icon(
-      //           Icons.person,
-      //           size: getProportionateScreenWidth(20),
-      //         ),
-      //         child: Text("Profile",
-      //             textAlign: TextAlign.center,
-      //             style: TextStyle(
-      //                 fontSize: getProportionateScreenWidth(10)))),
-      //   ],
-      // ),
-
-      // resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: IndexedStack(
           index: _selectedPage,
           children: [
             HomePageBody(),
-            // favoritePageTab(),
             AddListing(),
             ChatPage(),
             manageGroupsPage()
@@ -270,6 +162,5 @@ class _HomePageState extends State<BuyerHomePage>
         _selectedPage = index;
       });
     }
-    // get index from controller (I am not sure about exact parameter name for selected index) ;
   }
 }

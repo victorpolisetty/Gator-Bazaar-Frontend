@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import '../../Widgets/FavoriteWidget.dart';
 import '../../models/itemModel.dart';
@@ -12,28 +13,31 @@ class ProductCardSeller extends StatelessWidget {
     Key? key,
     required this.product,
     required this.uniqueIdentifier,
+    required this.pagingController,
   }) : super(key: key);
 
   final ItemWithImages product;
   final String uniqueIdentifier;
+  final PagingController<int, ItemWithImages> pagingController;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(getProportionateScreenWidth(4)),  // reducing padding
+      padding: EdgeInsets.all(getProportionateScreenWidth(4)),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return InkWell(
             onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                 builder: (context) => new ItemDetailPageSellerView(
                     context.watch<RecentItemModel>().currentUserId,
-                    product
+                    product,
+                    pagingController
                 ))),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AspectRatio(
-                  aspectRatio: 1.5,  // adjusting aspect ratio
+                  aspectRatio: 1.5,
                   child: Container(
                     padding: EdgeInsets.all(getProportionateScreenWidth(10)),
                     decoration: BoxDecoration(
@@ -47,11 +51,29 @@ class ProductCardSeller extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 5),  // reducing vertical spacing
-                Text(
-                  product.name,
-                  style: TextStyle(color: Colors.black),
-                  maxLines: 2,
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        product.name,
+                        style: TextStyle(color: Colors.black),
+                        maxLines: 2,
+                      ),
+                    ),
+                    if (product.isSold)
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          "SOLD!",
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
+                      ),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,7 +81,7 @@ class ProductCardSeller extends StatelessWidget {
                     Text(
                       "\$${product.price}",
                       style: TextStyle(
-                        fontSize: getProportionateScreenWidth(16),  // reducing font size
+                        fontSize: getProportionateScreenWidth(16),
                         fontWeight: FontWeight.w600,
                         color: kPrimaryColor,
                       ),

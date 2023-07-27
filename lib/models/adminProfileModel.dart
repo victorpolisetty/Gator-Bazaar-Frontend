@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
+import 'package:student_shopping_v1/pages/userProfilePage.dart';
 part 'adminProfileModel.g.dart';
 
 
@@ -23,13 +24,23 @@ class AdminProfile extends ChangeNotifier {
     this.isAdmin = isAdmin;
   }
 
-  factory AdminProfile.fromJson(Map<String, dynamic> parsedJson) => _$AdminProfileFromJson(parsedJson);
+  factory AdminProfile.fromJson(Map<String, dynamic> parsedJson) {
+    return AdminProfile(
+      parsedJson['user']['id'] as int?,
+      parsedJson['user']['name'] as String?,
+      parsedJson['user']['emailId'] as String?,
+      parsedJson['isAdmin'] as bool?,
+    );
+  }
+
   Map<String, dynamic> toJson() => _$AdminProfileToJson(this);
 }
 
 class AdminProfileModel extends ChangeNotifier {
   List<AdminProfile> memberInGroupList = [];
   List<AdminProfile> adminInGroupList = [];
+  List<AdminProfile> requestsInGroupList = [];
+
   int userIdFromDB = -1;
   int totalPages = 0;
   int currentPage = 1;
@@ -39,6 +50,13 @@ class AdminProfileModel extends ChangeNotifier {
     memberInGroupList.clear();
     await getProfileFromDb(currentUser!.uid.toString());
     totalPages = await getNextPageMembersInGroup(pageNum, groupId);
+    notifyListeners();
+  }
+
+  Future<void> getRequestsInGroup(int pageNum, int groupId) async {
+    requestsInGroupList.clear();
+    await getProfileFromDb(currentUser!.uid.toString());
+    totalPages = await getNextPageRequestsInGroup(pageNum, groupId);
     notifyListeners();
   }
 
@@ -77,6 +95,36 @@ class AdminProfileModel extends ChangeNotifier {
       return 0;
     }
   }
+
+  Future<int> getNextPageRequestsInGroup(int pageNum, int groupId) async {
+    try {
+      Map<String, dynamic> data;
+      var url = Uri.parse('http://localhost:5000/profile/findAllPendingRequestsInGroup/$groupId');
+      http.Response response = await http.get(url, headers: {"Accept": "application/json"});
+
+      if (response.statusCode == 200) {
+        data = jsonDecode(response.body);
+        var members = data['content'];
+        totalPages = data["totalPages"];
+        for (int i = 0; i < members.length; i++) {
+          int? id = members[i]['id'];
+          String? name = members[i]['name'];
+          String? emailId = members[i]['emailId'];
+          AdminProfile adminProfile = new AdminProfile(id, name, emailId, false);
+          requestsInGroupList.add(adminProfile);
+        }
+        print("DONE");
+        return totalPages;
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return 0;
+      }
+    } catch (e) {
+      print("Error decoding JSON: $e");
+      return 0;
+    }
+  }
+
 
   Future<int> getNextPageAdminsInGroup(int pageNum, int groupId) async {
     // String firebaseId = currentUser!.uid;
@@ -129,6 +177,40 @@ class AdminProfileModel extends ChangeNotifier {
       print (response.statusCode);
     }
   }
+
+  Future<bool> deleteGroupRequest(int profileId, int groupId) async {
+    var url = Uri.parse('http://localhost:5000/group/deleteGroupReq/$profileId/$groupId');
+    http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
+
+    if (response.statusCode == 200) {
+      print('Group request deleted successfully.');
+      return true;
+    } else if (response.statusCode == 404) {
+      print('Group request not found.');
+      return false;
+    } else {
+      print('Failed to delete group request. Status code: ${response.statusCode}');
+      return false;
+    }
+  }
+
+  Future<bool> acceptGroupRequest(int profileId, int groupId) async {
+    var url = Uri.parse('http://localhost:5000/group/acceptGroupReq/$profileId/$groupId');
+    http.Response response = await http.put(url, headers: {"Accept": "application/json"});
+
+    if (response.statusCode == 200) {
+      print('Group request accepted successfully.');
+      return true;
+    } else if (response.statusCode == 404) {
+      print('Group request not found.');
+      return false;
+    } else {
+      print('Failed to accept group request. Status code: ${response.statusCode}');
+      return false;
+    }
+  }
+
+
 
   Future<void> makeUserAdmin(int? profileId, int? groupId) async {
     // String firebaseId = currentUser!.uid;

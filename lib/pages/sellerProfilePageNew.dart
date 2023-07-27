@@ -214,8 +214,6 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
                                 style: TextStyle(fontSize: 20, fontFamily: 'Montserrat', color: Colors.black),
                               ),
                             ),
-
-
                         ])),
                     SliverPadding(
                       padding: const EdgeInsets.all(5.0),
@@ -229,6 +227,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
                               return ProductCardSeller(
                                 product: item,
                                 uniqueIdentifier: "sellerItem",
+                                pagingController: _pagingController,
                               );
                             }
                         ),

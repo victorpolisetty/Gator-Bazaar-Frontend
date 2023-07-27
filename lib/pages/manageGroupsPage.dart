@@ -4,6 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:student_shopping_v1/models/groupRequestModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:student_shopping_v1/new/components/productCardSellerView.dart';
+import 'package:student_shopping_v1/pages/addNewGroupsRequestPage.dart';
 import 'package:student_shopping_v1/pages/groupsCardViewMyGroups.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePageBody.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import '../models/groupModel.dart';
 import '../new/size_config.dart';
 import 'groupsCardViewAdminGroups.dart';
 import 'groupsCardViewFindGroups.dart';
+import 'itemDetailPage.dart';
 
 class manageGroupsPage extends StatefulWidget {
   @override
@@ -18,13 +20,14 @@ class manageGroupsPage extends StatefulWidget {
 }
 
 class _manageGroupsPageState extends State<manageGroupsPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   late SearchBar searchBar;
   final PagingController<int, Group> _pagingControllerMyGroups =
   PagingController(firstPageKey: 0);
   final PagingController<int, Group> _pagingControllerFindGroups =
   PagingController(firstPageKey: 0);
   final PagingController<int, Group> _pagingControllerAdminGroups =
+  PagingController(firstPageKey: 0);
+  final PagingController<int, Group> _pagingControllerRequestNewGroup =
   PagingController(firstPageKey: 0);
   int totalPages = 0;
   @override
@@ -39,6 +42,9 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
     _pagingControllerAdminGroups.addPageRequestListener((pageKey) {
       _fetchPageAdminGroups(pageKey, 1);
     });
+    _pagingControllerRequestNewGroup.addPageRequestListener((pageKey) {
+      _fetchPageRequestNewGroup(pageKey, 1);
+    });
     super.initState();
   }
 
@@ -48,6 +54,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
     if(!mounted) _pagingControllerMyGroups.dispose();
     if(!mounted) _pagingControllerFindGroups.dispose();
     if(!mounted) _pagingControllerAdminGroups.dispose();
+    if(!mounted) _pagingControllerRequestNewGroup.dispose();
 
   }
 
@@ -107,6 +114,26 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
       _pagingControllerAdminGroups.error = error;
     }
   }
+
+  Future<void> _fetchPageRequestNewGroup(int pageKey, int categoryId) async {
+    try {
+      await Provider.of<GroupModel>(context, listen: false).getGroupsUserInAndImagesAdmin(pageKey);
+      totalPages = Provider.of<GroupModel>(context, listen: false).totalPages;
+      if(mounted) {
+        final isLastPage = (totalPages-1) == pageKey;
+
+        if (isLastPage) {
+          _pagingControllerRequestNewGroup.appendLastPage(Provider.of<GroupModel>(context, listen: false).groupListAdminGroups);
+        } else {
+          final int? nextPageKey = pageKey + 1;
+          _pagingControllerRequestNewGroup.appendPage(Provider.of<GroupModel>(context, listen: false).groupListAdminGroups, nextPageKey);
+        }
+      }
+    } catch (error) {
+      _pagingControllerRequestNewGroup.error = error;
+    }
+  }
+
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
       leading: InkWell(
@@ -117,17 +144,8 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
           Icons.arrow_back_ios,
           color: Colors.black54,
         ),
-        // child: Container(
-        //   // margin: EdgeInsets.only(right: 10),
-        //   // child: Icon(
-        //   //   Icons.search,
-        //   //   color: Colors.grey[800],
-        //   //   size: 27,
-        //   // ),
-        // ),
+
       ),
-      // iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-      // backgroundColor: Colors.grey[200],
       elevation: .1,
       title:
       Text(
@@ -137,20 +155,8 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
 
 
       actions: [
-        // searchBar.getSearchAction(context),
-        // Container(
-        //   margin: EdgeInsets.only(right: 10),
-        //   child: Icon(
-        //     Icons.notifications,
-        //     color: Colors.grey[800],
-        //     size: 27,
-        //   ),
-        // ),
       ],
     );
-    return new AppBar(
-        title: new Text('Student Shop'),
-        actions: [searchBar.getSearchAction(context)]);
   }
 
   _manageGroupsPageState() {
@@ -184,14 +190,16 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
     final upperTab = new TabBar(labelColor: Colors.black, tabs: <Tab>[
       new Tab(text: "My Groups"),
       new Tab(text: "Find Groups"),
+      new Tab(text: "Request New Groups"),
       new Tab(text: "Admin Groups"),
     ]);
+    //MY GROUPS
     return WillPopScope(
         onWillPop: () async {
           return true;
         },
         child: new DefaultTabController(
-          length: 3,
+          length: 4,
           child: Scaffold(
             appBar: AppBar(
               title: Text("Manage Groups", style: TextStyle(color: Colors.black),),
@@ -231,7 +239,6 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                           ),
                           // controller: _controller,
                           // itemCount: recentList.items.length,
-
                           gridDelegate:
                           SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -282,7 +289,6 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                           ),
                           // controller: _controller,
                           // itemCount: recentList.items.length,
-
                           gridDelegate:
                           SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -293,6 +299,13 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                     ],
                   ),
                 ),
+                //REQUEST NEW GROUP
+                SafeArea(
+                    child: IndexedStack(
+                      children: [
+                        AddNewGroupsRequest()
+                      ],
+                    )),
                 //ADMIN GROUPS
                 RefreshIndicator(
                   onRefresh: () =>

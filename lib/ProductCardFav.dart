@@ -78,7 +78,7 @@ class ProductCardFav extends StatelessWidget {
                       color: kPrimaryColor,
                     ),
                   ),
-                  // FavoriteWidget(item: product)
+                  FavoriteWidget(item: product)
                 ],
               )
             ],

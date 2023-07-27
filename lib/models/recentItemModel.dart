@@ -50,13 +50,13 @@ class RecentItemModel extends ChangeNotifier {
   RecentItemModel() {
     var initFuture = init();
     initFuture.then((voidValue) {
-      // state = HomeScreenModelState.initialized;
       notifyListeners();
     });
   }
   Future<void> init() async {
+    List<int> ufGroupList = [1];
     await getProfileFromDb(currentUser?.uid.toString());
-    this.totalPages = await getItemRestList();
+    this.totalPages = await getItemsByGroupIds(ufGroupList);
     await add1stImageToItemIfAvailable();
   }
 
@@ -116,7 +116,7 @@ class RecentItemModel extends ChangeNotifier {
   Future<int> getItemRestList() async {
     Map<String, dynamic> data;
     var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items?size=10&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+        'http://localhost:5000/items?size=10&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -141,6 +141,41 @@ class RecentItemModel extends ChangeNotifier {
       return 0;
     }
   }
+
+  Future<int> getItemsByGroupIds(List<int> groupIds) async {
+    String groupIdsParam = groupIds.join(",");
+    var url = Uri.parse('http://localhost:5000/getItemsByGroupIds?groupIds=$groupIdsParam&size=10&sort=createdAt,desc');
+
+    http.Response response = await http.get(
+      url,
+      headers: {"Accept": "application/json"},
+    );
+
+    if (response.statusCode == 200) {
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      Map<String, dynamic> data = json.decode(responseJson);
+
+      var items = data['content'];
+      var totalPages = data['totalPages'];
+      print(totalPages);
+
+      _recentItems.clear();
+
+      for (int i = 0; i < items.length; i++) {
+        ItemWithImages itm = ItemWithImages.fromJson(items[i]);
+        _recentItems.add(itm);
+      }
+
+      return totalPages;
+    } else {
+      print('Failed with status: ${response.statusCode}.');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to load items');
+    }
+  }
+
+
+
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;

@@ -16,7 +16,7 @@ part 'categoryItemModel.g.dart';
 
 
 
-const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
+const String BASE_URI = 'http://localhost:5000/';
 const String CATEGORY_ITEMS_URL = '${BASE_URI}categories/';  // TODO -  call the CategoryItem service when it is built
 const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
@@ -112,8 +112,9 @@ class CategoryItemModel extends ChangeNotifier {
 
   Future<bool?> initNextCatPage(int pageNum, int categoryId) async {
     categoryItems.clear();
+    Set<int> ufGroupIdList = {1};
     await getProfileFromDb(currentUser?.uid.toString());
-    await getNextPage(pageNum, categoryId);
+    await getNextPage(pageNum, ufGroupIdList, categoryId);
     await get1stImageForItemIfAvailable();
     return false;
   }
@@ -123,36 +124,33 @@ class CategoryItemModel extends ChangeNotifier {
     return false;
   }
 
-  Future<int> getNextPage(int pageNum, int categoryId) async {
+  Future<int> getNextPage(int pageNum, Set<int> groupIds, int selectedCategoryId) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse(CATEGORY_ITEMS_URL+'${categoryId}/items?size=6&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+    String groupIdsParam = groupIds.join(",");
+    var url = Uri.parse('http://localhost:5000/getItemsByGroupAndCategoryIds?groupIds=$groupIdsParam&categoryIds=$selectedCategoryId&size=6&page=$pageNum&sort=createdAt,desc');
+
     http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
+      url,
+      headers: {"Accept": "application/json"},
+    );
+
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       var items = data['content'];
       totalPages = data['totalPages'];
+      categoryItems.clear();
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         categoryItems.add(itm);
-        //Provider.of<RecentItemModel>(context, listen: false).add(itm);
-
-
-        // for (int imgId in itm.itemImageList) {
-        //   var url = Uri.parse(
-        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
-        // }
       }
       return totalPages;
-
-      //     notifyListeners();
-      //print(categoryItems);
     } else {
       print(response.statusCode);
       return -1;
     }
   }
+
 
   Future<int> getNextSearchedPage(int categoryId, String searchWord, int pageNum) async {
     Map<String, dynamic> data;
@@ -284,6 +282,9 @@ class CategoryItemModel extends ChangeNotifier {
         ))
             .buffer
             .asUint8List();
+      }
+      if(categoryItems[i].id == 103) {
+        print("HERE");
       }
       categoryItems[i].imageDataList.add(data);
     }

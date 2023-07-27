@@ -65,12 +65,15 @@ class ProductCard extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Text(
-                    product.name,
-                    style: TextStyle(color: Colors.black),
-                    maxLines: 2,
+                  Flexible(   // Make this Flexible
+                    child: Text(
+                      product.name,
+                      style: TextStyle(color: Colors.black),
+                      maxLines: 2,
+                    ),
                   ),
-                  product.isSold ? ClipRRect(
+                  product.isSold ?
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
                       width: MediaQuery.of(context).size.width * .10,
@@ -86,7 +89,8 @@ class ProductCard extends StatelessWidget {
                       ),
                       color: Colors.green,
                     ),
-                  ) : Expanded(child: Container()),
+                  )
+                      : Container(),  // Return an empty Container when product is not sold
                 ],
               ),
               Row(

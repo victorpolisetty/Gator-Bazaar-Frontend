@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/itemModel.dart';
 import 'package:http/http.dart' as http;
@@ -11,25 +12,27 @@ import '../buyerhome.dart';
 import '../models/recentItemModel.dart';
 import '../models/sellerItemModel.dart';
 
-class isSoldWidget extends StatefulWidget {
+class isSoldWidgetSellerPage extends StatefulWidget {
   var item;
   var isSold;
+  final PagingController<int, ItemWithImages> pagingController;
 
-  isSoldWidget({
+  isSoldWidgetSellerPage({
     this.isSold,
     this.item,
+    required this.pagingController
   });
 
   @override
-  _isSoldWidgetState createState() =>
-      _isSoldWidgetState(item);
+  _isSoldWidgetSellerPageState createState() =>
+      _isSoldWidgetSellerPageState(item);
 }
 
-class _isSoldWidgetState extends State<isSoldWidget> {
+class _isSoldWidgetSellerPageState extends State<isSoldWidgetSellerPage> {
   User? currentUser = FirebaseAuth.instance.currentUser;
   ItemWithImages item;
 
-  _isSoldWidgetState(this.item);
+  _isSoldWidgetSellerPageState(this.item);
 
   void _toggleIsSold(var isSold, ItemWithImages item) {
 
@@ -83,20 +86,20 @@ class _isSoldWidgetState extends State<isSoldWidget> {
                   color: Colors.black,
                   onPressed: () {
                     updateIsSoldStatus().then((value) => Provider.of<RecentItemModel>(context, listen: false).getRecentItems())
-                    .then((value) => Provider.of<SellerItemModel>(context, listen: false).getProfileIdAndItems());
+                        .then((value) => Provider.of<SellerItemModel>(context, listen: false).getProfileIdAndItems()).then((value) => widget.pagingController.refresh());
                     _toggleIsSold(widget.isSold, item);
                   }),
             )),
         // Padding(
-            // padding: const EdgeInsets.fromLTRB(1.0, 2.0, 2.0, 4.0),
-            Container(
-              child: new IconButton(
-                  icon: Icon(Icons.delete),
-                  color: Colors.red,
-                  onPressed: () {
-                    _showConfirmDeleteButton(context, widget.item.id);
-                  }),
-            )
+        // padding: const EdgeInsets.fromLTRB(1.0, 2.0, 2.0, 4.0),
+        Container(
+          child: new IconButton(
+              icon: Icon(Icons.delete),
+              color: Colors.red,
+              onPressed: () {
+                _showConfirmDeleteButton(context, widget.item.id);
+              }),
+        )
         // ),
       ],
     );

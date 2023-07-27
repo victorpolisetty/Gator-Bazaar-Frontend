@@ -142,20 +142,17 @@ class GroupItemModel extends ChangeNotifier {
   //   }
   // }
 
-  Future<int> getNextPageAll(int pageNum, Set<int> groupIds, resultOfCatSelected) async {  // groupIds parameter added here
+  Future<int> getNextPageAll(int pageNum, Set<int> groupIds, resultOfCatSelected) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://localhost:5000/getItemsByGroupIds?size=6&page=$pageNum&sort=createdAt,desc');
+    // Convert groupIds to a comma-separated string for the URL
+    String groupIdsString = groupIds.join(',');
 
-    Map<String, dynamic> bodyData = {
-      "groupIds": groupIds.toList(),
-    };
+    var url = Uri.parse('http://localhost:5000/getItemsByGroupIds?size=6&page=$pageNum&sort=createdAt,desc&groupIds=$groupIdsString');
 
-    http.Response response = await http.post(
+    http.Response response = await http.get(
       url,
-      headers: {"Accept": "application/json",
-        "Content-Type": "application/json"},
-      body: json.encode(bodyData), // Added the body data here
+      headers: {"Accept": "application/json"},
     );
 
     if (response.statusCode == 200) {
@@ -176,18 +173,12 @@ class GroupItemModel extends ChangeNotifier {
   Future<int> getNextPageCat(int pageNum, Set<int> groupIds, int selectedCategoryId) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://localhost:5000/getItemsByGroupAndCategoryIds?size=6&page=$pageNum&sort=createdAt,desc');
+    var url = Uri.parse('http://localhost:5000/getItemsByGroupAndCategoryIds?size=6&page=$pageNum&sort=createdAt,desc'
+        '&groupIds=${groupIds.toList().join(",")}&categoryIds=$selectedCategoryId');
 
-    Map<String, dynamic> bodyData = {
-      "groupIds": groupIds.toList(),
-      "categoryIds": [selectedCategoryId],  // assuming single selected category
-    };
-
-    http.Response response = await http.post(
+    http.Response response = await http.get(
       url,
-      headers: {"Accept": "application/json",
-        "Content-Type": "application/json"},
-      body: json.encode(bodyData),
+      headers: {"Accept": "application/json"},
     );
 
     if (response.statusCode == 200) {

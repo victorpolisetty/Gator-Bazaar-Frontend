@@ -77,6 +77,7 @@ class GroupsCardViewMyGroups extends StatelessWidget {
                         maxLines: 2,
                       ),
                     ),
+                    group.id != 1 ?
                     Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
@@ -85,7 +86,7 @@ class GroupsCardViewMyGroups extends StatelessWidget {
                           onPressed: () {
                             _showConfirmDeleteButton(buildContext, 0);
                           }),
-                    ),
+                    ) : Container(),
                   ],
                 ),
               ],

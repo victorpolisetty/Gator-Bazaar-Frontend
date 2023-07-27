@@ -3,8 +3,10 @@ import 'dart:core';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:student_shopping_v1/Widgets/isSoldWidgetSellerPage.dart';
 import '../Widgets/isSoldWidget.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
@@ -22,9 +24,11 @@ final spinkit = SpinKitFadingCircle(
 class ItemDetailPageSellerView extends StatefulWidget {
   ItemWithImages item;
   int currentUserId = -1;
-  ItemDetailPageSellerView(currentUserId, item)
+  PagingController<int, ItemWithImages> pagingController;
+  ItemDetailPageSellerView(currentUserId, item, pagingController)
       : this.item = item,
-        this.currentUserId = currentUserId;
+        this.currentUserId = currentUserId,
+        this.pagingController = pagingController;
   @override
   _ItemDetailPageSellerViewState createState() => _ItemDetailPageSellerViewState();
 }
@@ -214,9 +218,10 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
           margin: EdgeInsets.only(left: 10, right:10, bottom: 10),
           decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(50)),
                 child: Container(
-                  child: isSoldWidget(
+                  child: isSoldWidgetSellerPage(
                     isSold: widget.item.isSold,
-                      item: widget.item
+                    item: widget.item,
+                    pagingController: widget.pagingController,
                   ),
                 ),
 

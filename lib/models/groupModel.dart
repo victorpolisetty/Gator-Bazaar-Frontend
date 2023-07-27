@@ -27,7 +27,6 @@ class GroupModel extends ChangeNotifier{
   List<Group> groupListFindGroups = [];
   List<Group> groupListAdminGroups = [];
 
-
   /// List of items in the cart.
   List<Group> get group => groupListMyGroups;
   List<Group> get group1 => groupListFindGroups;

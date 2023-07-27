@@ -6,6 +6,7 @@ import 'package:student_shopping_v1/models/groupRequestModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:student_shopping_v1/new/components/productCardSellerView.dart';
 import 'package:student_shopping_v1/pages/AdminRowView.dart';
+import 'package:student_shopping_v1/pages/RequestsRowAdminView.dart';
 import 'package:student_shopping_v1/pages/groupsCardViewMyGroups.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePageBody.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,7 @@ import '../new/size_config.dart';
 import 'MembersRowAdminView.dart';
 import 'groupsCardViewAdminGroups.dart';
 import 'groupsCardViewFindGroups.dart';
+import 'itemDetailPage.dart';
 
 class adminSpecificGroupView extends StatefulWidget {
   const adminSpecificGroupView({
@@ -35,6 +37,8 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
   late SearchBar searchBar;
   final PagingController<int, AdminProfile> _pagingControllerMembers =
   PagingController(firstPageKey: 0);
+  final PagingController<int, AdminProfile> _pagingControllerRequests =
+  PagingController(firstPageKey: 0);
   final PagingController<int, AdminProfile> _pagingControllerAdmins =
   PagingController(firstPageKey: 0);
   int totalPages = 0;
@@ -43,9 +47,13 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
     _pagingControllerMembers.addPageRequestListener((pageKey) {
       _fetchPageMembers(pageKey, widget.group.id!);
     });
+    _pagingControllerRequests.addPageRequestListener((pageKey) {
+      _fetchPageRequests(pageKey, widget.group.id!);
+    });
     _pagingControllerAdmins.addPageRequestListener((pageKey) {
       _fetchPageAdmins(pageKey, widget.group.id!);
     });
+
 
     super.initState();
   }
@@ -62,6 +70,25 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
         } else {
           final int? nextPageKey = pageKey + 1;
           _pagingControllerMembers.appendPage(Provider.of<AdminProfileModel>(context, listen: false).memberInGroupList, nextPageKey);
+        }
+      }
+    } catch (error) {
+      _pagingControllerMembers.error = error;
+    }
+  }
+
+  Future<void> _fetchPageRequests(int pageKey, int groupId) async {
+    try {
+      await Provider.of<AdminProfileModel>(context, listen: false).getRequestsInGroup(pageKey, groupId);
+      totalPages = Provider.of<AdminProfileModel>(context, listen: false).totalPages;
+      if(mounted) {
+        final isLastPage = (totalPages-1) == pageKey;
+
+        if (isLastPage) {
+          _pagingControllerRequests.appendLastPage(Provider.of<AdminProfileModel>(context, listen: false).requestsInGroupList);
+        } else {
+          final int? nextPageKey = pageKey + 1;
+          _pagingControllerRequests.appendPage(Provider.of<AdminProfileModel>(context, listen: false).requestsInGroupList, nextPageKey);
         }
       }
     } catch (error) {
@@ -133,6 +160,7 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
   Widget build(BuildContext context) {
     final upperTab = new TabBar(labelColor: Colors.black, tabs: <Tab>[
       new Tab(text: "Members"),
+      new Tab(text: "Requests"),
       new Tab(text: "Admins")
     ]);
     return WillPopScope(
@@ -140,7 +168,7 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
           return true;
         },
         child: new DefaultTabController(
-          length: 2,
+          length: 3,
           child: Scaffold(
             appBar: AppBar(
               bottom: upperTab,
@@ -190,18 +218,18 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                     ],
                   ),
                 ),
-                //ADMINS
+                //REQUESTS
                 RefreshIndicator(
                   onRefresh: () {
                     Provider.of<GroupRequestModel>(context, listen: false).getGroupRequestsPrfId();
-                    return Future.sync(() => _pagingControllerAdmins.refresh());
+                    return Future.sync(() => _pagingControllerRequests.refresh());
                   },
 
                   child: Column(
                     children: [
                         Flexible(
                           child: PagedListView(
-                            pagingController: _pagingControllerAdmins,
+                            pagingController: _pagingControllerRequests,
                             shrinkWrap: true,
                             builderDelegate:
                             PagedChildBuilderDelegate<AdminProfile>(
@@ -211,7 +239,7 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                                   Center(child: spinkit),
                               itemBuilder:
                                   (BuildContext context, profile, int index) {
-                                return AdminRowView(
+                                return RequestsRowAdminView(
                                   profile: profile,
                                   group: widget.group,
                                   uniqueIdentifier: "uniqueIdentifier",
@@ -219,15 +247,58 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                                     widget.onUserRemoved();
                                     // Refresh all your lists here
                                     // For example:
-                                    Provider.of<AdminProfileModel>(context, listen: false).getNextPageAdminsInGroup(0, widget.group.id!)
-                                        .then((value) => Future.sync(() => _pagingControllerAdmins.refresh()));
-                                    // etc.
+                                    Provider.of<AdminProfileModel>(context, listen: false).getNextPageRequestsInGroup(0, widget.group.id!)
+                                        .then((value) => Future.sync(() => _pagingControllerRequests.refresh()))
+                                        .then((value) => Provider.of<AdminProfileModel>(context, listen: false).getNextPageMembersInGroup(0, widget.group.id!))
+                                        .then((value) => Future.sync(() => _pagingControllerMembers.refresh()));
                                   },
                                 );
                               },
                             ),
                           ),
                         ),
+
+                    ],
+                  ),
+                ),
+                //ADMINS
+                RefreshIndicator(
+                  onRefresh: () {
+                    Provider.of<GroupRequestModel>(context, listen: false).getGroupRequestsPrfId();
+                    return Future.sync(() => _pagingControllerAdmins.refresh());
+                  },
+
+                  child: Column(
+                    children: [
+                      Flexible(
+                        child: PagedListView(
+                          pagingController: _pagingControllerAdmins,
+                          shrinkWrap: true,
+                          builderDelegate:
+                          PagedChildBuilderDelegate<AdminProfile>(
+                            firstPageProgressIndicatorBuilder: (_) =>
+                                Center(child: spinkit),
+                            newPageProgressIndicatorBuilder: (_) =>
+                                Center(child: spinkit),
+                            itemBuilder:
+                                (BuildContext context, profile, int index) {
+                              return AdminRowView(
+                                profile: profile,
+                                group: widget.group,
+                                uniqueIdentifier: "uniqueIdentifier",
+                                onUserRemoved: () {
+                                  widget.onUserRemoved();
+                                  // Refresh all your lists here
+                                  // For example:
+                                  Provider.of<AdminProfileModel>(context, listen: false).getNextPageAdminsInGroup(0, widget.group.id!)
+                                      .then((value) => Future.sync(() => _pagingControllerAdmins.refresh()));
+                                  // etc.
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
 
                     ],
                   ),

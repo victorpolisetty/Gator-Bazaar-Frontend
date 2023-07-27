@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../models/groupModel.dart';
 import '../models/itemModel.dart';
 import '../new/size_config.dart';
+import 'itemDetailPage.dart';
 
 class addGroupsPage extends StatefulWidget {
   @override
