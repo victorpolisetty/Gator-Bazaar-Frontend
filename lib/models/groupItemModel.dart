@@ -16,7 +16,7 @@ part 'groupItemModel.g.dart';
 
 
 
-const String BASE_URI = 'http://localhost:5000/';
+const String BASE_URI = 'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
 const String CATEGORY_ITEMS_URL = '${BASE_URI}categories/';  // TODO -  call the CategoryItem service when it is built
 const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
@@ -148,7 +148,7 @@ class GroupItemModel extends ChangeNotifier {
     // Convert groupIds to a comma-separated string for the URL
     String groupIdsString = groupIds.join(',');
 
-    var url = Uri.parse('http://localhost:5000/getItemsByGroupIds?size=6&page=$pageNum&sort=createdAt,desc&groupIds=$groupIdsString');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupIds?size=6&page=$pageNum&sort=createdAt,desc&groupIds=$groupIdsString');
 
     http.Response response = await http.get(
       url,
@@ -173,7 +173,7 @@ class GroupItemModel extends ChangeNotifier {
   Future<int> getNextPageCat(int pageNum, Set<int> groupIds, int selectedCategoryId) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://localhost:5000/getItemsByGroupAndCategoryIds?size=6&page=$pageNum&sort=createdAt,desc'
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupAndCategoryIds?size=6&page=$pageNum&sort=createdAt,desc'
         '&groupIds=${groupIds.toList().join(",")}&categoryIds=$selectedCategoryId');
 
     http.Response response = await http.get(
@@ -220,7 +220,7 @@ class GroupItemModel extends ChangeNotifier {
 
   Future<List<Uint8List>> getAllImagesForItem(ItemWithImages itm) async {
     // If images exist them get them
-    if (itm.imageDataLoaded == false && itm.itemPictureIds.length > 0) {
+    if (itm.imageDataLoaded == false && itm.itemPictureIds!.length > 0) {
       // call itemmodel to get the images
       return itm.getAllImagesForItem();
     } else {
@@ -229,7 +229,7 @@ class GroupItemModel extends ChangeNotifier {
   }
 
   Future<void> getItemRestList(Set<int> groupIds) async {
-    var url = Uri.parse('http://localhost:5000/getItemsByGroupIds');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupIds');
     String jsonBody = json.encode({'groupIds': groupIds.toList()});
     final http.Response response = await http.post(
       url,
@@ -295,9 +295,9 @@ class GroupItemModel extends ChangeNotifier {
     Uint8List data = new Uint8List(0);
 
     for (int i = 0; i < groupItems.length; i++) {
-      if (groupItems[i].itemPictureIds.isNotEmpty) {
+      if (groupItems[i].itemPictureIds!.isNotEmpty) {
         String urlString = ITEMS_IMAGES_URL +
-            (groupItems[i].itemPictureIds[0]).toString();
+            (groupItems[i].itemPictureIds![0]).toString();
         var url = Uri.parse(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
@@ -397,7 +397,7 @@ class GroupItemModel extends ChangeNotifier {
   }
 
   Future<void> addItemToGroups(int? itemId, Set<int> groupIdsForItem) async {
-    var url = Uri.parse('http://localhost:5000/setGroupsItemIsIn/$itemId/items');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/setGroupsItemIsIn/$itemId/items');
 
     Map<String, dynamic> body = {
       "groupIds": groupIdsForItem.toList(),

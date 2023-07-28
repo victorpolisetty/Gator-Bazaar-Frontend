@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/pages/filterPage.dart';
-// import 'package:shop_app/screens/cart/cart_screen.dart';
 
 import '../../../../pages/favoritePage.dart';
 import '../../../../pages/sellerProfilePage.dart';
@@ -19,19 +19,19 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+      padding: EdgeInsets.symmetric(horizontal: 5.w), // 5% of screen width
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start, // Align items to the start/left
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
             "Gator Bazaar",
             style: TextStyle(
-              color: Colors.black, // Set text color to black
-              fontSize: 35, // You can adjust the size as needed
-              fontWeight: FontWeight.bold, // You can adjust the style as needed
+              color: Colors.black,
+              fontSize: 30.sp, // 20 scaled points
+              fontWeight: FontWeight.bold,
             ),
           ),
-          Spacer(), // This will push your buttons to the right
+          Spacer(),
           IconBtnWithCounter(
             svgSrc: "assets/icons/heart.svg",
             press: () {
@@ -41,6 +41,7 @@ class HomeHeader extends StatelessWidget {
               );
             },
           ),
+          Spacer(),
           IconBtnWithCounter(
             svgSrc: "assets/icons/person.svg",
             numOfitem: 0,
@@ -48,33 +49,13 @@ class HomeHeader extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SellerProfilePageNew()
-                   // assuming this is a widget that wraps the StreamBuilder
+                  builder: (context) => SellerProfilePageNew(),
                 ),
               );
             },
           ),
-          // StreamBuilder<User?>(
-          //     stream: FirebaseAuth.instance.authStateChanges(),
-          //     builder: (context, snapshot) {
-          //       return sellerProfilePage();
-          //     }
-          // ),
         ],
       ),
-    );
-
-  }
-  alertDialog(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Text("No Notifications!"),
-      content: Text("Check back later :)"),
-      actions: [
-        CupertinoDialogAction(onPressed: () {
-          Navigator.pop(context);
-        },child: Text("Ok",style: TextStyle(fontWeight: FontWeight.bold))),
-
-      ],
     );
   }
 }

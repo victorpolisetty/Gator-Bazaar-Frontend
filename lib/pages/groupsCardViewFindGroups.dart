@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import '../../Widgets/FavoriteWidget.dart';
 import '../../models/itemModel.dart';
 import '../../models/recentItemModel.dart';
@@ -35,102 +36,89 @@ class GroupsCardViewFindGroups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(getProportionateScreenWidth(5)),
+      padding: EdgeInsets.all(5.sp),
       child: SizedBox(
-        width: getProportionateScreenWidth(width),
+        width: width.w,
         child: InkWell(
-          onTap: (){},
+          onTap: () {},
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 1.5,
+              Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(getProportionateScreenWidth(4)),
+                  padding: EdgeInsets.all(4.sp),
                   decoration: BoxDecoration(
                     color: kSecondaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(15.sp),
                   ),
                   child: Hero(
                     tag: group.id.toString() + uniqueIdentifier,
-                    child: group.imageURL != null ?
-                    Image.memory(group.imageURL!) : Image.asset('assets/images/GatorBazaar.jpg'),
+                    child: group.imageURL != null
+                        ? Image.memory(group.imageURL!)
+                        : Image.asset('assets/images/GatorBazaar.jpg'),
                   ),
-
                 ),
               ),
+              SizedBox(height: 10.sp),
               Row(
                 children: [
-                  Flexible(
+                  Expanded(
                     child: AutoSizeText(
                       group.name!,
                       style: TextStyle(color: Colors.black),
                       maxLines: 2,
-                      minFontSize: 8, // Set a minimum font size to ensure visibility
+                      minFontSize: 8,
+                      stepGranularity: 8,
                     ),
                   ),
-                  SizedBox(width: getProportionateScreenWidth(10)), // Reduce the space between the text and the button
+                  SizedBox(width: 10.sp),
                   Container(
-                    width: getProportionateScreenWidth(100), // Set a fixed width for the button
+                    width: 20.w,
+                    height: 5.h,
                     child: !isRequested
                         ? TextButton(
                       onPressed: () {
                         showAlertDialogRequestGroup(context, group.name);
                       },
-                      child: AutoSizeText(
+                      child: Text(
                         'Request to Join',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: getProportionateScreenWidth(12)),
-                        maxLines: 1,
-                        minFontSize: 8, // Set a minimum font size to ensure visibility
+                        style: TextStyle(color: Colors.white, fontSize: 5.sp),
                       ),
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.black,
-                        padding: EdgeInsets.symmetric(
-                          vertical: getProportionateScreenHeight(8),// Adjust vertical padding
-                          horizontal: getProportionateScreenWidth(8),// Adjust horizontal padding
-                        ),
+                        padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),// Add BorderRadius to the button
+                          borderRadius: BorderRadius.circular(8.sp),
                         ),
                       ),
-                      // ...
                     )
                         : TextButton(
                       onPressed: () {
                         showAlertDialogRequestGroup(context, group.name);
                       },
-                      child: AutoSizeText(
+                      child: Text(
                         'Pending',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: getProportionateScreenWidth(12)),
-                        maxLines: 1,
-                        minFontSize: 8, // Set a minimum font size to ensure visibility
+                        style: TextStyle(color: Colors.white, fontSize: 12.sp),
                       ),
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.grey,
-                        padding: EdgeInsets.symmetric(
-                          vertical: getProportionateScreenHeight(8),// Adjust vertical padding
-                          horizontal: getProportionateScreenWidth(8),// Adjust horizontal padding
-                        ),
+                        padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),// Add BorderRadius to the button
+                          borderRadius: BorderRadius.circular(8.sp),
                         ),
                       ),
-                      // ...
                     ),
                   ),
                 ],
               ),
-
             ],
           ),
         ),
       ),
     );
   }
+
+
   showAlertDialogRequestGroup(BuildContext context, String? groupName) {
 
     // set up the buttons

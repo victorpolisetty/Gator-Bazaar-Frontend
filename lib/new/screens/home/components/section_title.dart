@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../size_config.dart';
+import 'package:sizer/sizer.dart'; // Import the sizer package
 
 class SectionTitle extends StatelessWidget {
   const SectionTitle({
@@ -20,7 +19,7 @@ class SectionTitle extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            fontSize: getProportionateScreenWidth(18),
+            fontSize: 18.sp, // Use sizer to set the font size
             color: Colors.black,
           ),
         ),

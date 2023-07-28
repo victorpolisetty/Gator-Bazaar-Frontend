@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../../size_config.dart';
-import 'section_title.dart';
+import 'package:sizer/sizer.dart';
+import 'package:student_shopping_v1/new/screens/home/components/section_title.dart'; // Import the sizer package
 
 class SpecialOffers extends StatelessWidget {
   const SpecialOffers({
@@ -13,14 +12,13 @@ class SpecialOffers extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+          padding: EdgeInsets.symmetric(horizontal: 2.w), // Use sizer to set horizontal padding
           child: SectionTitle(
             title: "Special for you",
             press: () {},
           ),
         ),
-        SizedBox(height: getProportionateScreenWidth(20)),
+        SizedBox(height: 2.h), // Use sizer to set vertical spacing
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -37,7 +35,7 @@ class SpecialOffers extends StatelessWidget {
                 numOfBrands: 24,
                 press: () {},
               ),
-              SizedBox(width: getProportionateScreenWidth(20)),
+              SizedBox(width: 2.w), // Use sizer to set horizontal spacing
             ],
           ),
         ),
@@ -62,14 +60,14 @@ class SpecialOfferCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: getProportionateScreenWidth(20)),
+      padding: EdgeInsets.only(left: 2.w), // Use sizer to set left padding
       child: GestureDetector(
         onTap: press,
         child: SizedBox(
-          width: getProportionateScreenWidth(242),
-          height: getProportionateScreenWidth(100),
+          width: 35.w, // Use sizer to set width
+          height: 12.h, // Use sizer to set height
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(3.h), // Use sizer to set borderRadius
             child: Stack(
               children: [
                 Image.asset(
@@ -90,8 +88,8 @@ class SpecialOfferCard extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(15.0),
-                    vertical: getProportionateScreenWidth(10),
+                    horizontal: 4.w, // Use sizer to set horizontal padding
+                    vertical: 2.h, // Use sizer to set vertical padding
                   ),
                   child: Text.rich(
                     TextSpan(
@@ -100,11 +98,11 @@ class SpecialOfferCard extends StatelessWidget {
                         TextSpan(
                           text: "$category\n",
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(18),
+                            fontSize: 5.sp, // Use sizer to set font size
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        TextSpan(text: "$numOfBrands Brands")
+                        TextSpan(text: "$numOfBrands Brands", style: TextStyle(fontSize: 4.sp)) // Use sizer to set font size
                       ],
                     ),
                   ),

@@ -21,14 +21,14 @@ ItemWithImages _$ItemWithImagesFromJson(Map<String, dynamic> json) =>
       ..category_id = json['category_id'] as int?
       ..seller_id = json['seller_id'] as int?
       ..id = json['id'] as int?
-      ..name = json['name'] as String
+      ..name = json['name'] as String?
       ..seller_email = json['seller_email'] as String?
       ..seller_name = json['seller_name'] as String?
-      ..description = json['description'] as String
-      ..price = json['price'] as num
-      ..isSold = json['isSold'] as bool
-      ..itemPictureIds = (json['itemPictureIds'] as List<dynamic>)
-          .map((e) => e as int)
+      ..description = json['description'] as String?
+      ..price = json['price'] as num?
+      ..isSold = json['isSold'] as bool?
+      ..itemPictureIds = (json['itemPictureIds'] as List<dynamic>?)
+          ?.map((e) => e as int)
           .toList();
 
 Map<String, dynamic> _$ItemWithImagesToJson(ItemWithImages instance) =>

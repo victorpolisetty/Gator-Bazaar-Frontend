@@ -26,15 +26,15 @@ class ItemWithImages extends ChangeNotifier{
   int ?category_id = 0;
   int ?seller_id = 0;
   int ?id ;
-  String name = "";
+  String? name = "";
   String? seller_email = "";
   String? seller_name = "";
   // String imageURL = "";
-  String description = "";
-  num price = 0;
-  bool isSold = false;
+  String? description = "";
+  num? price = 0;
+  bool? isSold = false;
   //Item item ;
-  List<int> itemPictureIds = [];  // list of image ids . this should match the json element name
+  List<int>? itemPictureIds = [];  // list of image ids . this should match the json element name
   @JsonKey(ignore : true)
   List<Uint8List> imageDataList = [];
   @JsonKey(ignore : true)
@@ -43,9 +43,9 @@ class ItemWithImages extends ChangeNotifier{
 
   Future<List<Uint8List>> getAllImagesForItem() async {
     Uint8List data = new Uint8List(0);
-    for (int i = this.imageDataList.length; i < this.itemPictureIds.length && imageDataLoaded == false; i++) {
+    for (int i = this.imageDataList.length; i < this.itemPictureIds!.length && imageDataLoaded == false; i++) {
         String urlString = ITEMS_IMAGES_URL +
-            (this.itemPictureIds[i]).toString();
+            (this.itemPictureIds![i]).toString();
         var url = Uri.parse(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});

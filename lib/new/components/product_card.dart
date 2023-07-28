@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:student_shopping_v1/new/models/Product.dart';
-// import 'package:student_shopping_v1/new/screens/details/details_screen.dart';
-
 import '../../Widgets/FavoriteWidget.dart';
 import '../../models/itemModel.dart';
 import '../../models/recentItemModel.dart';
 import '../../pages/itemDetailPage.dart';
 import '../../pages/itemDetailPageSellerView.dart';
 import '../constants.dart';
-import '../size_config.dart';
+import 'package:sizer/sizer.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
@@ -28,69 +26,68 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(getProportionateScreenWidth(5)),
+      padding: EdgeInsets.all(SizerUtil.deviceType == DeviceType.mobile ? 2.0.sp : 2.0),
       child: SizedBox(
-        width: getProportionateScreenWidth(width),
+        width: SizerUtil.deviceType == DeviceType.mobile ? 80.0.w : 140.0, // Adjust the width as needed
         child: GestureDetector(
-          onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-              builder: (context) => new ItemDetails(
-                  context.watch<RecentItemModel>().currentUserId,
-                  product
-              ))),
-          //TODO: ADD BACK
-          // onTap: () => Navigator.pushNamed(
-          //   context,
-          //   DetailsScreen.routeName,
-          //   arguments: ProductDetailsArguments(product: product),
-          // ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ItemDetails(
+                context.watch<RecentItemModel>().currentUserId,
+                product,
+              ),
+            ),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio: 1.5,
+                aspectRatio: 2.3,
                 child: Container(
-                  padding: EdgeInsets.all(getProportionateScreenWidth(4)),
+                  padding: EdgeInsets.all(SizerUtil.deviceType == DeviceType.mobile ? 4.0.sp : 4.0),
                   decoration: BoxDecoration(
                     color: kSecondaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
                   ),
                   child: Hero(
                     tag: product.id.toString() + uniqueIdentifier,
-                    child: product.imageDataList.length > 0 ?
-                    Image.memory(product.imageDataList[0]) : Image.asset('assets/images/GatorBazaar.jpg'),
+                    child: product.imageDataList.length > 0
+                        ? Image.memory(product.imageDataList[0])
+                        : Image.asset('assets/images/GatorBazaar.jpg'),
                   ),
-
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Row(
                 children: [
-                  Flexible(   // Make this Flexible
+                  Flexible(
                     child: Text(
-                      product.name,
+                      product.name!,
                       style: TextStyle(color: Colors.black),
                       maxLines: 2,
                     ),
                   ),
-                  product.isSold ?
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                  product.isSold!
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 8.0.sp : 8.0),
                     child: Container(
-                      width: MediaQuery.of(context).size.width * .10,
-                      height: MediaQuery.of(context).size.height * .02,
-                      margin: EdgeInsets.only(top: 0, left: MediaQuery.of(context).size.width * .001),
+                      width: SizerUtil.deviceType == DeviceType.mobile ? 10.0.w : 10.0,
+                      height: SizerUtil.deviceType == DeviceType.mobile ? 2.0.h : 2.0,
+                      margin: EdgeInsets.only(top: 0, left: SizerUtil.deviceType == DeviceType.mobile ? 0.1.w : 0.1),
                       child: Center(
                         child: Text(
                           "SOLD!",
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
-                          // margin: EdgeInsets.all(8),
-                          // color: Colors.blue,
+                          style: TextStyle(
+                            fontSize: SizerUtil.deviceType == DeviceType.mobile ? 8.sp : 8,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                       color: Colors.green,
                     ),
                   )
-                      : Container(),  // Return an empty Container when product is not sold
+                      : Container(),
                 ],
               ),
               Row(
@@ -99,12 +96,12 @@ class ProductCard extends StatelessWidget {
                   Text(
                     "\$${product.price}",
                     style: TextStyle(
-                      fontSize: getProportionateScreenWidth(18),
+                      fontSize: SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 18.0,
                       fontWeight: FontWeight.w600,
                       color: kPrimaryColor,
                     ),
                   ),
-                  FavoriteWidget(item: product)
+                  FavoriteWidget(item: product),
                 ],
               )
             ],

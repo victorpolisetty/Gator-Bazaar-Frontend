@@ -116,7 +116,7 @@ class RecentItemModel extends ChangeNotifier {
   Future<int> getItemRestList() async {
     Map<String, dynamic> data;
     var url = Uri.parse(
-        'http://localhost:5000/items?size=10&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+        'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items?size=10&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -144,7 +144,7 @@ class RecentItemModel extends ChangeNotifier {
 
   Future<int> getItemsByGroupIds(List<int> groupIds) async {
     String groupIdsParam = groupIds.join(",");
-    var url = Uri.parse('http://localhost:5000/getItemsByGroupIds?groupIds=$groupIdsParam&size=10&sort=createdAt,desc');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupIds?groupIds=$groupIdsParam&size=10&sort=createdAt,desc');
 
     http.Response response = await http.get(
       url,
@@ -198,9 +198,9 @@ class RecentItemModel extends ChangeNotifier {
 
     Uint8List data = new Uint8List(0) ;
     for (int i = 0; i < _recentItems.length; i++) {
-      if (_recentItems[i].itemPictureIds.isNotEmpty) {
+      if (_recentItems[i].itemPictureIds!.isNotEmpty) {
         String urlString = ITEMS_IMAGES_URL +
-            (_recentItems[i].itemPictureIds[0]).toString();
+            (_recentItems[i].itemPictureIds![0]).toString();
         var url = Uri.parse(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});

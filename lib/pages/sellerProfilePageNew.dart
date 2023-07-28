@@ -4,6 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
@@ -147,7 +148,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
 
   @override
   Widget build(BuildContext context) {
-    return new StreamBuilder<User?>(
+    return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
@@ -155,118 +156,106 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
           String? dname = snapshot.data!.displayName;
           String? email = snapshot.data!.email;
           return Scaffold(
-            appBar:                 AppBar(
-              elevation: .1,
+            appBar: AppBar(
+              elevation: 0.1.h, // Use sizer to set elevation
               actions: [
                 PopupMenuButton(
-                  // add icon, by default "3 dot" icon
-                  // icon: Icon(Icons.book)
-                    itemBuilder: (context){
-                      return [
-                        PopupMenuItem<int>(
-                          value: 0,
-                          child: Text("Sign Out"),
-                        ),
-
-                        PopupMenuItem<int>(
-                          value: 1,
-                          child: Text("Delete Account"),
-                        ),
-                      ];
-                    },
-                    onSelected:(value){
-                      if(value == 0){
-                        showAlertDialogSignOut(context);
-                      }else if(value == 1){
-                        showAlertDialogDeleteAccount(context);
-                      }
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem<int>(
+                        value: 0,
+                        child: Text("Sign Out"),
+                      ),
+                      PopupMenuItem<int>(
+                        value: 1,
+                        child: Text("Delete Account"),
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    if (value == 0) {
+                      showAlertDialogSignOut(context);
+                    } else if (value == 1) {
+                      showAlertDialogDeleteAccount(context);
                     }
+                  },
                 ),
               ],
             ),
-            body:CustomScrollView(
-                  slivers: <Widget>[
-                    SliverList(
-                        delegate: SliverChildListDelegate([
-                          Center(
-                            child: Text(
-                              dname.toString(),
-                              style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: getProportionateScreenWidth(40),
-                                  fontWeight: FontWeight.bold, color: Colors.black),
-                            ),
-                          ),
-                          SizedBox(height: getProportionateScreenHeight(8)),
-                          Center(
-                            child: Text(
-                              email.toString(),
-                              style: TextStyle(fontSize: 20, fontFamily: 'Montserrat', color: Colors.black, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Text(
-                                "My Listings",
-                                style: TextStyle(fontSize: 20, fontFamily: 'Montserrat', color: Colors.black),
-                              ),
-                            ),
-                        ])),
-                    SliverPadding(
-                      padding: const EdgeInsets.all(5.0),
-                      sliver: PagedSliverGrid(
-                        pagingController: _pagingController,
-                        builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
-                            firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                            newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                            noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Yet :)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
-                            itemBuilder: (BuildContext context, item, int index) {
-                              return ProductCardSeller(
-                                product: item,
-                                uniqueIdentifier: "sellerItem",
-                                pagingController: _pagingController,
-                              );
-                            }
+            body: CustomScrollView(
+              slivers: <Widget>[
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    Center(
+                      child: Text(
+                        dname.toString(),
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 40.sp, // Use sizer to set font size
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 15,),
                       ),
-                    )
-                  ]
-
-                  // SizedBox(height: getProportionateScreenHeight(19)),
-                  // ElevatedButton.icon(
-                  //   style:
-                  //   ElevatedButton.styleFrom(
-                  //       minimumSize: Size.fromHeight(50),
-                  //       primary: Colors.black
-                  //   ),
-                  //   icon: Icon(Icons.shopping_bag, size: 32),
-                  //   label: Text(
-                  //     'My Listings',
-                  //     style: TextStyle(fontSize: 24),
-                  //   ),
-                  //   onPressed: () {
-                  //     Navigator.of(context).push(MaterialPageRoute(
-                  //       builder: (context) => sellerProfilePage(),
-                  //     ));
-                  //     }
-                  // ),
-
-
+                    ),
+                    SizedBox(height: 8.sp), // Use sizer to set height
+                    Center(
+                      child: Text(
+                        email.toString(),
+                        style: TextStyle(
+                          fontSize: 20.sp, // Use sizer to set font size
+                          fontFamily: 'Montserrat',
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.sp), // Use sizer to set height
+                    Padding(
+                      padding: EdgeInsets.all(20.sp), // Use sizer to set padding
+                      child: Text(
+                        "My Listings",
+                        style: TextStyle(
+                          fontSize: 20.sp, // Use sizer to set font size
+                          fontFamily: 'Montserrat',
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+                SliverPadding(
+                  padding: EdgeInsets.all(5.sp), // Use sizer to set padding
+                  sliver: PagedSliverGrid(
+                    pagingController: _pagingController,
+                    builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
+                      firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                      newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                      noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Yet :)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
+                      itemBuilder: (BuildContext context, item, int index) {
+                        return ProductCardSeller(
+                          product: item,
+                          uniqueIdentifier: "sellerItem",
+                          pagingController: _pagingController,
+                        );
+                      },
+                    ),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 15.sp, // Use sizer to set main axis spacing
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
-  }else {
+        } else {
           return Container(
-            height: 350,
+            height: 350.sp, // Use sizer to set height
             width: MediaQuery.of(context).size.width,
             child: spinkit,
           );
         }
+      },
+    );
+  }
 }
-);
-  }}

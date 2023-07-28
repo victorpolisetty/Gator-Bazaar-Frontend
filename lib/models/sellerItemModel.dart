@@ -89,9 +89,9 @@ class SellerItemModel extends ChangeNotifier {
     Uint8List data = new Uint8List(0);
 
     for (int i = 0; i < _sellerItems.length; i++) {
-      if (_sellerItems[i].itemPictureIds.isNotEmpty) {
+      if (_sellerItems[i].itemPictureIds!.isNotEmpty) {
         String urlString = ITEMS_IMAGES_URL +
-            (_sellerItems[i].itemPictureIds[0]).toString();
+            (_sellerItems[i].itemPictureIds![0]).toString();
         var url = Uri.parse(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
@@ -172,9 +172,9 @@ class SellerItemModel extends ChangeNotifier {
 
     Uint8List data = new Uint8List(0) ;
     for (int i = 0; i < _sellerItems.length; i++) {
-      if (_sellerItems[i].itemPictureIds.isNotEmpty) {
+      if (_sellerItems[i].itemPictureIds!.isNotEmpty) {
         String urlString = ITEMS_IMAGES_URL +
-            (_sellerItems[i].itemPictureIds[0]).toString();
+            (_sellerItems[i].itemPictureIds![0]).toString();
         var url = Uri.parse(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});

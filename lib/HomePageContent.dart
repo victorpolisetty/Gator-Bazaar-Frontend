@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/Categories/categories.dart';
 import 'Categories1.dart';
 import 'Widgets/appbar.dart';
@@ -18,26 +18,24 @@ class HomePageBody extends StatefulWidget {
 
 class _HomePageBodyState extends State<HomePageBody> {
   @override
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: getProportionateScreenHeight(20)),
+            SizedBox(height: .2.h),
             HomeHeader(),
-            SizedBox(height: getProportionateScreenWidth(10)),
+            SizedBox(height: 10.sp),
             DiscountBanner(),
             Categories(),
             Categories1(),
             // SpecialOffers(),
-            // SizedBox(height: getProportionateScreenWidth(10)),
+            // SizedBox(height: 10.sp),
             PopularProducts(),
-            SizedBox(height: getProportionateScreenWidth(30)),
+            SizedBox(height: 30.sp),
           ],
         ),
       ),
     );
-
   }
 }

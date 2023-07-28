@@ -164,7 +164,7 @@ class FavoriteItem extends StatelessWidget {
           //DecorationImage(image: MemoryImage(item_picture), fit: BoxFit.cover),
           trailing: Image.memory(item.imageDataList.length > 0 ? item.imageDataList[0] : AssetImage('assets/images/GatorBazaar.jpg') as Uint8List),
           //============TITLE SECTION============
-          title: new Text(item.name),
+          title: new Text(item.name!),
           //SUBTITLE SECTION=============
           subtitle: new Column(
             children: <Widget>[

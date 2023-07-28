@@ -12,6 +12,7 @@ import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:student_shopping_v1/notificationService/LocalNotificationService.dart';
 import 'package:student_shopping_v1/utils.dart';
 import 'package:student_shopping_v1/verify_email_page.dart';
+import 'package:sizer/sizer.dart';
 import 'auth_page.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -22,25 +23,20 @@ import 'models/messageModel.dart';
 import 'models/recentItemModel.dart';
 import 'models/favoriteModel.dart';
 import 'new/theme.dart';
-import 'package:student_shopping_v1/new/size_config.dart';
 
 
 
-//recieve message when app is in backgorund solutioon for on message
-Future<void> backgroundHandler(RemoteMessage message) async{
+Future<void> backgroundHandler(RemoteMessage message) async {
   print(message.data.toString());
   print(message.notification?.title);
 }
-
-// Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   print("Handling a background message: ${message.messageId}");
-// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+  // Request permission and check if it's granted
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
     announcement: false,
@@ -51,9 +47,6 @@ Future<void> main() async {
     sound: true,
   );
 
-
-
-
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('User granted permission');
   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
@@ -61,26 +54,10 @@ Future<void> main() async {
   } else {
     print('User declined or has not accepted permission');
   }
-  //
+
+  // Background message handler
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
-
-    if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification}');
-    }
-  });
-
-  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    // If you're going to use other Firebase services in the background, such as Firestore,
-    // make sure you call `initializeApp` before using other Firebase services.
-    await Firebase.initializeApp();
-
-    print("Handling a background message: ${message.messageId}");
-
-  }
   runApp(MyApp());
 }
 
@@ -137,91 +114,97 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => FavoriteModel(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => MessageModel(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => RecentItemModel(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => CategoryItemModel(),
-          ),
-          // ChangeNotifierProvider(
-          //   create: (context) => ApplicationState(),
-          //   //builder: (context, _) => App(),
-          // ),
-          ChangeNotifierProvider(
-            create: (context) => CategoryModel(),
-            //builder: (context, _) => App(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => SellerItemModel(),
-            //builder: (context, _) => App(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => ChatMessageModel(),
-            //builder: (context, _) => App(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => GroupModel(),
-            //builder: (context, _) => App(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => GroupRequestModel(),
-            //builder: (context, _) => App(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => AdminProfileModel(),
-            //builder: (context, _) => App(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => GroupItemModel(),
-            //builder: (context, _) => App(),
-          ),
-        ],
-          child: MaterialApp(
-            routes: {
-              "/home": (_) => new BuyerHomePage("Gator Bazaar"),
-            },
-            scaffoldMessengerKey: Utils.messengerKey,
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            theme: theme(),
-            home: MainPage(),
-            // home: App(),
-          )
-          );
+    return Sizer(
+      builder: (BuildContext context, Orientation orientation, DeviceType deviceType) {
+        return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                create: (context) => FavoriteModel(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => MessageModel(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => RecentItemModel(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => CategoryItemModel(),
+              ),
+              // ChangeNotifierProvider(
+              //   create: (context) => ApplicationState(),
+              //   //builder: (context, _) => App(),
+              // ),
+              ChangeNotifierProvider(
+                create: (context) => CategoryModel(),
+                //builder: (context, _) => App(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => SellerItemModel(),
+                //builder: (context, _) => App(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => ChatMessageModel(),
+                //builder: (context, _) => App(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => GroupModel(),
+                //builder: (context, _) => App(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => GroupRequestModel(),
+                //builder: (context, _) => App(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => AdminProfileModel(),
+                //builder: (context, _) => App(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => GroupItemModel(),
+                //builder: (context, _) => App(),
+              ),
+            ],
+              child: MaterialApp(
+                routes: {
+                  "/home": (_) => Sizer(
+                    builder: (context, orientation, deviceType) {
+                      return BuyerHomePage("Gator Bazaar");
+                    },
+                  ),
+                },
+                scaffoldMessengerKey: Utils.messengerKey,
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                theme: theme(),
+                home: MainPage(),
+                // home: App(),
+              )
+              );
+      }
+    );
   }
 }
 
 class MainPage extends StatelessWidget {
-  const MainPage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return Scaffold(
-        body: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text("Something went wrong!"));
-            } else if (snapshot.hasData) {
-              return VerifyEmailPage();
-            } else {
-              return AuthPage();
-            }
-          },
-        ),
-      );
-}
+      body: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Something went wrong!"));
+          } else if (snapshot.hasData) {
+            return VerifyEmailPage();
+          } else {
+            return AuthPage();
+          }
+        },
+      ),
+    );
+  }
 }
 
 

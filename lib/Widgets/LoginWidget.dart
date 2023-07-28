@@ -9,6 +9,7 @@ class LoginWidget extends StatefulWidget {
   final VoidCallback onClickedForgotPassword;
 
   const LoginWidget({Key? key, required this.onClickedSignUp, required this.onClickedForgotPassword}) : super(key: key);
+
   @override
   State<LoginWidget> createState() => _LoginWidgetState();
 }
@@ -16,13 +17,16 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  static GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+
+  @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
     padding: EdgeInsets.all(16),
@@ -31,25 +35,42 @@ class _LoginWidgetState extends State<LoginWidget> {
       children: [
         Image.asset('assets/images/GatorBazaar.jpg'),
         SizedBox(height: 40),
-        TextFormField(
-          controller: emailController,
-          cursorColor: Colors.white,
-          textInputAction: TextInputAction.next,
-          decoration: InputDecoration(labelText: 'Email'),
-        ),
-        SizedBox(height: 4),
-        TextField(
-          controller: passwordController,
-          textInputAction: TextInputAction.done,
-          decoration: InputDecoration(labelText: "Password"),
-          obscureText: true,
+        Form(
+          key: _formKey, // Set the GlobalKey to the Form
+          child: Column(
+            children: [
+              TextFormField(
+                controller: emailController,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 4),
+              TextFormField(
+                controller: passwordController,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(labelText: "Password"),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 20),
         ElevatedButton.icon(
-          style:
-          ElevatedButton.styleFrom(
-              minimumSize: Size.fromHeight(50),
-              primary: Colors.black
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size.fromHeight(50),
+            primary: Colors.black,
           ),
           icon: Icon(Icons.lock_open, size: 32),
           label: Text(
@@ -60,59 +81,62 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
         SizedBox(height: 24),
         RichText(
-            text: TextSpan (
-              style: TextStyle(color: Colors.black),
-              text: 'No account?  ',
-              children: [
-                TextSpan(
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = widget.onClickedSignUp,
-                  text: 'Sign Up',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    color: Colors.black
-                  )
-                )
-              ]
-            )
+          text: TextSpan(
+            style: TextStyle(color: Colors.black),
+            text: 'No account?  ',
+            children: [
+              TextSpan(
+                recognizer: TapGestureRecognizer()
+                  ..onTap = widget.onClickedSignUp,
+                text: 'Sign Up',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  color: Colors.black,
+                ),
+              )
+            ],
+          ),
         ),
         SizedBox(height: 10),
         RichText(
-            text: TextSpan (
-                style: TextStyle(color: Colors.black),
-                text: 'Forgot Password?  ',
-                children: [
-                  TextSpan(
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = widget.onClickedForgotPassword,
-                      text: 'Reset',
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Colors.black
-                      )
-                  )
-                ]
-            )
-        )
+          text: TextSpan(
+            style: TextStyle(color: Colors.black),
+            text: 'Forgot Password?  ',
+            children: [
+              TextSpan(
+                recognizer: TapGestureRecognizer()
+                  ..onTap = widget.onClickedForgotPassword,
+                text: 'Reset',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  color: Colors.black,
+                ),
+              )
+            ],
+          ),
+        ),
       ],
     ),
   );
 
-  Future signIn() async {
-    showDialog(
+  Future<void> signIn() async {
+    // Validate the form
+    if (_formKey.currentState!.validate()) {
+      showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => Center(child: CircularProgressIndicator()));
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim()
+        builder: (context) => Center(child: CircularProgressIndicator()),
       );
-    } on FirebaseAuthException catch (e) {
-      print(e);
-
-      Utils.showSnackBar(e.message);
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+      } on FirebaseAuthException catch (e) {
+        print(e);
+        Utils.showSnackBar(e.message);
+      }
+      navigatorKey.currentState!.popUntil((route) => route.isFirst);
     }
-    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }

@@ -216,7 +216,7 @@ class singleItem extends StatelessWidget {
               child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(item.price)}'),
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
             ),
-            item.isSold ? ClipRRect(
+            item.isSold! ? ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Container(
                 width: MediaQuery.of(context).size.width * .10,

@@ -12,9 +12,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
 import 'package:student_shopping_v1/pages/MulitSelectAddListingView.dart';
 import 'package:student_shopping_v1/pages/addNewGroupRequestDialog.dart';
+import 'package:sizer/sizer.dart';
 
-import '../Widgets/MultiSelectDialog.dart';
-import '../models/adminProfileModel.dart';
 import '../models/groupModel.dart';
 import '../models/itemModel.dart';
 import '../new/size_config.dart';
@@ -114,18 +113,10 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
     return pickedImage;
   }
 
+
   @override
   Widget build(BuildContext context) {
     itemGroupRequestSuccess = false;
-    final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
-      onPrimary: Colors.black87,
-      primary: Colors.grey[300],
-      minimumSize: Size(88, 36),
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(2)),
-      ),
-    );
     //   var recentList = context.watch<CategoryItemModel>();
     return Scaffold(
       backgroundColor: Colors.white,
@@ -135,8 +126,8 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
         child: SingleChildScrollView(
           physics: ClampingScrollPhysics(),
           child: Container(
-            height: getProportionateScreenHeight(800),
-            padding: EdgeInsets.symmetric(horizontal: 16), // Added padding
+            height: 80.h, // Use sizer to set the height
+            padding: EdgeInsets.symmetric(horizontal: 2.w), // Use sizer to set horizontal padding
             child: Form(
               key: _formKey,
               child: ListView(
@@ -147,7 +138,7 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                       children: <Widget>[
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(2.w), // Use sizer to set padding
                             child: OutlinedButton(
                                 style: OutlinedButton.styleFrom(
                                   primary: Colors.grey.withOpacity(0.5),
@@ -161,9 +152,9 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16), // Added space
+                    SizedBox(height: 2.h), // Use sizer to set vertical spacing
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: EdgeInsets.all(2.w), // Use sizer to set padding
                       child: TextFormField(
                         keyboardType: TextInputType.multiline,
                         maxLines: 2,
@@ -189,7 +180,7 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: EdgeInsets.all(2.w), // Use sizer to set padding
                       child: TextFormField(
                         keyboardType: TextInputType.multiline,
                         maxLines: 2,
@@ -212,27 +203,27 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 200.0), // adjust this value as needed
+                      padding: EdgeInsets.only(bottom: 15.h), // Use sizer to set bottom padding
                       child: FloatingActionButton.extended(
                         backgroundColor: Colors.black,
                         onPressed: () {
                           groupNameController.text.isNotEmpty &&
                               groupDescriptionController.text.isNotEmpty &&
-                          _image1 != null
+                              _image1 != null
                               ? itemGroupRequestSuccess =
-                              // addNewItemToDB(
-                              // context,
-                              // groupNameController.text,
-                              // groupDescriptionController.text,
-                              // ownerController.text,
-                              // _value, // _value = categoryid
-                              // _image1,
-                              // resultOfGroupsSelected)
+                          // addNewItemToDB(
+                          // context,
+                          // groupNameController.text,
+                          // groupDescriptionController.text,
+                          // ownerController.text,
+                          // _value, // _value = categoryid
+                          // _image1,
+                          // resultOfGroupsSelected)
                           addNewGroupRequestToDB(
-                            currDbId.toString(),
-                            groupNameController.text,
-                            groupDescriptionController.text,
-                            _image1!
+                              currDbId.toString(),
+                              groupNameController.text,
+                              groupDescriptionController.text,
+                              _image1!
                           )
                               : null;
                           showDialog(
@@ -258,6 +249,7 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
       ),
     );
   }
+
 
   Widget _displayChild1() {
     if (_image1 == null) {
@@ -325,7 +317,7 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
       ) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://localhost:5000/group/createNewGroupRequest/$profileId'),
+      Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/createNewGroupRequest/$profileId'),
     );
 
     // Add form fields

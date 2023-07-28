@@ -70,7 +70,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<int> getNextPageMembersInGroup(int pageNum, int groupId) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:5000/profile/findAllProfilesInGroup/$groupId?size=10&page=$pageNum');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/findAllProfilesInGroup/$groupId?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -99,7 +99,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<int> getNextPageRequestsInGroup(int pageNum, int groupId) async {
     try {
       Map<String, dynamic> data;
-      var url = Uri.parse('http://localhost:5000/profile/findAllPendingRequestsInGroup/$groupId');
+      var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/findAllPendingRequestsInGroup/$groupId');
       http.Response response = await http.get(url, headers: {"Accept": "application/json"});
 
       if (response.statusCode == 200) {
@@ -129,7 +129,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<int> getNextPageAdminsInGroup(int pageNum, int groupId) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:5000/profile/findAllAdminProfilesInGroup/$groupId?size=10&page=$pageNum');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/findAllAdminProfilesInGroup/$groupId?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -168,7 +168,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<void> removeUserFromGroup(int? profileId, int? groupId) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:5000/group/deleteGroupFromProfile/$profileId/$groupId');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/deleteGroupFromProfile/$profileId/$groupId');
     http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -179,7 +179,7 @@ class AdminProfileModel extends ChangeNotifier {
   }
 
   Future<bool> deleteGroupRequest(int profileId, int groupId) async {
-    var url = Uri.parse('http://localhost:5000/group/deleteGroupReq/$profileId/$groupId');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/deleteGroupReq/$profileId/$groupId');
     http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
 
     if (response.statusCode == 200) {
@@ -195,7 +195,7 @@ class AdminProfileModel extends ChangeNotifier {
   }
 
   Future<bool> acceptGroupRequest(int profileId, int groupId) async {
-    var url = Uri.parse('http://localhost:5000/group/acceptGroupReq/$profileId/$groupId');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/acceptGroupReq/$profileId/$groupId');
     http.Response response = await http.put(url, headers: {"Accept": "application/json"});
 
     if (response.statusCode == 200) {
@@ -215,7 +215,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<void> makeUserAdmin(int? profileId, int? groupId) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:5000/profile/admin/$profileId/$groupId');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/admin/$profileId/$groupId');
     http.Response response = await http.put(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();

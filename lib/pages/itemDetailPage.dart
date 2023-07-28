@@ -47,7 +47,7 @@ class _ItemDetailsState extends State<ItemDetails> {
 
   @override
   Widget build(BuildContext context) {
-    var numberOfImagesInItem = widget.item.itemPictureIds.length;
+    var numberOfImagesInItem = widget.item.itemPictureIds!.length;
     List<dynamic> imgList = [];
     List<dynamic> emptyList = [];
     return Scaffold(
@@ -158,7 +158,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.only(left: 15, top: 15, right: 15),
                           child: Text(
-                            widget.item.name,
+                            widget.item.name!,
                             style: TextStyle(
                                 fontSize: 19, color: Colors.black),
                             textAlign: TextAlign.left,
@@ -198,7 +198,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.only(left: 15, top: 15, right: 15),
                           child: Text(
-                            widget.item.description,
+                            widget.item.description!,
                             style: TextStyle(
                                 fontSize: 15, color: Colors.black),
                             textAlign: TextAlign.left,

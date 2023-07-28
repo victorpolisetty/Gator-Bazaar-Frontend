@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/Widgets/addedListingDialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,7 @@ class _AddListingState extends State<AddListing> {
       onPrimary: Colors.black87,
       primary: Colors.grey[300],
       minimumSize: Size(88, 36),
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 2.w), // Use sizer to set horizontal padding
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(2)),
       ),
@@ -120,20 +121,19 @@ class _AddListingState extends State<AddListing> {
         child: SingleChildScrollView(
           physics: ClampingScrollPhysics(),
           child: Container(
-            height: getProportionateScreenHeight(800),
-            padding: EdgeInsets.symmetric(horizontal: 16), // Added padding
+            height: 80.h, // Use sizer to set the height
+            padding: EdgeInsets.symmetric(horizontal: 2.w), // Use sizer to set horizontal padding
             child: Form(
               key: _formKey,
               child: ListView(
-                  children: <Widget>[
-                Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceEvenly, // Space images evenly
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: OutlinedButton(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                          child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               primary: Colors.grey.withOpacity(0.5),
                               side: BorderSide(color: Colors.black, width: 5),
@@ -141,13 +141,14 @@ class _AddListingState extends State<AddListing> {
                             onPressed: () async {
                               _showPickOptionsDialog(context, 1);
                             },
-                            child: _displayChild1()),
+                            child: _displayChild1(),
+                          ),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: OutlinedButton(
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                          child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               primary: Colors.grey.withOpacity(0.5),
                               side: BorderSide(color: Colors.black, width: 5),
@@ -155,13 +156,14 @@ class _AddListingState extends State<AddListing> {
                             onPressed: () async {
                               _showPickOptionsDialog(context, 2);
                             },
-                            child: _displayChild2()),
+                            child: _displayChild2(),
+                          ),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: OutlinedButton(
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                          child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               primary: Colors.grey.withOpacity(0.5),
                               side: BorderSide(color: Colors.black, width: 5),
@@ -169,100 +171,101 @@ class _AddListingState extends State<AddListing> {
                             onPressed: () async {
                               _showPickOptionsDialog(context, 3);
                             },
-                            child: _displayChild3()),
+                            child: _displayChild3(),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16), // Added space
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 2,
-                    controller: itemNameController,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(19),
                     ],
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      hintText: 'Item Name',
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  ),
+                  SizedBox(height: 2.h), // Use sizer to set vertical spacing
+                  Padding(
+                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                    child: TextFormField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 2,
+                      controller: itemNameController,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(19),
+                      ],
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        hintText: 'Item Name',
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 2,
-                    controller: itemDescriptionController,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      hintText: 'Description',
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: TextFormField(
-                    maxLines: 2,
-                    controller: itemPriceController,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(5),
-                      FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
-                      TextInputFormatter.withFunction((oldValue, newValue) {
-                        try {
-                          final text = newValue.text;
-                          if (text.isNotEmpty) double.parse(text);
-                          return newValue;
-                        } catch (e) {}
-                        return oldValue;
-                      }),
-                    ],
-                    keyboardType: TextInputType.numberWithOptions(
-                      decimal: true,
-                      signed: false,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Price',
-                      fillColor: Colors.black,
-                      focusColor: Colors.black,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Padding(
+                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                    child: TextFormField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 2,
+                      controller: itemDescriptionController,
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        hintText: 'Description',
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.all(12.0),
+                  Padding(
+                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                    child: TextFormField(
+                      maxLines: 2,
+                      controller: itemPriceController,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(5),
+                        FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          try {
+                            final text = newValue.text;
+                            if (text.isNotEmpty) double.parse(text);
+                            return newValue;
+                          } catch (e) {}
+                          return oldValue;
+                        }),
+                      ],
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                        signed: false,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Price',
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black),
@@ -301,58 +304,60 @@ class _AddListingState extends State<AddListing> {
                               _value = value.toString();
                             });
                           }),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
                     child: ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         _showPagedListViewDialog(context);
                       },
                       child: Text('Select Groups'),
                     ),
-                ),
-                SizedBox(height: 16), // Added space
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 200.0), // adjust this value as needed
-                      child: FloatingActionButton.extended(
-                        backgroundColor: Colors.black,
-                        onPressed: () {
-                          _value != "-1" &&
-                              itemNameController.text.isNotEmpty &&
-                              itemDescriptionController.text.isNotEmpty &&
-                              itemPriceController.text.isNotEmpty && resultOfGroupsSelected.length != 0
-                              ? itemAddSuccess = addNewItemToDB(
-                              context,
-                              itemNameController.text,
-                              itemDescriptionController.text,
-                              itemPriceController.text,
-                              _value, // _value = categoryid
-                              _image1,
-                              _image2,
-                              _image3,
-                              resultOfGroupsSelected)
-                              : null;
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  addedListingDialog(itemAddSuccess));
-                          if (itemAddSuccess) {
-                            itemNameController.clear();
-                            itemDescriptionController.clear();
-                            itemPriceController.clear();
-                            setState(() {
-                              _image1 = null;
-                              _image2 = null;
-                              _image3 = null;
-                              _value = "-1";
-                            });
-                          }
-                        },
-                        icon: Icon(Icons.add),
-                        label: Text("Add Listing"),
-                      ),
+                  ),
+                  SizedBox(height: 2.h), // Use sizer to set vertical spacing
+                  Padding(
+                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                    child: FloatingActionButton.extended(
+                      backgroundColor: Colors.black,
+                      onPressed: () {
+                        _value != "-1" &&
+                            itemNameController.text.isNotEmpty &&
+                            itemDescriptionController.text.isNotEmpty &&
+                            itemPriceController.text.isNotEmpty && resultOfGroupsSelected.length != 0
+                            ? itemAddSuccess = addNewItemToDB(
+                            context,
+                            itemNameController.text,
+                            itemDescriptionController.text,
+                            itemPriceController.text,
+                            _value, // _value = categoryid
+                            _image1,
+                            _image2,
+                            _image3,
+                            resultOfGroupsSelected)
+                            : null;
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                addedListingDialog(itemAddSuccess));
+                        if (itemAddSuccess) {
+                          itemNameController.clear();
+                          itemDescriptionController.clear();
+                          itemPriceController.clear();
+                          setState(() {
+                            _image1 = null;
+                            _image2 = null;
+                            _image3 = null;
+                            _value = "-1";
+                          });
+                        }
+                      },
+                      icon: Icon(Icons.add),
+                      label: Text("Add Listing"),
                     ),
-                  ]),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

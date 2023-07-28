@@ -37,7 +37,7 @@ class FavoriteModel extends ChangeNotifier {
     Map<String, dynamic> data;
 
     // var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites?page=$pageNum&size=5'); // TODO -  call the recentItem service when it is built
-    var url = Uri.parse('http://localhost:5000/profiles/$firebaseId/favorites?page=$pageNum&size=5&sort=createdAt,desc');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites?page=$pageNum&size=5&sort=createdAt,desc');
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -91,19 +91,23 @@ class FavoriteModel extends ChangeNotifier {
 
 
   Future<void> getItemRestList() async {
-    List data;
+    Map<String, dynamic> data; // Updated data type to Map<String, dynamic>
     String firebaseId = currentUser!.uid;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites');
-    http.Response response = await http.get(url, headers: {"Accept": "application/json"});
+    var url = Uri.parse(
+        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites');
+    http.Response response =
+    await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       String responseJson = Utf8Decoder().convert(response.bodyBytes);
       data = json.decode(responseJson);
-      _favoriteItems = data.map((itm) => new ItemWithImages.fromJson(itm)).toList();
+      // Now data is a Map<String, dynamic> representing the JSON object
+      _favoriteItems = [ItemWithImages.fromJson(data)]; // Assuming _favoriteItems is a List<ItemWithImages>
       print(_favoriteItems);
     } else {
-      print (response.statusCode);
+      print(response.statusCode);
     }
   }
+
   void getCategoryItems () {
     var initFuture = _getItems();
     initFuture.then((voidValue) {
@@ -119,28 +123,30 @@ class FavoriteModel extends ChangeNotifier {
   }
   Future<void> get1stImageForItemIfAvailable() async {
     if (_favoriteItems.isEmpty) return;
-    Uint8List data = new Uint8List(0);
+    Uint8List data = Uint8List(0);
 
     for (int i = 0; i < _favoriteItems.length; i++) {
-      if (_favoriteItems[i].itemPictureIds.isNotEmpty) {
+      if (_favoriteItems[i].itemPictureIds != null &&
+          _favoriteItems[i].itemPictureIds!.isNotEmpty) {
         String urlString = ITEMS_IMAGES_URL +
-            (_favoriteItems[i].itemPictureIds[0]).toString();
+            _favoriteItems[i].itemPictureIds![0].toString();
         var url = Uri.parse(urlString);
-        http.Response response = await http.get(
-            url, headers: {"Accept": "application/json"});
+        http.Response response =
+        await http.get(url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {
           data = response.bodyBytes;
         }
         print(_favoriteItems);
-      } else { // Add default - no image
-        data = (await rootBundle.load(
-            'assets/images/GatorBazaar.jpg'))
+      } else {
+        // Add default - no image
+        data = (await rootBundle.load('assets/images/GatorBazaar.jpg'))
             .buffer
             .asUint8List();
       }
       _favoriteItems[i].imageDataList.add(data);
     }
   }
+
   Future<void> getProfileFromDb(String? firebaseid) async {
     firebaseId = firebaseid;
     Map<String, dynamic> data;

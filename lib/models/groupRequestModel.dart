@@ -54,7 +54,7 @@ class GroupRequestModel extends ChangeNotifier{
   Future<void> postGroupRequest(int? groupId)  async {
     Map<String, dynamic> data;
     //TODO: need to call this somewhere
-    var url = Uri.parse('http://localhost:5000/group/addGroupReq/$userIdFromDB/$groupId');
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/addGroupReq/$userIdFromDB/$groupId');
     final http.Response response =  await http.post(url
         , headers: {
           "Accept": "application/json",
@@ -71,7 +71,7 @@ class GroupRequestModel extends ChangeNotifier{
 
   Future<int> getGroupRequestsByProfileId(int? profileId) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:5000/group/checkAllGroupReq/$profileId'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/checkAllGroupReq/$profileId'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

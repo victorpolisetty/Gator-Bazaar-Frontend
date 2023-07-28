@@ -51,7 +51,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
 
   @override
   Widget build(BuildContext context) {
-    var numberOfImagesInItem = widget.item.itemPictureIds.length;
+    var numberOfImagesInItem = widget.item.itemPictureIds!.length;
     List <dynamic> imgList = [];
     List <dynamic> emptyList = [];
     return Scaffold(
@@ -152,7 +152,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                               .size
                               .width,
                           margin: EdgeInsets.only(left: 15, top: 15),
-                          child: Text(widget.item.name,
+                          child: Text(widget.item.name!,
                             style: TextStyle(fontSize: 19, color: Colors.grey[700]),
                             textAlign: TextAlign.left,)
                       ),
@@ -194,7 +194,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                               .size
                               .width,
                           margin: EdgeInsets.only(left: 15, top: 15, right: 15),
-                          child: Text(widget.item.description,
+                          child: Text(widget.item.description!,
                             style: TextStyle(fontSize: 15, color: Colors.grey[700]),
                             textAlign: TextAlign.left,)
                       ),

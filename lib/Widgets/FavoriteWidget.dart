@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/models/favoriteModel.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/itemModel.dart';
@@ -47,26 +48,21 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
     bool isFavorite = favorite.items.contains(item);
     return isFavorite;
   }
-
   @override
   Widget build(BuildContext context) {
-    // var itm = new ItemWithImages.FavoriteItem(item.id!,item.name,item.price,item.description,item.imageDataList[0]);
-
-
     var isInFavoritesList = context.select<FavoriteModel, bool>(
-          (favorite) => inFavorites(favorite, item)
+          (favorite) => inFavorites(favorite, item),
     );
-    return InkWell(
-      borderRadius: BorderRadius.circular(50),
-      onTap: () {
 
+    return InkWell(
+      borderRadius: BorderRadius.circular(50.sp), // Use sizer to set the borderRadius
+      onTap: () {
         _toggleFavorite(isInFavoritesList, item);
-        isInFavoritesList = !isInFavoritesList;
       },
       child: Container(
-        padding: EdgeInsets.all(getProportionateScreenWidth(8)),
-        height: getProportionateScreenWidth(28),
-        width: getProportionateScreenWidth(28),
+        padding: EdgeInsets.all(8.sp), // Use sizer to set padding
+        height: 28.sp, // Use sizer to set height
+        width: 28.sp, // Use sizer to set width
         decoration: BoxDecoration(
           color: isInFavoritesList
               ? kPrimaryColor.withOpacity(0.15)
@@ -81,18 +77,8 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
         ),
       ),
     );
-    // return Padding(
-    //     padding: const EdgeInsets.fromLTRB(1.0, 2.0, 10.0, 4.0),
-    //     child: Container(
-    //       child: new IconButton(
-    //         iconSize: 40,
-    //           icon: Icon(isInFavoritesList ? Icons.favorite : Icons.favorite_border),
-    //           color: Colors.black,
-    //           onPressed: () {
-    //             _toggleFavorite(isInFavoritesList, item);
-    //           }),
-    //     ));
   }
+
   Future<void> addUserFavoriteToDb()  async {
     Map<String, dynamic> data;
     String firebaseId = currentUser!.uid;
