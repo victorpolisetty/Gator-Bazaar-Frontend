@@ -33,11 +33,11 @@ class GroupsCardViewAdminGroups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(5.sp), // Use sizer to set padding
+      padding: EdgeInsets.all(1.w), // Increase the padding
       child: SizedBox(
-        width: 140.w, // Use sizer to set width
+        width: width.w,
         child: InkWell(
-          onTap: () {
+          onTap: (){
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => adminSpecificGroupView(
                 group: group,
@@ -49,26 +49,36 @@ class GroupsCardViewAdminGroups extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio: 1.5,
+                aspectRatio: 1.2,
                 child: Container(
-                  padding: EdgeInsets.all(4.sp), // Use sizer to set padding
                   decoration: BoxDecoration(
                     color: kSecondaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15.sp), // Use sizer to set border radius
-                  ),
-                  child: Hero(
-                    tag: group.id.toString() + uniqueIdentifier,
-                    child: group.imageURL != null
-                        ? Image.memory(group.imageURL!)
-                        : Image.asset('assets/images/GatorBazaar.jpg'),
+                    borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
+                    image: group.imageURL != null
+                        ? DecorationImage(
+                      image: MemoryImage(group.imageURL!),
+                      fit: BoxFit.scaleDown,
+                    )
+                        : DecorationImage(
+                      image: AssetImage('assets/images/GatorBazaar.jpg'),
+                      fit: BoxFit.scaleDown,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 10), // Use sizer to set vertical spacing
-              Text(
-                group.name!,
-                style: TextStyle(color: Colors.black),
-                maxLines: 2,
+              const SizedBox(height: 10), // Increase the space between the image and other elements
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      group.name!,
+                      style: TextStyle(color: Colors.black),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -76,4 +86,7 @@ class GroupsCardViewAdminGroups extends StatelessWidget {
       ),
     );
   }
+
 }
+
+

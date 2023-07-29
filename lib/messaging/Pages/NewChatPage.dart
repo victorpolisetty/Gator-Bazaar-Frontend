@@ -57,13 +57,13 @@ class _ChatPageState extends State<ChatPage> {
                               SizedBox(),
                               CircleAvatar(
                                 radius: 30,
+                                backgroundColor: Colors.grey,
                                 child:
                                 SvgPicture.asset("assets/personIcon.svg",
                                   color: Colors.white,
                                   height: 36,
                                   width: 36,
                                 ),
-
                               ),
                               SizedBox(width: 16,),
                               Expanded(

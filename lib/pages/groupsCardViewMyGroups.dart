@@ -39,80 +39,76 @@ class GroupsCardViewMyGroups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(5.sp),
+      padding: EdgeInsets.all(1.w), // Increase the padding
       child: SizedBox(
-        width: width.w,
-        child: AspectRatio(
-          aspectRatio: aspectRetio,
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SpecificGroupPage(
-                    groupId: group.id!,
-                    groupName: group.name!,
-                  ),
-                ),
-              );
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(4.sp),
-                    decoration: BoxDecoration(
-                      color: kSecondaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(15.sp),
-                    ),
-                    child: Hero(
-                      tag: group.id.toString() + uniqueIdentifier,
-                      child: group.imageURL != null
-                          ? Image.memory(group.imageURL!)
-                          : Image.asset('assets/images/GatorBazaar.jpg'),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.sp),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        group.name!,
-                        style: TextStyle(color: Colors.black),
-                        maxLines: 2,
-                      ),
-                    ),
-                    group.id != 1
-                        ? Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: Icon(Icons.delete),
-                        color: Colors.red,
-                        onPressed: () {
-                          _showConfirmDeleteButton(context, 0);
-                        },
-                      ),
-                    )
-                        : Container(),
-                  ],
-                ),
-              ],
+        width: SizerUtil.deviceType == DeviceType.mobile ? 40.0.w : 100.0.w, // Adjust the width as needed
+        child: GestureDetector(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SpecificGroupPage(
+                groupId: group.id!,
+                groupName: group.name!,
+              ),
             ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AspectRatio(
+                aspectRatio: 1.2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: kSecondaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
+                    image: group.imageURL != null
+                        ? DecorationImage(
+                      image: MemoryImage(group.imageURL!),
+                      fit: BoxFit.scaleDown,
+                    )
+                        : DecorationImage(
+                      image: AssetImage('assets/images/GatorBazaar.jpg'),
+                      fit: BoxFit.scaleDown,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10), // Increase the space between the image and other elements
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      group.name!,
+                      style: TextStyle(color: Colors.black),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      icon: Icon(Icons.delete,size: 20.sp,),
+                      color: Colors.red,
+                      onPressed: () {
+                        _showConfirmDeleteButton(context, 0);
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
-  }
-
+}
   void _showConfirmDeleteButton(BuildContext buildContext, int? itemId) {
     BuildContext dialogContext;
     showDialog(
       context: buildContext,
       builder: (context) => WillPopScope(
         onWillPop: () async => false,
-        child: AlertDialog(
+        child: group.id != 1 ? AlertDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -133,6 +129,19 @@ class GroupsCardViewMyGroups extends StatelessWidget {
               ),
               ListTile(
                 title: Text("No"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ) : AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("You cannot leave the University of Florida group"),
+              ListTile(
+                title: Text("Ok"),
                 onTap: () {
                   Navigator.pop(context);
                 },

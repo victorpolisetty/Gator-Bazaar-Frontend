@@ -169,6 +169,7 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
                                 }
                               ),
                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: .7,
                                 crossAxisCount: 2,
                                 mainAxisSpacing: 0,),
                             ),

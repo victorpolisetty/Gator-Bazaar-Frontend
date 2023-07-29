@@ -25,12 +25,10 @@ class _HomePageBodyState extends State<HomePageBody> {
           children: [
             SizedBox(height: .2.h),
             HomeHeader(),
-            SizedBox(height: 10.sp),
             DiscountBanner(),
             Categories(),
             Categories1(),
-            // SpecialOffers(),
-            // SizedBox(height: 10.sp),
+            SizedBox(height: 1.5.h),
             PopularProducts(),
             SizedBox(height: 30.sp),
           ],

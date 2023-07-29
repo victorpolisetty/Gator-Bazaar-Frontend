@@ -23,9 +23,9 @@ class ProductCardSeller extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(SizerUtil.deviceType == DeviceType.mobile ? 2.0.sp : 2.0),
+      padding: EdgeInsets.all(1.w), // Increase the padding
       child: SizedBox(
-        width: SizerUtil.deviceType == DeviceType.mobile ? 80.0.w : 140.0, // Adjust the width as needed
+        width: SizerUtil.deviceType == DeviceType.mobile ? 40.0.w : 100.0.w, // Adjust the width as needed
         child: GestureDetector(
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -40,25 +40,24 @@ class ProductCardSeller extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio: 1.5,
+                aspectRatio: 1,
                 child: Container(
-                  padding: EdgeInsets.all(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
                   decoration: BoxDecoration(
                     color: kSecondaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
-                  ),
-                  child: Hero(
-                    tag: product.id.toString() + uniqueIdentifier,
-                    child: product.imageDataList.length > 0
-                        ? Image.memory(
-                      product.imageDataList[0],
+                    image: product.imageDataList.isNotEmpty
+                        ? DecorationImage(
+                      image: MemoryImage(product.imageDataList[0]),
                       fit: BoxFit.cover,
                     )
-                        : Image.asset('assets/images/GatorBazaar.jpg'),
+                        : DecorationImage(
+                      image: AssetImage('assets/images/GatorBazaar.jpg'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 10), // Increase the space between the image and other elements
               Row(
                 children: [
                   Flexible(
@@ -66,37 +65,43 @@ class ProductCardSeller extends StatelessWidget {
                       product.name!,
                       style: TextStyle(color: Colors.black),
                       maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (product.isSold!)
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: SizerUtil.deviceType == DeviceType.mobile ? 2.0.sp : 2.0,
-                          vertical: SizerUtil.deviceType == DeviceType.mobile ? 1.0.sp : 1.0), // 2% of the screen width, 1% of the screen height
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 8.0.sp : 8.0),
-                      ),
-                      child: Text(
-                        "SOLD!",
-                        style: TextStyle(
-                          fontSize: SizerUtil.deviceType == DeviceType.mobile ? 8.sp : 8,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                  product.isSold!
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 8.0.sp : 8.0),
+                    child: Container(
+                      width: SizerUtil.deviceType == DeviceType.mobile ? 10.0.w : 10.0,
+                      height: SizerUtil.deviceType == DeviceType.mobile ? 2.0.h : 2.0,
+                      margin: EdgeInsets.only(top: 0, left: SizerUtil.deviceType == DeviceType.mobile ? 0.1.w : 0.1),
+                      child: Center(
+                        child: Text(
+                          "SOLD!",
+                          style: TextStyle(
+                            fontSize: SizerUtil.deviceType == DeviceType.mobile ? 8.sp : 8,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
+                      color: Colors.green,
                     ),
+                  )
+                      : Container(),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "\$${product.price}",
-                    style: TextStyle(
-                      fontSize: SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 18.0,
-                      fontWeight: FontWeight.w600,
-                      color: kPrimaryColor,
+                  Flexible(
+                    child: Text(
+                      "\$${product.price}",
+                      style: TextStyle(
+                        fontSize: SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 18.0,
+                        fontWeight: FontWeight.w600,
+                        color: kPrimaryColor,
+                      ),
                     ),
                   ),
                   FavoriteWidget(item: product),

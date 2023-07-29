@@ -157,7 +157,17 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
           String? email = snapshot.data!.email;
           return Scaffold(
             appBar: AppBar(
-              elevation: 0.1.h, // Use sizer to set elevation
+              leading: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.black54,
+                ),
+              ),
+              automaticallyImplyLeading: false,
+              elevation: .1,
               actions: [
                 PopupMenuButton(
                   itemBuilder: (context) {
@@ -191,7 +201,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
                         dname.toString(),
                         style: TextStyle(
                           fontFamily: 'Montserrat',
-                          fontSize: 40.sp, // Use sizer to set font size
+                          fontSize: 8.w, // Use sizer to set font size
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -202,14 +212,14 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
                       child: Text(
                         email.toString(),
                         style: TextStyle(
-                          fontSize: 20.sp, // Use sizer to set font size
+                          fontSize: 4.w, // Use sizer to set font size
                           fontFamily: 'Montserrat',
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.sp), // Use sizer to set height
+                    SizedBox(height: 2.h), // Use sizer to set height
                     Padding(
                       padding: EdgeInsets.all(20.sp), // Use sizer to set padding
                       child: Text(
@@ -240,8 +250,9 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
                       },
                     ),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: .7,
                       crossAxisCount: 2,
-                      mainAxisSpacing: 15.sp, // Use sizer to set main axis spacing
+                      mainAxisSpacing: 0, // Use sizer to set main axis spacing
                     ),
                   ),
                 ),

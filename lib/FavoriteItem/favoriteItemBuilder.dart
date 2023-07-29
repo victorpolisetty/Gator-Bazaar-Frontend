@@ -78,14 +78,15 @@ class _FavoriteItemsState extends State<FavoriteItems> {
                 newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
                 noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Favorites Yet :)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
                 itemBuilder: (BuildContext context, item, int index) {
-                  return ProductCardFav(
+                  return ProductCard(
                     product: item,
                     uniqueIdentifier: "favorite",
                   );
                 }
             ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
+              childAspectRatio: .7,
+              crossAxisCount: 2,
               mainAxisSpacing: 0,),
           ),
         )

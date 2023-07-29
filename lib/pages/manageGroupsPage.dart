@@ -153,7 +153,6 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
         style: TextStyle(color: Colors.black),
       ),
 
-
       actions: [
       ],
     );
@@ -172,27 +171,17 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
           print("Search bar has been closed");
         });
   }
-  // void onSubmitted(String value) {
-  //   setState(() {
-  //     var context = _scaffoldKey.currentContext;
-  //     isSearching = true;
-  //     Provider.of<CategoryItemModel>(context!, listen: false).getSearchedCategoryItems(widget.categoryId, value);
-  //     keyword = value;
-  //     if (context == null) {
-  //       return;
-  //     }
-  //
-  //     ScaffoldMessenger.maybeOf(context);
-  //   });
-  // }
   @override
   Widget build(BuildContext context) {
+    int numTabs = 4; // Number of tabs
+    double availableWidth = MediaQuery.of(context).size.width / numTabs;
+    double maxFontSize = availableWidth * 0.15; // Adjust the scaling factor (0.1) as needed
     final upperTab = new TabBar(labelColor: Colors.black, tabs: <Tab>[
-      new Tab(text: "My Groups"),
-      new Tab(text: "Find Groups"),
-      new Tab(text: "Request New Groups"),
-      new Tab(text: "Admin Groups"),
-    ]);
+      new Tab(child: Text("My Groups", style: TextStyle(fontSize: maxFontSize))),
+      new Tab(child: Text("Find Groups", style: TextStyle(fontSize: maxFontSize))),
+      new Tab(child: Text("New Groups", style: TextStyle(fontSize: maxFontSize))),
+      new Tab(child: Text("Admin Groups", style: TextStyle(fontSize: maxFontSize)),
+      )]);
     //MY GROUPS
     return WillPopScope(
         onWillPop: () async {
@@ -203,8 +192,51 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
           child: Scaffold(
             appBar: AppBar(
               title: Text("Manage Groups", style: TextStyle(color: Colors.black),),
-              bottom: upperTab,
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(kToolbarHeight),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: <Widget>[
+                  TabBar(
+                    labelColor: Colors.black,
+                    isScrollable: true, // Make the TabBar scrollable
+                    tabs: <Widget>[
+                      Center(
+                        child: Text(
+                          "My Groups",
+                          style: TextStyle(fontSize: maxFontSize),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          "Find Groups",
+                          style: TextStyle(fontSize: maxFontSize),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          "Request New Groups",
+                          style: TextStyle(fontSize: maxFontSize),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          "Admin Groups",
+                          style: TextStyle(fontSize: maxFontSize),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
+          ),
+        ),
             body: TabBarView(
               children: [
                 //MY GROUPS
@@ -241,6 +273,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                           // itemCount: recentList.items.length,
                           gridDelegate:
                           SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: .7,
                             crossAxisCount: 2,
                             mainAxisSpacing: 0,
                           ),
@@ -291,6 +324,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                           // itemCount: recentList.items.length,
                           gridDelegate:
                           SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: .7,
                             crossAxisCount: 2,
                             mainAxisSpacing: 0,
                           ),
@@ -338,6 +372,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
 
                           gridDelegate:
                           SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: .7,
                             crossAxisCount: 2,
                             mainAxisSpacing: 0,
                           ),

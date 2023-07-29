@@ -36,87 +36,87 @@ class GroupsCardViewFindGroups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(5.sp),
+      padding: EdgeInsets.all(1.w), // Increase the padding
       child: SizedBox(
         width: width.w,
-        child: InkWell(
-          onTap: () {},
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(4.sp),
-                  decoration: BoxDecoration(
-                    color: kSecondaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15.sp),
-                  ),
-                  child: Hero(
-                    tag: group.id.toString() + uniqueIdentifier,
-                    child: group.imageURL != null
-                        ? Image.memory(group.imageURL!)
-                        : Image.asset('assets/images/GatorBazaar.jpg'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 1.2,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: kSecondaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
+                  image: group.imageURL != null
+                      ? DecorationImage(
+                    image: MemoryImage(group.imageURL!),
+                    fit: BoxFit.scaleDown,
+                  )
+                      : DecorationImage(
+                    image: AssetImage('assets/images/GatorBazaar.jpg'),
+                    fit: BoxFit.scaleDown,
                   ),
                 ),
               ),
-              SizedBox(height: 10.sp),
-              Row(
-                children: [
-                  Expanded(
-                    child: AutoSizeText(
-                      group.name!,
-                      style: TextStyle(color: Colors.black),
-                      maxLines: 2,
-                      minFontSize: 8,
-                      stepGranularity: 8,
-                    ),
+            ),
+            const SizedBox(height: 10), // Increase the space between the image and other elements
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    group.name!,
+                    style: TextStyle(color: Colors.black),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(width: 10.sp),
-                  Container(
-                    width: 20.w,
-                    height: 5.h,
-                    child: !isRequested
-                        ? TextButton(
-                      onPressed: () {
-                        showAlertDialogRequestGroup(context, group.name);
-                      },
-                      child: Text(
-                        'Request to Join',
-                        style: TextStyle(color: Colors.white, fontSize: 5.sp),
-                      ),
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.sp),
-                        ),
-                      ),
-                    )
-                        : TextButton(
-                      onPressed: () {
-                        showAlertDialogRequestGroup(context, group.name);
-                      },
-                      child: Text(
-                        'Pending',
-                        style: TextStyle(color: Colors.white, fontSize: 12.sp),
-                      ),
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                        padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.sp),
-                        ),
+                ),
+                Container(
+                  width: 20.w,
+                  height: 5.h,
+                  child: !isRequested
+                      ? TextButton(
+                    onPressed: () {
+                      showAlertDialogRequestGroup(context, group.name);
+                    },
+                    child: Text(
+                      'Request to Join',
+                      style: TextStyle(color: Colors.white, fontSize: 5.sp),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.sp),
                       ),
                     ),
+                  )
+                      : TextButton(
+                    onPressed: () {
+                      showAlertDialogRequestGroup(context, group.name);
+                    },
+                    child: Text(
+                      'Pending',
+                      style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.sp),
+                      ),
+                    ),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
+
 
 
   showAlertDialogRequestGroup(BuildContext context, String? groupName) {

@@ -10,8 +10,8 @@ class Categories extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> categories1 = [
       {"icon": "assets/icons/clothes.svg", "text": "Clothes", "pressNumber": 1},
-      {"icon": "assets/icons/formaldress.svg", "text": "Formal Dresses", "pressNumber": 2},
-      {"icon": "assets/icons/studentticket.svg", "text": "Student Tickets", "pressNumber": 3},
+      {"icon": "assets/icons/formaldress.svg", "text": "Formal", "pressNumber": 2},
+      {"icon": "assets/icons/studentticket.svg", "text": "Tickets", "pressNumber": 3},
       {"icon": "assets/icons/furniture.svg", "text": "Furniture", "pressNumber": 4},
     ];
     return Padding(
@@ -45,6 +45,8 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double maxFontSize = calculateMaxFontSize(context);
+
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         new MaterialPageRoute(
@@ -72,14 +74,48 @@ class CategoryCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: 1.h), // 1% of screen height
-            Text(
-              text!,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12.sp), // 12 scaled points
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: Text(
+                text!,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: maxFontSize), // Use the calculated max font size
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  double calculateMaxFontSize(BuildContext context) {
+    // The desired font size that you want for the non-overflowing text
+    const desiredFontSize = 12.0;
+
+    final constraints = BoxConstraints(
+      maxWidth: 15.w, // 15% of screen width
+      maxHeight: 15.w, // 15% of screen width
+    );
+
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: text!,
+        style: TextStyle(fontSize: desiredFontSize),
+      ),
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+      maxLines: 1,
+    );
+
+    textPainter.layout(maxWidth: constraints.maxWidth);
+
+    // Calculate the font scale factor required to fit the text within the constraints
+    final fontScaleFactor = textPainter.width / textPainter.size.width;
+
+    // Calculate the maximum font size that fits the available space
+    final maxFontSize = desiredFontSize / fontScaleFactor;
+
+    return maxFontSize;
   }
 }

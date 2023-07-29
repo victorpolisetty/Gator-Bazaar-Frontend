@@ -26,9 +26,9 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(SizerUtil.deviceType == DeviceType.mobile ? 2.0.sp : 2.0),
+      padding: EdgeInsets.all(1.w), // Increase the padding
       child: SizedBox(
-        width: SizerUtil.deviceType == DeviceType.mobile ? 80.0.w : 140.0, // Adjust the width as needed
+        width: SizerUtil.deviceType == DeviceType.mobile ? 40.0.w : 100.0.w, // Adjust the width as needed
         child: GestureDetector(
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -42,29 +42,32 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio: 2.3,
+                aspectRatio: 1,
                 child: Container(
-                  padding: EdgeInsets.all(SizerUtil.deviceType == DeviceType.mobile ? 4.0.sp : 4.0),
                   decoration: BoxDecoration(
                     color: kSecondaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
-                  ),
-                  child: Hero(
-                    tag: product.id.toString() + uniqueIdentifier,
-                    child: product.imageDataList.length > 0
-                        ? Image.memory(product.imageDataList[0])
-                        : Image.asset('assets/images/GatorBazaar.jpg'),
+                    image: product.imageDataList.isNotEmpty
+                        ? DecorationImage(
+                      image: MemoryImage(product.imageDataList[0]),
+                      fit: BoxFit.cover,
+                    )
+                        : DecorationImage(
+                      image: AssetImage('assets/images/GatorBazaar.jpg'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 10), // Increase the space between the image and other elements
               Row(
                 children: [
                   Flexible(
                     child: Text(
                       product.name!,
                       style: TextStyle(color: Colors.black),
-                      maxLines: 2,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   product.isSold!
@@ -93,12 +96,14 @@ class ProductCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "\$${product.price}",
-                    style: TextStyle(
-                      fontSize: SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 18.0,
-                      fontWeight: FontWeight.w600,
-                      color: kPrimaryColor,
+                  Flexible(
+                    child: Text(
+                      "\$${product.price}",
+                      style: TextStyle(
+                        fontSize: SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 18.0,
+                        fontWeight: FontWeight.w600,
+                        color: kPrimaryColor,
+                      ),
                     ),
                   ),
                   FavoriteWidget(item: product),
