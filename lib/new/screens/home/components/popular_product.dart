@@ -45,7 +45,7 @@ class _PopularProductsState extends State<PopularProducts> {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 2.h), // Use sizer to set the horizontal padding
-          child: SectionTitle(title: "Recent Products", press: () {}),
+          child: SectionTitle(title: "Featured Products", press: () {}),
         ),
         SizedBox(height: 2.w), // Use sizer to set the vertical spacing
         itemList.items.length != 0

@@ -11,12 +11,6 @@ class _MyAppBarState extends State<MyAppBar> {
     return AppBar(
       leading: InkWell(
         child: Container(
-          // margin: EdgeInsets.only(right: 10),
-          // child: Icon(
-          //   Icons.search,
-          //   color: Colors.grey[800],
-          //   size: 27,
-          // ),
         ),
       ),
       iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),

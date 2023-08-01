@@ -117,6 +117,7 @@ class _SpecificGroupPageState extends State<SpecificGroupPage> {
                       }
                   ),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: .7,
                     crossAxisCount: 2,
                     mainAxisSpacing: 0,),
                 ),

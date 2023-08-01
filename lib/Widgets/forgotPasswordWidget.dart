@@ -42,8 +42,8 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
           Image.asset('assets/images/GatorBazaar.jpg'),
           SizedBox(height: 40),
           TextFormField(
+            cursorColor: Colors.black,
             controller: emailController,
-            cursorColor: Colors.white,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(labelText: 'Email'),
             autovalidateMode: AutovalidateMode.onUserInteraction,

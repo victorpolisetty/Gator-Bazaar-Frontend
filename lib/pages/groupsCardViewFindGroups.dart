@@ -81,8 +81,8 @@ class GroupsCardViewFindGroups extends StatelessWidget {
                       showAlertDialogRequestGroup(context, group.name);
                     },
                     child: Text(
-                      'Request to Join',
-                      style: TextStyle(color: Colors.white, fontSize: 5.sp),
+                      'Request',
+                      style: TextStyle(color: Colors.white, fontSize: 3.5.w),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.black,
@@ -98,7 +98,7 @@ class GroupsCardViewFindGroups extends StatelessWidget {
                     },
                     child: Text(
                       'Pending',
-                      style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                      style: TextStyle(color: Colors.white, fontSize: 3.5.w),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.grey,

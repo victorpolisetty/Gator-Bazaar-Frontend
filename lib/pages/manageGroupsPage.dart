@@ -175,7 +175,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
   Widget build(BuildContext context) {
     int numTabs = 4; // Number of tabs
     double availableWidth = MediaQuery.of(context).size.width / numTabs;
-    double maxFontSize = availableWidth * 0.15; // Adjust the scaling factor (0.1) as needed
+    double maxFontSize = availableWidth * 0.2; // Adjust the scaling factor (0.1) as needed
     final upperTab = new TabBar(labelColor: Colors.black, tabs: <Tab>[
       new Tab(child: Text("My Groups", style: TextStyle(fontSize: maxFontSize))),
       new Tab(child: Text("Find Groups", style: TextStyle(fontSize: maxFontSize))),
@@ -218,7 +218,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                       ),
                       Center(
                         child: Text(
-                          "Request New Groups",
+                          "Request Group",
                           style: TextStyle(fontSize: maxFontSize),
                           overflow: TextOverflow.ellipsis,
                         ),

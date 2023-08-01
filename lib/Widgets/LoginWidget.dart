@@ -40,6 +40,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           child: Column(
             children: [
               TextFormField(
+                cursorColor: Colors.black,
                 controller: emailController,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(labelText: 'Email'),
@@ -52,6 +53,8 @@ class _LoginWidgetState extends State<LoginWidget> {
               ),
               SizedBox(height: 4),
               TextFormField(
+                cursorColor: Colors.black,
+
                 controller: passwordController,
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(labelText: "Password"),

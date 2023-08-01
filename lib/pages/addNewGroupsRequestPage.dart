@@ -139,25 +139,34 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.all(2.w), // Use sizer to set padding
-                            child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  primary: Colors.grey.withOpacity(0.5),
-                                  side: BorderSide(color: Colors.black, width: 5),
-                                ),
-                                onPressed: () async {
-                                  _showPickOptionsDialog(context, 1);
-                                },
-                                child: _displayChild1()),
+                            child: SizedBox(
+                              height: 35.h,
+                              child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    primary: Colors.grey.withOpacity(0.5),
+                                    side: BorderSide(color: Colors.black, width: 1),
+                                  ),
+                                  onPressed: () async {
+                                    _showPickOptionsDialog(context, 1);
+                                  },
+                                  child: _displayChild1()),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 2.h), // Use sizer to set vertical spacing
+                    SizedBox(height: 1.h),
                     Padding(
-                      padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                      padding: EdgeInsets.fromLTRB(3.w,0,0,0),
+                      child: Text("Group Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+                    ),// Use sizer to set vertical spacing
+                    Padding(
+                      padding: EdgeInsets.all(3.w), // Use sizer to set padding
                       child: TextFormField(
+                        cursorColor: Colors.black,
+
                         keyboardType: TextInputType.multiline,
-                        maxLines: 2,
+                        maxLines: 1,
                         controller: groupNameController,
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(19),
@@ -176,14 +185,22 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black),
                           ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
+
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                      padding:  EdgeInsets.fromLTRB(3.w,0,0,0),
+                      child: Text("Group Description", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(3.w), // Use sizer to set padding
                       child: TextFormField(
+                        cursorColor: Colors.black,
+
                         keyboardType: TextInputType.multiline,
-                        maxLines: 2,
+                        maxLines: 3,
                         controller: groupDescriptionController,
                         textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
@@ -199,12 +216,16 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black),
                           ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(bottom: 15.h), // Use sizer to set bottom padding
+                      padding: EdgeInsets.fromLTRB(3.w,0,3.w,3.5.h), // Use sizer to set padding
                       child: FloatingActionButton.extended(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0), // Set the border radius here
+                        ),
                         backgroundColor: Colors.black,
                         onPressed: () {
                           groupNameController.text.isNotEmpty &&
@@ -256,7 +277,7 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
       return Padding(
         padding: const EdgeInsets.fromLTRB(14.0, 50.0, 14.0, 50.0),
         child: new Icon(
-          Icons.add,
+          Icons.camera_alt_outlined,
           color: Colors.grey,
         ),
       );

@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
+import 'package:student_shopping_v1/Widgets/LoginWidget.dart';
+import 'package:student_shopping_v1/auth_page.dart';
+import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
@@ -34,14 +37,27 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
         Navigator.of(context).pop();
       },
     );
+    Future<void> _signOut() async {
+      await FirebaseAuth.instance.signOut();
+    }
+
     Widget continueButton = TextButton(
       child: Text("Yes"),
-      onPressed:  () {
-        Navigator.of(context).pop();
-        FirebaseAuth.instance.signOut();
-        FirebaseAuth.instance.authStateChanges();
+      onPressed:  () async {
+        _signOut()
+            .then((value) => Navigator.of(context).pop())
+        .then((res) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MainPage()),
+          );
+        });
       },
     );
+    
+
+
+
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(

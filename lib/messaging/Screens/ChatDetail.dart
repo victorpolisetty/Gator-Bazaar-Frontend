@@ -122,6 +122,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   //   maxRadius: 20,
                   // ),
                   CircleAvatar(
+                    backgroundColor: Colors.grey,
                     child:
                     SvgPicture.asset("assets/personIcon.svg",
                       color: Colors.white,
@@ -138,7 +139,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         Text(widget.chatProfile.current_user_id == widget.chatProfile.recipient_user_id ?
                         widget.chatProfile.creator_profile_name.toString() : widget.chatProfile.recipient_profile_name.toString(),style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600, color: Colors.black),),
                         SizedBox(height: 6,),
-                        Text("Online",style: TextStyle(fontSize: 13),),
                       ],
                     ),
                   ),
@@ -230,6 +230,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     SizedBox(width: 15,),
                     Expanded(
                       child: TextField(
+                        cursorColor: Colors.black,
                         controller: _controller,
                         decoration: InputDecoration(
                             hintText: "Write message...",

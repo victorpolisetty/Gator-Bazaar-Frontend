@@ -78,29 +78,7 @@ class _MultiSelectAddListingViewState extends State<MultiSelectAddListingView> {
               widget.onCheckboxChanged(widget.group.id!);
             },
           ),
-          // IconButton(
-          //   icon: Icon(Icons.delete),
-          //   onPressed: () {
-          //     showAlertDialogRequestGroup(context, widget.profile.id!, widget.group.id!, widget.profile.name);
-          //   },
-          // ),
-          // IconButton(
-          //   icon: widget.profile.isAdmin == false ? Icon(Icons.admin_panel_settings_outlined)
-          //       : Icon(Icons.admin_panel_settings) ,
-          //   onPressed: () {
-          //     // Implement delete functionality here
-          //     if(widget.profile.isAdmin == true &&
-          //         Provider.of<AdminProfileModel>(context, listen: false).userIdFromDB != widget.profile.id) {
-          //       showAlertDialogCannotMakeMemberAnAdmin(context, widget.profile.id!, widget.group.id!, widget.profile.name);
-          //     } else {
-          //       if(widget.profile.isAdmin == true) {
-          //         showAlertDialogRemoveMyselfAsAdmin(context, widget.profile.id!, widget.group.id!, widget.profile.name);
-          //       } else {
-          //         showAlertDialogMakeMemberAnAdmin(context, widget.profile.id!, widget.group.id!, widget.profile.name);
-          //       }
-          //     }
-          //   },
-          // ),
+
         ],
       ),
     );
@@ -119,5 +97,4 @@ class _MultiSelectAddListingViewState extends State<MultiSelectAddListingView> {
       print(response.statusCode);
     }
   }
-
 }

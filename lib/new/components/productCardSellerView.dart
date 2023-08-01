@@ -59,22 +59,21 @@ class ProductCardSeller extends StatelessWidget {
               ),
               const SizedBox(height: 10), // Increase the space between the image and other elements
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
                     child: Text(
                       product.name!,
                       style: TextStyle(color: Colors.black),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  product.isSold!
-                      ? ClipRRect(
-                    borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 8.0.sp : 8.0),
-                    child: Container(
+                  if (product.isSold!)
+                    Container(
                       width: SizerUtil.deviceType == DeviceType.mobile ? 10.0.w : 10.0,
                       height: SizerUtil.deviceType == DeviceType.mobile ? 2.0.h : 2.0,
-                      margin: EdgeInsets.only(top: 0, left: SizerUtil.deviceType == DeviceType.mobile ? 0.1.w : 0.1),
+                      margin: EdgeInsets.only(left: SizerUtil.deviceType == DeviceType.mobile ? 0.1.w : 0.1),
                       child: Center(
                         child: Text(
                           "SOLD!",
@@ -87,8 +86,6 @@ class ProductCardSeller extends StatelessWidget {
                       ),
                       color: Colors.green,
                     ),
-                  )
-                      : Container(),
                 ],
               ),
               Row(

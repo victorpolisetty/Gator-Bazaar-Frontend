@@ -44,8 +44,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           Image.asset('assets/images/GatorBazaar.jpg'),
           SizedBox(height: 40),
           TextFormField(
+            cursorColor: Colors.black,
             controller: emailController,
-            cursorColor: Colors.white,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(labelText: 'Email'),
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -55,17 +55,18 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           ),
           SizedBox(height: 4),
           TextFormField(
+            cursorColor: Colors.black,
             textCapitalization: TextCapitalization.sentences,
             controller: firstNameController,
-            cursorColor: Colors.white,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(labelText: 'First Name'),
           ),
           SizedBox(height: 4),
           TextFormField(
+            cursorColor: Colors.black,
+
             textCapitalization: TextCapitalization.sentences,
             controller: lastNameController,
-            cursorColor: Colors.white,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(labelText: 'Last Name'),
             // autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -74,6 +75,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           ),
           SizedBox(height: 4),
           TextFormField(
+            cursorColor: Colors.black,
+
             controller: passwordController,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(labelText: "Password"),

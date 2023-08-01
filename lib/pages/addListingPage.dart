@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:sizer/sizer.dart';
+import 'package:student_shopping_v1/MultiSelectAddCategoryToListingView.dart';
 import 'package:student_shopping_v1/Widgets/addedListingDialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,19 @@ class _AddListingState extends State<AddListing> {
   String _value = "-1";
   bool dialogShowed = false;
   Set<int> _selectedGroupIds = {};
+  String _selectedCategory = "Select"; // Initialize with a default value that matches one of the category names in the map
+  Map<String, int?> categoryList = {
+    "Select": -1,
+    "Clothes": 1,
+    "Formal": 2,
+    "Tickets": 3,
+    "Furniture": 4,
+    "Subleases": 5,
+    "Electronics": 6,
+    "Books": 7,
+    "Misc.": 8,
+  };
+
 
   // String clothingVal = "5";
   //late String imageUrl;
@@ -136,7 +150,7 @@ class _AddListingState extends State<AddListing> {
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               primary: Colors.grey.withOpacity(0.5),
-                              side: BorderSide(color: Colors.black, width: 5),
+                              side: BorderSide(color: Colors.black, width: 1),
                             ),
                             onPressed: () async {
                               _showPickOptionsDialog(context, 1);
@@ -151,7 +165,7 @@ class _AddListingState extends State<AddListing> {
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               primary: Colors.grey.withOpacity(0.5),
-                              side: BorderSide(color: Colors.black, width: 5),
+                              side: BorderSide(color: Colors.black, width: 1),
                             ),
                             onPressed: () async {
                               _showPickOptionsDialog(context, 2);
@@ -166,7 +180,7 @@ class _AddListingState extends State<AddListing> {
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               primary: Colors.grey.withOpacity(0.5),
-                              side: BorderSide(color: Colors.black, width: 5),
+                              side: BorderSide(color: Colors.black, width: 1),
                             ),
                             onPressed: () async {
                               _showPickOptionsDialog(context, 3);
@@ -177,12 +191,18 @@ class _AddListingState extends State<AddListing> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 2.h), // Use sizer to set vertical spacing
+                  SizedBox(height: 1.h),
                   Padding(
-                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                    padding: EdgeInsets.fromLTRB(3.w,0,0,0),
+                    child: Text("Item Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(3.w), // Use sizer to set padding
                     child: TextFormField(
+                      cursorColor: Colors.black,
+
                       keyboardType: TextInputType.multiline,
-                      maxLines: 2,
+                      maxLines: 1,
                       controller: itemNameController,
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(19),
@@ -201,36 +221,20 @@ class _AddListingState extends State<AddListing> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black),
                         ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
                       ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
-                    child: TextFormField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 2,
-                      controller: itemDescriptionController,
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: InputDecoration(
-                        hintText: 'Description',
-                        fillColor: Colors.black,
-                        focusColor: Colors.black,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
+                    padding:  EdgeInsets.fromLTRB(3.w,0,0,0),
+                    child: Text("Price", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                    padding: EdgeInsets.all(3.w), // Use sizer to set padding
                     child: TextFormField(
-                      maxLines: 2,
+                      cursorColor: Colors.black,
+
+                      maxLines: 1,
                       controller: itemPriceController,
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(5),
@@ -261,64 +265,153 @@ class _AddListingState extends State<AddListing> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black),
                         ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
                       ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                    padding: EdgeInsets.fromLTRB(3.w,0,0,0),
+                    child: Text("Description", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(3.w), // Use sizer to set padding
+                    child: TextFormField(
+                      cursorColor: Colors.black,
+
+                      textAlignVertical: TextAlignVertical.top,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
+                      controller: itemDescriptionController,
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        hintText: 'Add details about condition, retail price, link to retail page, etc...',
+                        fillColor: Colors.black,
+                        focusColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(3.w,0,0,0),
+                    child: Text("Info", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.all(3.w), // Use sizer to set padding
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //       border: Border.all(color: Colors.black),
+                  //       borderRadius: BorderRadius.circular(3.0),
+                  //     ),
+                  //     padding: EdgeInsets.fromLTRB(3.w,0,0,0),
+                  //     child: DropdownButton(
+                  //       isExpanded: true,
+                  //         menuMaxHeight: 200,
+                  //         value: _value,
+                  //         items: [
+                  //           DropdownMenuItem(
+                  //             child: Text("Select", style: TextStyle(color: Colors.grey[600]),),
+                  //             value: "-1",
+                  //           ),
+                  //           DropdownMenuItem(
+                  //             child: Text("Clothes"),
+                  //             value: "1",
+                  //           ),
+                  //           DropdownMenuItem(
+                  //               child: Text("Formal",), value: "2"),
+                  //           DropdownMenuItem(
+                  //             child: Text("Tickets",),
+                  //             value: "3",
+                  //           ),
+                  //           DropdownMenuItem(
+                  //               child: Text("Furniture",), value: "4"),
+                  //           DropdownMenuItem(
+                  //               child: Text("Subleases",), value: "5"),
+                  //           DropdownMenuItem(
+                  //               child: Text("Electronics",), value: "6"),
+                  //           DropdownMenuItem(child: Text("Books",), value: "7"),
+                  //           DropdownMenuItem(child: Text("Misc."), value: "8"),
+                  //         ],
+                  //         onChanged: (value) {
+                  //           setState(() {
+                  //             _value = value.toString();
+                  //           });
+                  //         }),
+                  //   ),
+                  // ),
+                  Padding(
+                    padding: EdgeInsets.all(3.w),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(4.0),
+                        color: Colors.white,
+                        border: Border(bottom: BorderSide(color: Colors.black, width: 1.0)),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: DropdownButton(
-                          menuMaxHeight: 200,
-                          value: _value,
-                          items: [
-                            DropdownMenuItem(
-                              child: Text("Select Category"),
-                              value: "-1",
-                            ),
-                            DropdownMenuItem(
-                              child: Text("Clothes"),
-                              value: "1",
-                            ),
-                            DropdownMenuItem(
-                                child: Text("Formal Dresses"), value: "2"),
-                            DropdownMenuItem(
-                              child: Text("Student Tickets"),
-                              value: "3",
-                            ),
-                            DropdownMenuItem(
-                                child: Text("Furniture"), value: "4"),
-                            DropdownMenuItem(
-                                child: Text("Subleases"), value: "5"),
-                            DropdownMenuItem(
-                                child: Text("Electronics"), value: "6"),
-                            DropdownMenuItem(child: Text("Books"), value: "7"),
-                            DropdownMenuItem(child: Text("Misc."), value: "8"),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _value = value.toString();
-                            });
-                          }),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Category', style: TextStyle(fontSize: 16, color: Colors.black)),
+                          Row(
+                            children: [
+                              Text(
+                                'Select',
+                                style: TextStyle(fontSize: 16, color: Colors.black),
+                              ),
+                              InkWell(
+                                  onTap: (){
+                                    _showCategorySelectionDialog(context);
+                                  },
+                                  child: Icon(
+                                      Icons.arrow_forward_ios)),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _showPagedListViewDialog(context);
-                      },
-                      child: Text('Select Groups'),
+                    padding: EdgeInsets.all(3.w),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(bottom: BorderSide(color: Colors.black, width: 1.0)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Group', style: TextStyle(fontSize: 16, color: Colors.black)),
+                          Row(
+                            children: [
+                              Text(
+                                'Select',
+                                style: TextStyle(fontSize: 16, color: Colors.black),
+                              ),
+                              InkWell(
+                                onTap: (){
+                                  _showPagedListViewDialog(context);
+                                },
+                                  child: Icon(
+                                      Icons.arrow_forward_ios)),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 2.h), // Use sizer to set vertical spacing
                   Padding(
-                    padding: EdgeInsets.all(2.w), // Use sizer to set padding
+                    padding: EdgeInsets.fromLTRB(3.w,0,3.w,3.5.h), // Use sizer to set padding
                     child: FloatingActionButton.extended(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0), // Set the border radius here
+                      ),
                       backgroundColor: Colors.black,
                       onPressed: () {
                         _value != "-1" &&
@@ -356,6 +449,8 @@ class _AddListingState extends State<AddListing> {
                       label: Text("Add Listing"),
                     ),
                   ),
+                  SizedBox(height: 3.h), // Use sizer to set vertical spacing
+
                 ],
               ),
             ),
@@ -387,12 +482,65 @@ class _AddListingState extends State<AddListing> {
     }
   }
 
-  Widget _displayChild1() {
+  void _showCategorySelectionDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Select Category'),
+              content: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * .58,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: categoryList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    String category = categoryList.keys.elementAt(index);
+                    int? categoryId = categoryList.values.elementAt(index);
+
+                    return RadioListTile<int?>(
+                      title: Text(category, style: TextStyle(color: Colors.black)),
+                      value: categoryId,
+                      groupValue: categoryList[_selectedCategory],
+                      onChanged: (int? value) {
+                        setState(() {
+                          _selectedCategory = category;
+                          _value = categoryId.toString();
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Done'),
+                ),
+              ],
+            );
+          }
+        );
+      },
+    );
+  }
+
+
+
+
+
+
+Widget _displayChild1() {
     if (_image1 == null) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(14.0, 50.0, 14.0, 50.0),
         child: new Icon(
-          Icons.add,
+          Icons.camera_alt_outlined,
           color: Colors.grey,
         ),
       );
@@ -412,7 +560,7 @@ class _AddListingState extends State<AddListing> {
       return Padding(
         padding: const EdgeInsets.fromLTRB(14.0, 50.0, 14.0, 50.0),
         child: new Icon(
-          Icons.add,
+          Icons.camera_alt_outlined,
           color: Colors.grey,
         ),
       );
@@ -432,7 +580,7 @@ class _AddListingState extends State<AddListing> {
       return Padding(
         padding: const EdgeInsets.fromLTRB(14.0, 50.0, 14.0, 50.0),
         child: new Icon(
-          Icons.add,
+          Icons.camera_alt_outlined,
           color: Colors.grey,
         ),
       );
@@ -598,3 +746,4 @@ class _AddListingState extends State<AddListing> {
     )) ?? resultOfGroupsSelected;
   }
 }
+
