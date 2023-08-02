@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../models/chatMessageModel.dart';
 import '../../models/messageModel.dart';
@@ -178,10 +179,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           children: <Widget>[
             Positioned(
               top: 0,
-              bottom: 60,
+              bottom: 75,
               left: 0,
               right: 0,
               child: ListView.builder(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 itemCount: messages.messageList.length,
                 shrinkWrap: true,
                 reverse: true,
@@ -208,8 +210,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             Align(
               alignment: Alignment.bottomLeft,
               child: Container(
-                padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
-                height: 70,
+                padding: EdgeInsets.fromLTRB(2.w, 1.w, .8.w, 2.5.h),
+                height: 80,
                 width: double.infinity,
                 color: Colors.white,
                 child: Row(
@@ -227,19 +229,35 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     //     child: Icon(Icons.add, color: Colors.white, size: 20, ),
                     //   ),
                     // ),
-                    SizedBox(width: 15,),
+                    SizedBox(width: 1.h,),
                     Expanded(
-                      child: TextField(
-                        cursorColor: Colors.black,
-                        controller: _controller,
-                        decoration: InputDecoration(
-                            hintText: "Write message...",
-                            hintStyle: TextStyle(color: Colors.black54),
-                            border: InputBorder.none
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0,0,0,0),
+                        child: TextFormField(
+                          cursorColor: Colors.black,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 3,
+                          controller: _controller,
+                          textCapitalization: TextCapitalization.sentences,
+                          decoration: InputDecoration(
+                            hintText: 'Write Message...',
+                            fillColor: Colors.black,
+                            focusColor: Colors.black,
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 1.h, vertical: 1.w), // Remove horizontal padding
+                          ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 2.w),
                     FloatingActionButton(
                       onPressed: (){
                         if(_controller.text.trim().isNotEmpty) {

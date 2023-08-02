@@ -91,6 +91,7 @@ class _HomePageState extends State<BuyerHomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBody: false,
       bottomNavigationBar: Container(
         color: Colors.white,

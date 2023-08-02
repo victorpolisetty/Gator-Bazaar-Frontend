@@ -8,6 +8,8 @@ import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../pages/itemDetailPage.dart';
+
 
 class SignUpWidget extends StatefulWidget {
   final VoidCallback onClickedSignIn;
@@ -25,6 +27,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final lastNameController = TextEditingController();
   int userIdFromDb = -1;
   bool? checkBoxValue = false;
+  FocusNode myFocusNode = new FocusNode();
+
   @override
 
   void dispose() {
@@ -154,14 +158,16 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => Center(child: CircularProgressIndicator()));
+          builder: (context) => Center(child: spinkit));
       try {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim()
         )
             .then((value) => FirebaseAuth.instance.currentUser?.updateDisplayName(firstNameController.text.trim() + " " + lastNameController.text.trim()))
-            .then((value) => addProfileToDB(FirebaseAuth.instance.currentUser?.email,FirebaseAuth.instance.currentUser?.displayName,FirebaseAuth.instance.currentUser?.uid));
+            .then((value) => addProfileToDB(FirebaseAuth.instance.currentUser?.email,FirebaseAuth.instance.currentUser?.displayName,FirebaseAuth.instance.currentUser?.uid))
+            .then((value) => getProfileFromDb(FirebaseAuth.instance.currentUser!.uid))
+            .then((value) => addGroupToProfile(userIdFromDb,1));
         await createAuthPinAndVerificationCode(FirebaseAuth.instance.currentUser!.uid, FirebaseAuth.instance.currentUser!.email);
       } on FirebaseAuthException catch (e) {
         print(e);
@@ -222,6 +228,20 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       print(response.statusCode);
     } else {
       print(response.statusCode);
+    }
+  }
+
+  Future<void> addGroupToProfile(int profileId, int groupId) async {
+    final url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/addGroupToProfile/$profileId/$groupId');
+
+    final response = await http.put(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      // Assuming the response contains the ProfileGroup dat
+      return;
+    } else {
+      throw Exception('Failed to add group to profile');
     }
   }
   showAlertDialogUserAgreement(BuildContext context) async {

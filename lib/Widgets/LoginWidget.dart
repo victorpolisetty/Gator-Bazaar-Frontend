@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:student_shopping_v1/main.dart';
+import 'package:student_shopping_v1/pages/itemDetailPage.dart';
 import 'package:student_shopping_v1/utils.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -18,6 +19,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   static GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  FocusNode myFocusNode = new FocusNode();
 
 
   @override
@@ -29,6 +31,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
+    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
     padding: EdgeInsets.all(16),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +46,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                 cursorColor: Colors.black,
                 controller: emailController,
                 textInputAction: TextInputAction.next,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: 'Email',
+                  labelStyle: TextStyle(
+                      color: myFocusNode.hasFocus ? Colors.black : Colors.black
+                  ),),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your email';
@@ -54,10 +60,14 @@ class _LoginWidgetState extends State<LoginWidget> {
               SizedBox(height: 4),
               TextFormField(
                 cursorColor: Colors.black,
-
                 controller: passwordController,
                 textInputAction: TextInputAction.done,
-                decoration: InputDecoration(labelText: "Password"),
+                decoration: InputDecoration(
+                    labelText: "Password",
+                  labelStyle: TextStyle(
+                      color: myFocusNode.hasFocus ? Colors.black : Colors.black
+                  ),),
+
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -128,7 +138,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => Center(child: CircularProgressIndicator()),
+        builder: (context) => Center(child: spinkit),
       );
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(

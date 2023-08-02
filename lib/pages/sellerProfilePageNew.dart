@@ -86,15 +86,25 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
         Navigator.of(context).pop();
       },
     );
+    Future<void> _signOut() async {
+      await FirebaseAuth.instance.signOut();
+    }
     Widget continueButton = TextButton(
       child: Text("Yes"),
-      onPressed:  () {
-        Navigator.of(context).pop();
-        FirebaseAuth.instance.signOut();
-        FirebaseAuth.instance.currentUser?.delete();
-        FirebaseAuth.instance.authStateChanges();
-        deleteUserFromDB(Provider.of<SellerItemModel>(context, listen: false).userIdFromDB);
+      onPressed:  () async {
+        _signOut()
+            .then((value) => Navigator.of(context).pop())
+            .then((res) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MainPage()),
+          );
+        });
+        await FirebaseAuth.instance.currentUser?.delete();
+        await FirebaseAuth.instance.authStateChanges();
+        await deleteUserFromDB(Provider.of<SellerItemModel>(context, listen: false).userIdFromDB);
       },
+
     );
 
     // set up the AlertDialog

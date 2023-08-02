@@ -190,6 +190,8 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
         child: new DefaultTabController(
           length: 4,
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
+
             appBar: AppBar(
               title: Text("Manage Groups", style: TextStyle(color: Colors.black),),
               bottom: PreferredSize(

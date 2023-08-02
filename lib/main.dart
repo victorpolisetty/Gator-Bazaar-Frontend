@@ -10,6 +10,7 @@ import 'package:student_shopping_v1/models/groupModel.dart';
 import 'package:student_shopping_v1/models/groupRequestModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
 import 'package:student_shopping_v1/notificationService/LocalNotificationService.dart';
+import 'package:student_shopping_v1/pages/itemDetailPage.dart';
 import 'package:student_shopping_v1/utils.dart';
 import 'package:student_shopping_v1/verify_email_page.dart';
 import 'package:sizer/sizer.dart';
@@ -189,11 +190,12 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // SizeConfig().init(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: spinkit);
           } else if (snapshot.hasError) {
             return Center(child: Text("Something went wrong!"));
           } else if (snapshot.hasData) {

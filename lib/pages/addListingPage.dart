@@ -117,22 +117,23 @@ class _AddListingState extends State<AddListing> {
       ),
     );
     //   var recentList = context.watch<CategoryItemModel>();
-    return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      appBar: new AppBar(
-        automaticallyImplyLeading: false,
+    return GestureDetector(
+      onTap: FocusScope.of(context).unfocus,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        iconTheme: new IconThemeData(color: Colors.black, size: 27),
-        elevation: 0,
-        title: Text(
-          'Add Listing',
-          style: TextStyle(color: Colors.black),
+        appBar: new AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          iconTheme: new IconThemeData(color: Colors.black, size: 27),
+          elevation: 0,
+          title: Text(
+            'Add Listing',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
-      ),
-      body: GestureDetector(
-        onTap: FocusScope.of(context).unfocus,
-        child: SingleChildScrollView(
+        body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           physics: ClampingScrollPhysics(),
           child: Container(
             height: 80.h, // Use sizer to set the height
@@ -201,6 +202,7 @@ class _AddListingState extends State<AddListing> {
                     child: TextFormField(
                       cursorColor: Colors.black,
 
+
                       keyboardType: TextInputType.multiline,
                       maxLines: 1,
                       controller: itemNameController,
@@ -233,7 +235,6 @@ class _AddListingState extends State<AddListing> {
                     padding: EdgeInsets.all(3.w), // Use sizer to set padding
                     child: TextFormField(
                       cursorColor: Colors.black,
-
                       maxLines: 1,
                       controller: itemPriceController,
                       inputFormatters: [
