@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,95 +39,234 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     super.dispose();
   }
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    padding: EdgeInsets.all(16),
-    child: Form(
-      key: formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('assets/images/GatorBazaar.jpg'),
-          SizedBox(height: 40),
-          TextFormField(
+  Widget build(BuildContext context) => Form(
+    key: formKey,
+    child: ListView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      children: [
+        SizedBox(
+            height: 25.h,
+            width: 25.w,
+            child: Image.asset('assets/images/GatorBazaar.jpg')),        // TextFormField(
+        //   cursorColor: Colors.black,
+        //   controller: emailController,
+        //   textInputAction: TextInputAction.next,
+        //   decoration: InputDecoration(labelText: 'Email'),
+        //   autovalidateMode: AutovalidateMode.onUserInteraction,
+        //   validator: (email) =>
+        //   //TODO: uncomment this delete underneath this
+        //      (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
+        // ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+          child: Text("Email", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+        ),
+        Padding(
+          padding: EdgeInsets.all(3.w), // Use sizer to set padding
+          child: TextFormField(
             cursorColor: Colors.black,
+            keyboardType: TextInputType.multiline,
+            maxLines: 1,
             controller: emailController,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(labelText: 'Email'),
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (email) =>
-            //TODO: uncomment this delete underneath this
-               (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (email) =>
+              //TODO: uncomment this delete underneath this
+                 (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
+            decoration: InputDecoration(
+              hintText: 'Email',
+              fillColor: Colors.black,
+              focusColor: Colors.black,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
+            ),
           ),
-          SizedBox(height: 4),
-          TextFormField(
+        ),
+        SizedBox(height: 4),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+          child: Text("First Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+        ),
+        Padding(
+          padding: EdgeInsets.all(3.w), // Use sizer to set padding
+          child: TextFormField(
             cursorColor: Colors.black,
+            keyboardType: TextInputType.multiline,
             textCapitalization: TextCapitalization.sentences,
+            maxLines: 1,
             controller: firstNameController,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(labelText: 'First Name'),
+            decoration: InputDecoration(
+              hintText: 'First Name',
+              fillColor: Colors.black,
+              focusColor: Colors.black,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
+            ),
           ),
-          SizedBox(height: 4),
-          TextFormField(
+        ),
+        SizedBox(height: 4),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+          child: Text("Last Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+        ),
+        Padding(
+          padding: EdgeInsets.all(3.w), // Use sizer to set padding
+          child: TextFormField(
             cursorColor: Colors.black,
-
+            keyboardType: TextInputType.multiline,
             textCapitalization: TextCapitalization.sentences,
+            maxLines: 1,
             controller: lastNameController,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(labelText: 'Last Name'),
-            // autovalidateMode: AutovalidateMode.onUserInteraction,
-            // validator: (email) =>
-            // email != null && !EmailValidator.validate(email) ? 'Enter a valid email' : null,
+            decoration: InputDecoration(
+              hintText: 'Last Name',
+              fillColor: Colors.black,
+              focusColor: Colors.black,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
+            ),
           ),
-          SizedBox(height: 4),
-          TextFormField(
+        ),
+        SizedBox(height: 4),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+          child: Text("Password", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+        ),
+        // TextFormField(
+        //   cursorColor: Colors.black,
+        //   controller: passwordController,
+        //   textInputAction: TextInputAction.done,
+        //   decoration: InputDecoration(labelText: "Password"),
+        //   obscureText: true,
+        //   autovalidateMode: AutovalidateMode.onUserInteraction,
+        //   validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
+        // ),
+        Padding(
+          padding: EdgeInsets.all(3.w), // Use sizer to set padding
+          child: TextFormField(
             cursorColor: Colors.black,
-
+            keyboardType: TextInputType.multiline,
+            textCapitalization: TextCapitalization.sentences,
+            maxLines: 1,
             controller: passwordController,
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(labelText: "Password"),
-            obscureText: true,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
+              obscureText: true,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
+            decoration: InputDecoration(
+              hintText: 'Password',
+              fillColor: Colors.black,
+              focusColor: Colors.black,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
+            ),
           ),
-          SizedBox(height: 20),
-          ElevatedButton(  style:ElevatedButton.styleFrom(
-              primary: Colors.black
-          ),onPressed: () { _launchUrl("https://docs.google.com/document/d/1Au1nHDDSdrnfFZFROdV6aSrVBg0tnemU8PJ-6c1oHfQ/edit#heading=h.5wn9zmiu3ly6"); },
-              child: Text("Terms of Service")),
-          ElevatedButton(  style:ElevatedButton.styleFrom(
-              primary: Colors.black
-          ),onPressed: () { _launchUrl("https://docs.google.com/document/d/1K0FeDwN0YmE13Hbf3FZA77Q4sLiRmw2cz3C7Xd28GJ4/edit#heading=h.eykxcvd8q5gq"); },
-              child: Text("End User License Agreement")),
-          Row(
-            children: [
-              Expanded(child: Text("I agree to the Terms of Service and End User License Agreement")),
-              Checkbox(
-                  value: checkBoxValue,
-                  activeColor: Colors.black,
-                  onChanged:(bool? newValue){
-                    setState(() {
-                      checkBoxValue = newValue;
-                    });
-                  }
-                  ),
-            ],
+        ),
+        SizedBox(height: 20),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w,0,3.w,3.5.h), // Use sizer to set padding
+          child: FloatingActionButton.extended(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0), // Set the border radius here
+            ),
+            backgroundColor: Colors.black,
+            onPressed: () {
+              _launchUrl("https://docs.google.com/document/d/1Au1nHDDSdrnfFZFROdV6aSrVBg0tnemU8PJ-6c1oHfQ/edit#heading=h.5wn9zmiu3ly6");
+            },
+            icon: Icon(Icons.note_alt_sharp),
+            label: Text("Terms of Service"),
           ),
+        ),
+        // ElevatedButton(  style:ElevatedButton.styleFrom(
+        //     primary: Colors.black
+        // ),onPressed: () { _launchUrl("https://docs.google.com/document/d/1Au1nHDDSdrnfFZFROdV6aSrVBg0tnemU8PJ-6c1oHfQ/edit#heading=h.5wn9zmiu3ly6"); },
+        //     child: Text("Terms of Service")),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w,0,3.w,2.h), // Use sizer to set padding
+          child: FloatingActionButton.extended(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0), // Set the border radius here
+            ),
+            backgroundColor: Colors.black,
+            onPressed: () {
+              _launchUrl("https://docs.google.com/document/d/1K0FeDwN0YmE13Hbf3FZA77Q4sLiRmw2cz3C7Xd28GJ4/edit#heading=h.eykxcvd8q5gq");            },
+            icon: Icon(Icons.note_alt_sharp),
+            label: Text("End User License Agreement"),
+          ),
+        ),
+        // ElevatedButton(  style:ElevatedButton.styleFrom(
+        //     primary: Colors.black
+        // ),onPressed: () { _launchUrl("https://docs.google.com/document/d/1K0FeDwN0YmE13Hbf3FZA77Q4sLiRmw2cz3C7Xd28GJ4/edit#heading=h.eykxcvd8q5gq"); },
+        //     child: Text("End User License Agreement")),
+        Row(
+          children: [
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(left: 5.w), // Adjust the value as needed
+                child: Text(
+                  "I agree to the Terms of Service and End User License Agreement",
+                  softWrap: true,
+                  style: TextStyle(color: Colors.grey[800]),
+                ),
+              ),
+            ),
+            Checkbox(
+              value: checkBoxValue,
+              activeColor: Colors.black,
+              onChanged: (bool? newValue) {
+                setState(() {
+                  checkBoxValue = newValue;
+                });
+              },
+            ),
+          ],
+        ),
 
-          ElevatedButton.icon(
-            style:
-            ElevatedButton.styleFrom(
-              minimumSize: Size.fromHeight(50),
-              primary: Colors.black
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w,1.5.h,3.w,3.5.h), // Use sizer to set padding
+          child: FloatingActionButton.extended(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0), // Set the border radius here
             ),
-            icon: Icon(Icons.lock_open, size: 32),
-            label: Text(
-              'Sign Up',
-              style: TextStyle(fontSize: 24),
-            ),
-            onPressed: signUp,
+            backgroundColor: Colors.black,
+            onPressed: () {
+              signUp();
+            },
+            icon: Icon(Icons.check),
+            label: Text("Sign Up"),
           ),
-          SizedBox(height: 24),
-          RichText(
+        ),
+        Center(
+          child: RichText(
               text: TextSpan (
                   style: TextStyle(color: Colors.black),
                   text: 'Already have an account?  ',
@@ -142,9 +282,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     )
                   ]
               )
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     ),
   );
 
@@ -193,8 +333,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     );
 
     if (response.statusCode == 200) {
-      print(response.statusCode);
-      print("Done with adding profile");
     } else {
       print(response.statusCode);
     }
@@ -209,7 +347,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           "Content-Type": "application/json"
     });
     if (response.statusCode == 200) {
-      print(response.statusCode);
       print("Sent email");
     } else {
       print(response.statusCode);
@@ -225,7 +362,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       userIdFromDb = data['id'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }

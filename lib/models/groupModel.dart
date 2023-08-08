@@ -32,23 +32,16 @@ class GroupModel extends ChangeNotifier{
   List<Group> get group1 => groupListFindGroups;
   List<Group> get group2 => groupListAdminGroups;
 
-  User? currentUser = FirebaseAuth.instance.currentUser;
   int userIdFromDB = -1;
   int totalPages = 0;
   int currentPage = 1;
 
 
-  GroupModel() {
-    // var initFuture = init();
-    // initFuture.then((voidValue) {
-    //   // state = HomeScreenModelState.initialized;
-    //   notifyListeners();
-    // });
-  }
+  GroupModel() {}
 
   Future<void> getGroupsUserInAndImages(int pageNum) async {
     groupListMyGroups.clear();
-    await getProfileFromDb(currentUser!.uid.toString());
+    await getProfileFromDb();
     totalPages = await getNextPageGroupsUserIn(pageNum);
     await getImageForGroupMyGroups();
     notifyListeners();
@@ -56,7 +49,7 @@ class GroupModel extends ChangeNotifier{
 
   Future<void> getGroupsUserNotInAndImages(int pageNum) async {
     groupListFindGroups.clear();
-    await getProfileFromDb(currentUser!.uid.toString());
+    await getProfileFromDb();
     totalPages = await getNextPageGroupsUserNotIn(pageNum);
     await getImageForGroupFindGroups();
     notifyListeners();
@@ -64,14 +57,14 @@ class GroupModel extends ChangeNotifier{
 
   Future<void> getGroupsUserInAndImagesAdmin(int pageNum) async {
     groupListAdminGroups.clear();
-    await getProfileFromDb(currentUser!.uid.toString());
+    await getProfileFromDb();
     totalPages = await getNextPageGroupsAdminGroups(pageNum);
     await getImageForGroupAdminGroups();
     notifyListeners();
   }
 
   Future<void> packagedDeleteGroupFromProfile(int? groupId) async {
-    await getProfileFromDb(currentUser!.uid.toString()).then((value) => deleteGroupFromProfile(userIdFromDB, groupId));
+    await getProfileFromDb().then((value) => deleteGroupFromProfile(userIdFromDB, groupId));
     notifyListeners();
   }
 
@@ -81,7 +74,6 @@ class GroupModel extends ChangeNotifier{
     http.Response response = await http.delete(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
@@ -91,45 +83,32 @@ class GroupModel extends ChangeNotifier{
 
   //TODO
   Future<void> getGroupsMyGroups() async {
-    // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
     var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getAllGroups');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       data = jsonDecode(response.body);
-      // categoryImage = response.bodyBytes;
       var groups = data['content'];
       for (int i = 0; i < groups.length; i++) {
         Group group = Group.fromJson(groups[i]);
         groupListMyGroups.add(group);
-        // print(categoryList);
       }
-      print("DONE");
     } else {
       print (response.statusCode);
     }
   }
 
-  //TODO
   Future<void> getGroupsFindGroups() async {
-    // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
     var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getAllGroups');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       data = jsonDecode(response.body);
-      // categoryImage = response.bodyBytes;
       var groups = data['content'];
       for (int i = 0; i < groups.length; i++) {
         Group group = Group.fromJson(groups[i]);
         groupListFindGroups.add(group);
-        // print(categoryList);
       }
-      print("DONE");
     } else {
       print (response.statusCode);
     }
@@ -142,17 +121,12 @@ class GroupModel extends ChangeNotifier{
     var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupsProfileIsAdmin/$userIdFromDB?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       data = jsonDecode(response.body);
-      // categoryImage = response.bodyBytes;
       var groups = data['content'];
       for (int i = 0; i < groups.length; i++) {
         Group group = Group.fromJson(groups[i]);
         groupListAdminGroups.add(group);
-        // print(categoryList);
       }
-      print("DONE");
       return totalPages;
     } else {
       print (response.statusCode);
@@ -168,7 +142,6 @@ class GroupModel extends ChangeNotifier{
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       data = jsonDecode(response.body);
       // categoryImage = response.bodyBytes;
       var groups = data['content'];
@@ -176,7 +149,6 @@ class GroupModel extends ChangeNotifier{
       for (int i = 0; i < groups.length; i++) {
         Group group = Group.fromJson(groups[i]);
         groupListMyGroups.add(group);
-        // print(categoryList);
       }
       return totalPages;
     } else {
@@ -192,16 +164,12 @@ class GroupModel extends ChangeNotifier{
     var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupsNotInProfile/$userIdFromDB?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       data = jsonDecode(response.body);
-      // categoryImage = response.bodyBytes;
       var groups = data['content'];
       var totalPages = data['totalPages'];
       for (int i = 0; i < groups.length; i++) {
         Group group = Group.fromJson(groups[i]);
         groupListFindGroups.add(group);
-        // print(categoryList);
       }
       return totalPages;
     } else {
@@ -217,21 +185,13 @@ class GroupModel extends ChangeNotifier{
       int? groupId = groupListMyGroups[i].id;
       String urlString = "http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupImageById/$groupId";
       var url = Uri.parse(urlString);
-      http.Response response = await http.get(
-          url, headers: {"Accept": "application/json"});
+      http.Response response = await http.get(url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
         data = response.bodyBytes;
         groupListMyGroups[i].imageURL = data;
-        // print(categoryList[i].imageURL);
       } else {
         print (response.statusCode);
       }
-      //  else { // Add default - no image
-      //   data = (await rootBundle.load(
-      //       'assets/images/no-picture-available-icon.png'))
-      //       .buffer
-      //       .asUint8List();
-      // }
     }
   }
 
@@ -246,16 +206,9 @@ class GroupModel extends ChangeNotifier{
       if (response.statusCode == 200) {
         data = response.bodyBytes;
         groupListFindGroups[i].imageURL = data;
-        // print(categoryList[i].imageURL);
       } else {
         print (response.statusCode);
       }
-      //  else { // Add default - no image
-      //   data = (await rootBundle.load(
-      //       'assets/images/no-picture-available-icon.png'))
-      //       .buffer
-      //       .asUint8List();
-      // }
     }
   }
 
@@ -270,36 +223,30 @@ class GroupModel extends ChangeNotifier{
       if (response.statusCode == 200) {
         data = response.bodyBytes;
         groupListAdminGroups[i].imageURL = data;
-        // print(categoryList[i].imageURL);
       } else {
         print (response.statusCode);
       }
-      //  else { // Add default - no image
-      //   data = (await rootBundle.load(
-      //       'assets/images/no-picture-available-icon.png'))
-      //       .buffer
-      //       .asUint8List();
-      // }
     }
   }
 
 
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      userIdFromDB = data['id'];
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
+  Future<void> getProfileFromDb() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if(currentUser != null) {
+      String? firebaseId = currentUser.uid;
+      Map<String, dynamic> data;
+      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      http.Response response = await http.get(
+          url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        // data.map<Item>((json) => Item.fromJson(json)).toList();
+        data = jsonDecode(response.body);
+        userIdFromDB = data['id'];
+      } else {
+        print(response.statusCode);
+      }
     }
   }
-
-
 }
 
 toNull(_) => null;

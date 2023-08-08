@@ -374,18 +374,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       map = jsonDecode(response.body);
       userMessagesBetweenUsersForQuery = List.from(map['content']).map((msg)=>UserMessage.fromJson(msg)).toList();
-      // itemSellerId = userMessagesBetweenUsersForQuery[0]['seller_id'];
-      // itemName = userMessagesBetweenUsersForQuery[0].;
       if(userMessagesBetweenUsersForQuery.length != 0) {
         latestItemDbId = userMessagesBetweenUsersForQuery[0].item_id!;
       }
-      // print(itemSellerId);
-      // messageList = List.from(map['content']).map((msg)=>UserMessage.fromJson(msg)).toList();
-      // totalPages = map['totalPages'];
     } else {
       print (response.statusCode);
     }
@@ -396,16 +389,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categories/items/$latestItemDbId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       map = jsonDecode(response.body);
-      // userMessagesBetweenUsersForQuery = List.from(map['content']).map((msg)=>UserMessage.fromJson(msg)).toList();
       latestItemSellerId = map['content'][0]['seller_id'];
       latestItemName = map['content'][0]['name'];
-      // latestItemDbId = userMessagesBetweenUsersForQuery[0].item_id!;
-      // print(itemSellerId);
-      // messageList = List.from(map['content']).map((msg)=>UserMessage.fromJson(msg)).toList();
-      // totalPages = map['totalPages'];
     } else {
       print (response.statusCode);
     }
@@ -416,9 +402,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile/itemMessages?creatorId=$creatorId&recipientId=$recipientId&itemId=$itemId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       map = jsonDecode(response.body);
       userMessagesForSpecificItem = List.from(map['content']).map((msg)=>UserMessage.fromJson(msg)).toList();
       } else {

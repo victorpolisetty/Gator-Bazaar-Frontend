@@ -56,8 +56,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       currDbId = data['id'];
-      // recipientProfileName = data['name'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
@@ -335,7 +333,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         });
       }
     } else {
-
       print(response.statusCode);
     }
     //  });
@@ -354,7 +351,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       userIdFromDb = data['id'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }

@@ -58,7 +58,6 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
       if (response.statusCode == 200) {
         data = jsonDecode(response.body);
         currDbId = data['id'];
-        print(response.statusCode);
       } else {
         print(response.statusCode);
       }

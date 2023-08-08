@@ -45,7 +45,6 @@ class MessageModel extends ChangeNotifier{
   int currentPage = 1;
   int lastMessageItemId = -1;
   String? recipientDeviceToken = "";
-  String? currentUserName = FirebaseAuth.instance.currentUser?.displayName;
 
   /// List of items in the cart.
   List<UserMessage> get msgs => messageList;
@@ -84,15 +83,9 @@ class MessageModel extends ChangeNotifier{
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
       String responseJson = Utf8Decoder().convert(response.bodyBytes);
       map = json.decode(responseJson);
-      print(response.body);
-      // map = jsonDecode(response.body);
       messageList = List.from(map['content']).map((msg)=>UserMessage.fromJson(msg)).toList();
-      // if(messageList.length != 0){
-      //   lastMessageItemId = messageList[0].item_id!;
-      // }
       totalPages = map['totalPages'];
     } else {
       print (response.statusCode);
@@ -148,32 +141,34 @@ class MessageModel extends ChangeNotifier{
       // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       recipientDeviceToken = data['deviceToken'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
   }
 
   Future<void> sendMessageNotificationHelper(String? messageText, int? creatorUserId) async {
-    // final HttpClient httpClient = HttpClient();
-    final String fcmUrl = 'https://fcm.googleapis.com/fcm/send';
-    final fcmKey = "AAAA8gRWlF0:APA91bH8WJNgwnlcHtC5nHIiW78x_HJxqZlLu64pAFRWpE1uwmWb69tqcbvE4Yuai0fA0S35OF_pg1gJGv4_jNw6y_F0Ckh6aJ44w8sH0nHt8SeyWcBy3BsyCKCfADx_AHxNnHkvijIP";
-    final fcmToken = recipientDeviceToken;
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if(currentUser != null) {
+      String? currentUserName = currentUser.displayName;
+      // final HttpClient httpClient = HttpClient();
+      final String fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+      final fcmKey = "AAAA8gRWlF0:APA91bH8WJNgwnlcHtC5nHIiW78x_HJxqZlLu64pAFRWpE1uwmWb69tqcbvE4Yuai0fA0S35OF_pg1gJGv4_jNw6y_F0Ckh6aJ44w8sH0nHt8SeyWcBy3BsyCKCfADx_AHxNnHkvijIP";
+      final fcmToken = recipientDeviceToken;
 
-    var headers = {'Content-Type': 'application/json', 'Authorization': 'key=$fcmKey'};
-    var request = http.Request('POST', Uri.parse(fcmUrl));
-    // request.body = '''{"to":"dX3OvDFxl07snDMXDYnxNh:APA91bHFeZFIXQSEBFynTmy0VpF_HXm1nNaupt80sSuwrrm4bSVOprU8KO6fnoRpCMYp_7U4PqDvGO7P_IF0pf_hC3fvRdn3I4vQ2kLuPO6HkK5H2xRJM4lTM617tDSoOuK8ZPJO1IJG","priority":"high","notification":{"title":"Victor Polisetty","body":"$messageText","sound": "default"}}''';
-    request.body = '''{"to":"$fcmToken","priority":"high","notification":{"title":"$currentUserName","body":"$messageText","sound": "default"}}''';
-    request.headers.addAll(headers);
+      var headers = {'Content-Type': 'application/json', 'Authorization': 'key=$fcmKey'};
+      var request = http.Request('POST', Uri.parse(fcmUrl));
+      // request.body = '''{"to":"dX3OvDFxl07snDMXDYnxNh:APA91bHFeZFIXQSEBFynTmy0VpF_HXm1nNaupt80sSuwrrm4bSVOprU8KO6fnoRpCMYp_7U4PqDvGO7P_IF0pf_hC3fvRdn3I4vQ2kLuPO6HkK5H2xRJM4lTM617tDSoOuK8ZPJO1IJG","priority":"high","notification":{"title":"Victor Polisetty","body":"$messageText","sound": "default"}}''';
+      request.body = '''{"to":"$fcmToken","priority":"high","notification":{"title":"$currentUserName","body":"$messageText","sound": "default"}}''';
+      request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-    } else {
-      print(response.reasonPhrase);
+      if (response.statusCode == 200) {
+        print(await response.stream.bytesToString());
+      } else {
+        print(response.reasonPhrase);
+      }
     }
-    //
   }
 
   Future<bool?> initNextMessagePage(int pageNum) async {
@@ -189,7 +184,6 @@ class MessageModel extends ChangeNotifier{
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      print(response.body);
       map = jsonDecode(response.body);
       final messages = map['content'];
       totalPages = map['totalPages'];

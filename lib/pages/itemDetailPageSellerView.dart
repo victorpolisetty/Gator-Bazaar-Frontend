@@ -239,8 +239,6 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       currentUserId = data['id'];
-      // recipientProfileName = data['name'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
@@ -255,8 +253,6 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       sellerUserName = data['name'];
-      // recipientProfileName = data['name'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }

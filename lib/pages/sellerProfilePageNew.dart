@@ -43,15 +43,9 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
 
     Widget continueButton = TextButton(
       child: Text("Yes"),
-      onPressed:  () async {
-        _signOut()
-            .then((value) => Navigator.of(context).pop())
-        .then((res) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MainPage()),
-          );
-        });
+      onPressed: () async {
+        Navigator.of(context).pop();
+        await _signOut().then((value) => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MainPage()),(route) => false));
       },
     );
     
@@ -89,28 +83,46 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
     Future<void> _signOut() async {
       await FirebaseAuth.instance.signOut();
     }
+    Future<void> _signOutAndDelete(BuildContext context) async {
+      try {
+        await FirebaseAuth.instance.currentUser!.delete();
+        await FirebaseAuth.instance.signOut();
+      } catch (e) {
+        // Handle any exceptions that might occur during deletion
+        print("Error deleting account: $e");
+        // You can show an error dialog here
+        return;
+      }
+    }
+
     Widget continueButton = TextButton(
       child: Text("Yes"),
-      onPressed:  () async {
-        _signOut()
-            .then((value) => Navigator.of(context).pop())
-            .then((res) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MainPage()),
-          );
-        });
-        await FirebaseAuth.instance.currentUser?.delete();
-        await FirebaseAuth.instance.authStateChanges();
-        await deleteUserFromDB(Provider.of<SellerItemModel>(context, listen: false).userIdFromDB);
-      },
+      onPressed: () async {
+        // Show a loading dialog while deleting the account
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => Center(child: CircularProgressIndicator()),
+        );
 
+        await _signOutAndDelete(context);
+        await deleteUserFromDB(Provider.of<SellerItemModel>(context, listen: false).userIdFromDB);
+
+        // Close the loading dialog
+        Navigator.of(context).pop();
+
+        // Navigate back to the main page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+        );
+      },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Delete Account?"),
-      content: Text("Are you sure you want to DELETE ACCOUNT?"),
+      content: Text("Are you sure you want to DELETE account?"),
       actions: [
         cancelButton,
         continueButton,
@@ -130,7 +142,6 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$id');
     http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      print(response.body);
     } else {
       print (response.statusCode);
     }

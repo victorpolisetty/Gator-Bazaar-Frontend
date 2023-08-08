@@ -29,8 +29,6 @@ class CategoryItemModel extends ChangeNotifier {
   int totalPages = 0;
   int currentPage = 1;
   int userIdFromDb = -1;
-  @JsonKey(ignore: true)
-  User? currentUser = FirebaseAuth.instance.currentUser;
   List<ItemWithImages> categoryItems = [];
   List<ItemWithImages> categorySearchedItems = [];
 
@@ -49,14 +47,14 @@ class CategoryItemModel extends ChangeNotifier {
 
   Future<void> _getItems() async {
     categoryItems.clear();
-    await getProfileFromDb(currentUser?.uid.toString());
+    await getProfileFromDb();
     await getItemRestList();
     await get1stImageForItemIfAvailable();
     notifyListeners();
   }
 
   Future<void> init1() async{
-    await getProfileFromDb(currentUser!.uid);
+    await getProfileFromDb();
   }
 
   Future<void> init2() async{
@@ -113,7 +111,7 @@ class CategoryItemModel extends ChangeNotifier {
   Future<bool?> initNextCatPage(int pageNum, int categoryId) async {
     categoryItems.clear();
     Set<int> ufGroupIdList = {1};
-    await getProfileFromDb(currentUser?.uid.toString());
+    await getProfileFromDb();
     await getNextPage(pageNum, ufGroupIdList, categoryId);
     await get1stImageForItemIfAvailable();
     return false;
@@ -136,7 +134,8 @@ class CategoryItemModel extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      data = jsonDecode(response.body);
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
       var items = data['content'];
       totalPages = data['totalPages'];
       categoryItems.clear();
@@ -174,9 +173,6 @@ class CategoryItemModel extends ChangeNotifier {
         // }
       }
       return totalPages;
-
-      //     notifyListeners();
-      //print(categoryItems);
     } else {
       print(response.statusCode);
       return -1;
@@ -210,10 +206,7 @@ class CategoryItemModel extends ChangeNotifier {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         categoryItems.add(itm);
         totalPages = data['totalPages'];
-        // Provider.of<RecentItemModel>(context, listen: false).add(itm);
       }
- //     notifyListeners();
-      print(categoryItems);
     } else {
       print(response.statusCode);
     }
@@ -241,8 +234,6 @@ class CategoryItemModel extends ChangeNotifier {
         // }
       }
 
-      //     notifyListeners();
-      print(categoryItems);
     } else {
       print(response.statusCode);
     }
@@ -273,7 +264,6 @@ class CategoryItemModel extends ChangeNotifier {
         if (response.statusCode == 200) {
           data = response.bodyBytes;
         }
-        print(categoryItems);
       } else { // Add default - no image
         data = (await rootBundle.load(
             // 'assets/images/no-picture-available-icon.png'
@@ -282,9 +272,6 @@ class CategoryItemModel extends ChangeNotifier {
         ))
             .buffer
             .asUint8List();
-      }
-      if(categoryItems[i].id == 103) {
-        print("HERE");
       }
       categoryItems[i].imageDataList.add(data);
     }
@@ -309,39 +296,50 @@ class CategoryItemModel extends ChangeNotifier {
 
 
   Future<ItemWithImages?> uploadItemImageToDB(File imageFile, ItemWithImages itmRest) async {
-    int sizeInBytes = imageFile.lengthSync();
-    double sizeInMb = sizeInBytes / (1024 * 1024);
-    print("SIZE OF IMAGE IS: + " + sizeInMb.toString()) ;
-    // String fileExtension = p.extension(imageFile.path).replaceAll('.', '');
-    // if(fileExtension == 'heic'){
-    //   print("convert to jpeg");
-    //   String? jpegPath = await HeicToJpg.convert(imageFile.path);
-    //   imageFile = File(jpegPath!);
-    //   fileExtension = 'jpeg';
-    // }
-    var stream  = new http.ByteStream(imageFile.openRead()); stream.cast();
-    var length = await imageFile.length();
-    var itemId = itmRest.id!;
-    var uri = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/$itemId/itemImages');
+    const double MAX_FILE_SIZE_MB = 25.0;
+    try {
+      // Calculate file size
+      int sizeInBytes = imageFile.lengthSync();
+      double sizeInMb = sizeInBytes / (1024 * 1024);
 
-    var request = new http.MultipartRequest("POST", uri);
-    var multipartFile = new http.MultipartFile('file', stream, length,
-        filename: basename(imageFile.path));
-    //contentType: new MediaType('image', 'png'));
-
-    request.files.add(multipartFile);
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    if (response.statusCode == 200) {
-      print(response.statusCode);
-      var data = response.bodyBytes;
-      itmRest.imageDataList.add(data);
-      //response.transform(utf8.decoder).listen((value) {
-      return itmRest;
-        print(data);
+      // Check file size limit (adjust limit as needed)
+      if (sizeInMb > MAX_FILE_SIZE_MB) {
+        throw Exception('File size exceeds the limit.');
       }
-    return null;
+
+      // Open file stream
+      var stream = await http.ByteStream(imageFile.openRead());
+
+      var length = await imageFile.length();
+      var itemId = itmRest.id!;
+      var uri = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/$itemId/itemImages');
+
+      var request = http.MultipartRequest("POST", uri);
+      var multipartFile = http.MultipartFile('file', stream, length,
+          filename: basename(imageFile.path));
+
+      request.files.add(multipartFile);
+
+      // Send the request and wait for response
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        var data = response.bodyBytes;
+        itmRest.imageDataList.add(data);
+        return itmRest;
+      } else {
+        // Handle different status codes if needed
+        print('Image upload failed. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      // Handle exceptions
+      print('Error uploading image: $e');
+      return null;
+    }
   }
+
 
 
 
@@ -385,7 +383,6 @@ class CategoryItemModel extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
@@ -411,19 +408,23 @@ class CategoryItemModel extends ChangeNotifier {
     // you change the model.
    notifyListeners();
   }
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      userIdFromDb = data['id'];
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
+  Future<void> getProfileFromDb() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if(currentUser != null) {
+      String? firebaseId = currentUser.uid;
+      Map<String, dynamic> data;
+      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      http.Response response = await http.get(
+          url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        // data.map<Item>((json) => Item.fromJson(json)).toList();
+        data = jsonDecode(response.body);
+        userIdFromDb = data['id'];
+      } else {
+        print(response.statusCode);
+      }
     }
+
   }
 }
 

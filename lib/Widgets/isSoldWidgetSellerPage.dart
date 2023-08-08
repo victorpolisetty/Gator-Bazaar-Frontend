@@ -118,15 +118,11 @@ class _isSoldWidgetSellerPageState extends State<isSoldWidgetSellerPage> {
       // , body: tmpObj
     );
 
-    //  .then((response) {
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
-      print("STATUS OF ITEM SELLING: " + data['isSold'].toString());
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
-    //  });
   }
 
   void _showConfirmDeleteButton(BuildContext context, int? itemId){
@@ -172,7 +168,6 @@ class _isSoldWidgetSellerPageState extends State<isSoldWidgetSellerPage> {
     http.Response response = await http.delete(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }

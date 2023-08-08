@@ -227,7 +227,6 @@ class _MembersRowAdminViewState extends State<MembersRowAdminView> {
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       userIdFromDb = data['id'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }

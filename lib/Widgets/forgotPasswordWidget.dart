@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,41 +33,74 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
     super.dispose();
   }
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    padding: EdgeInsets.all(16),
-    child: Form(
-      key: formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('assets/images/GatorBazaar.jpg'),
-          SizedBox(height: 40),
-          TextFormField(
+  Widget build(BuildContext context) => Form(
+    key: formKey,
+    child: ListView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      children: [
+        SizedBox(
+            height: 25.h,
+            width: 25.w,
+            child: Image.asset('assets/images/GatorBazaar.jpg')),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+          child: Text("Email", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+        ),
+        Padding(
+          padding: EdgeInsets.all(3.w), // Use sizer to set padding
+          child: TextFormField(
             cursorColor: Colors.black,
+            keyboardType: TextInputType.multiline,
+            maxLines: 1,
             controller: emailController,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(labelText: 'Email'),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (email) =>
             //TODO: uncomment this delete underneath this
             (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
-          ),
-          SizedBox(height: 20),
-          ElevatedButton.icon(
-            style:
-            ElevatedButton.styleFrom(
-                minimumSize: Size.fromHeight(50),
-                primary: Colors.black
+            decoration: InputDecoration(
+              hintText: 'Email',
+              fillColor: Colors.black,
+              focusColor: Colors.black,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
             ),
-            icon: Icon(Icons.send, size: 32),
-            label: Text(
-              'Send Reset Email',
-              style: TextStyle(fontSize: 24),
-            ),
-            onPressed: (){resetPassword(email: emailController.text.trim());},
           ),
-          SizedBox(height: 24),
-          RichText(
+        ),
+        // ElevatedButton.icon(
+        //   style:
+        //   ElevatedButton.styleFrom(
+        //       minimumSize: Size.fromHeight(50),
+        //       primary: Colors.black
+        //   ),
+        //   icon: Icon(Icons.send, size: 32),
+        //   label: Text(
+        //     'Send Reset Email',
+        //     style: TextStyle(fontSize: 24),
+        //   ),
+        //   onPressed: (){resetPassword(email: emailController.text.trim());},
+        // ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.w,1.5.h,3.w,3.5.h), // Use sizer to set padding
+          child: FloatingActionButton.extended(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0), // Set the border radius here
+            ),
+            backgroundColor: Colors.black,
+              onPressed: (){resetPassword(email: emailController.text.trim());},
+            icon: Icon(Icons.check),
+            label: Text("Send Reset Email"),
+          ),
+        ),
+        Center(
+          child: RichText(
               text: TextSpan (
                   style: TextStyle(color: Colors.black),
                   text: 'Already have an account?  ',
@@ -82,9 +116,9 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                     )
                   ]
               )
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     ),
   );
   Future resetPassword({required String email}) async {

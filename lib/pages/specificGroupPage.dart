@@ -168,7 +168,6 @@ class _SpecificGroupPageState extends State<SpecificGroupPage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(_selectedCategoryId);
-                print(_selectedCategoryId);
               },
               child: Text('Done'),
             ),

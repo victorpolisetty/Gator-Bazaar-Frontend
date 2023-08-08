@@ -44,25 +44,24 @@ class AdminProfileModel extends ChangeNotifier {
   int userIdFromDB = -1;
   int totalPages = 0;
   int currentPage = 1;
-  User? currentUser = FirebaseAuth.instance.currentUser;
 
   Future<void> getMembersInGroup(int pageNum, int groupId) async {
     memberInGroupList.clear();
-    await getProfileFromDb(currentUser!.uid.toString());
+    await getProfileFromDb();
     totalPages = await getNextPageMembersInGroup(pageNum, groupId);
     notifyListeners();
   }
 
   Future<void> getRequestsInGroup(int pageNum, int groupId) async {
     requestsInGroupList.clear();
-    await getProfileFromDb(currentUser!.uid.toString());
+    await getProfileFromDb();
     totalPages = await getNextPageRequestsInGroup(pageNum, groupId);
     notifyListeners();
   }
 
   Future<void> getAdminsInGroup(int pageNum, int groupId) async {
     adminInGroupList.clear();
-    await getProfileFromDb(currentUser!.uid.toString());
+    await getProfileFromDb();
     totalPages = await getNextPageAdminsInGroup(pageNum, groupId);
     notifyListeners();
   }
@@ -73,10 +72,7 @@ class AdminProfileModel extends ChangeNotifier {
     var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/findAllProfilesInGroup/$groupId?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       data = jsonDecode(response.body);
-      // categoryImage = response.bodyBytes;
       var members = data['content'];
       totalPages = data["totalPages"];
       for (int i = 0; i < members.length; i++) {
@@ -85,10 +81,8 @@ class AdminProfileModel extends ChangeNotifier {
         String? emailId = members[i]['user']['emailId'];
         bool? isAdmin = members[i]['isAdmin'];
         AdminProfile adminProfile = new AdminProfile(id, name, emailId, isAdmin);
-        // AdminProfile adminProfile = AdminProfile.fromJson(members[i]);
         memberInGroupList.add(adminProfile);
       }
-      print("DONE");
       return totalPages;
     } else {
       print (response.statusCode);
@@ -113,7 +107,6 @@ class AdminProfileModel extends ChangeNotifier {
           AdminProfile adminProfile = new AdminProfile(id, name, emailId, false);
           requestsInGroupList.add(adminProfile);
         }
-        print("DONE");
         return totalPages;
       } else {
         print("Request failed with status: ${response.statusCode}");
@@ -132,17 +125,13 @@ class AdminProfileModel extends ChangeNotifier {
     var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/findAllAdminProfilesInGroup/$groupId?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       data = jsonDecode(response.body);
-      // categoryImage = response.bodyBytes;
       var members = data['content'];
       totalPages = data["totalPages"];
       for (int i = 0; i < members.length; i++) {
         AdminProfile adminProfile = AdminProfile.fromJson(members[i]);
         adminInGroupList.add(adminProfile);
       }
-      print("DONE");
       return totalPages;
     } else {
       print (response.statusCode);
@@ -150,18 +139,21 @@ class AdminProfileModel extends ChangeNotifier {
     }
   }
 
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      userIdFromDB = data['id'];
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
+  Future<void> getProfileFromDb() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if(currentUser != null) {
+      String? firebaseId = currentUser.uid;
+      Map<String, dynamic> data;
+      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      http.Response response = await http.get(
+          url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        // data.map<Item>((json) => Item.fromJson(json)).toList();
+        data = jsonDecode(response.body);
+        userIdFromDB = data['id'];
+      } else {
+        print(response.statusCode);
+      }
     }
   }
 
@@ -171,8 +163,6 @@ class AdminProfileModel extends ChangeNotifier {
     var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/deleteGroupFromProfile/$profileId/$groupId');
     http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
     } else {
       print (response.statusCode);
     }
@@ -218,8 +208,6 @@ class AdminProfileModel extends ChangeNotifier {
     var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/admin/$profileId/$groupId');
     http.Response response = await http.put(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
     } else {
       print (response.statusCode);
     }

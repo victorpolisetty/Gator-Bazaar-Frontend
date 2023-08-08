@@ -267,7 +267,6 @@ class _RequestsRowAdminViewState extends State<RequestsRowAdminView> {
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       userIdFromDb = data['id'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }

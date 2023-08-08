@@ -65,15 +65,11 @@ class CategoryModel extends ChangeNotifier{
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categories');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
       data = jsonDecode(response.body);
-      // categoryImage = response.bodyBytes;
       var categories = data['content'];
       for (int i = 0; i < categories.length; i++) {
         Category category = Category.fromJson(categories[i]);
         categoryList.add(category);
-        // print(categoryList);
       }
     } else {
       print (response.statusCode);

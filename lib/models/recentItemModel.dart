@@ -10,7 +10,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'recentItemModel.g.dart';
 
 const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
-const String RECENT_ITEMS_URL = '${BASE_URI}items?size=10&sort=createdAt,desc';  // TODO -  call the recentItem service when it is built
+const String RECENT_ITEMS_URL = '${BASE_URI}items?size=10&sort=createdAt,desc';
 const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
 // Handle one Page of Items
@@ -34,8 +34,6 @@ class RecentItemModel extends ChangeNotifier {
   int totalPages = 0;
   int currentPage = 1;
   int currentUserId = -1;
-  @JsonKey(ignore: true)
-  User? currentUser = FirebaseAuth.instance.currentUser;
   bool shouldReload = true;
 
 
@@ -55,7 +53,7 @@ class RecentItemModel extends ChangeNotifier {
   }
   Future<void> init() async {
     List<int> ufGroupList = [1];
-    await getProfileFromDb(currentUser?.uid.toString());
+    await getProfileFromDb();
     this.totalPages = await getItemsByGroupIds(ufGroupList);
     await add1stImageToItemIfAvailable();
   }
@@ -71,7 +69,7 @@ class RecentItemModel extends ChangeNotifier {
 
   Future<void> getItems() async {
     _recentItems.clear();
-    await getProfileFromDb(currentUser?.uid.toString());
+    await getProfileFromDb();
     this.totalPages = await getItemRestList();
     await add1stImageToItemIfAvailable();
     notifyListeners();
@@ -79,7 +77,7 @@ class RecentItemModel extends ChangeNotifier {
 
   Future<void> init1(int pageNum) async {
     _recentItems.clear();
-    await getProfileFromDb(currentUser?.uid.toString());
+    await getProfileFromDb();
     await getNextPage(pageNum);
     await add1stImageToItemIfAvailable();
   }
@@ -90,26 +88,16 @@ class RecentItemModel extends ChangeNotifier {
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
       data = jsonDecode(response.body);
       var items = data['content'];
       totalPages = data['totalPages'];
-      print(totalPages);
-
-
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         _recentItems.add(itm);
-        // for (int imgId in itm.itemImageList) {
-        //   var url = Uri.parse(
-        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
-        // }
       }
       return totalPages;
-      print(_recentItems);
     } else {
       return 0;
-      print(response.statusCode);
     }
   }
 
@@ -120,19 +108,13 @@ class RecentItemModel extends ChangeNotifier {
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
       String responseJson = Utf8Decoder().convert(response.bodyBytes);
       data = json.decode(responseJson);
 
       var items = data['content'];
       var totalPages = data['totalPages'];
-      print(totalPages);
-
 
       for (int i = 0; i < items.length; i++) {
-        // if(items[i]['seller_id'] == currentUserId) {
-        //   continue;
-        // }
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         _recentItems.add(itm);
       }
@@ -157,8 +139,6 @@ class RecentItemModel extends ChangeNotifier {
 
       var items = data['content'];
       var totalPages = data['totalPages'];
-      print(totalPages);
-
       _recentItems.clear();
 
       for (int i = 0; i < items.length; i++) {
@@ -177,19 +157,20 @@ class RecentItemModel extends ChangeNotifier {
 
 
 
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      currentUserId = data['id'];
-      // recipientProfileName = data['name'];
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
+  Future<void> getProfileFromDb() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if(currentUser != null) {
+      String? firebaseId = currentUser.uid;
+      Map<String, dynamic> data;
+      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId');
+      http.Response response = await http.get(
+          url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        data = jsonDecode(response.body);
+        currentUserId = data['id'];
+      } else {
+        print(response.statusCode);
+      }
     }
   }
 
@@ -207,7 +188,6 @@ class RecentItemModel extends ChangeNotifier {
         if (response.statusCode == 200) {
           data = response.bodyBytes;
         }
-        print(_recentItems);
       } else {   // Add default - no image
         data = (await rootBundle.load(
             // 'assets/images/no-picture-available-icon.png'

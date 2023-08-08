@@ -32,7 +32,6 @@ Future<void> saveTokenToDatabase(String token) async {
 
     if (response.statusCode == 200) {
       print("Updated user device token to : " + token);
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
@@ -42,7 +41,6 @@ Future<void> saveTokenToDatabase(String token) async {
 }
 
 Future<int?> getUserDbIdRealFunc() async {
-  // Assume user is logged in for this example
   String? firebaseId = FirebaseAuth.instance.currentUser?.uid;
 
   Future<void> updatedUserDbId() async {
@@ -54,7 +52,6 @@ Future<int?> getUserDbIdRealFunc() async {
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       currDbId = data['id'];
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
@@ -106,7 +103,6 @@ class _HomePageState extends State<BuyerHomePage>
             padding: EdgeInsets.all(16),
             gap: 8,
             onTabChange: (index){
-              print(index);
               _handleSelected(index);
             },
             tabs: [

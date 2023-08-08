@@ -56,9 +56,6 @@ class ChatMessageHome extends ChangeNotifier {
 class ChatMessageModel extends ChangeNotifier{
   /// Internal, private state of the cart. Stores the ids of each item.
   List<ChatMessageHome> ChatMessageHomeList = [];
-
-  @JsonKey(ignore: true)
-  User? currentUser = FirebaseAuth.instance.currentUser;
   /// List of items in the cart.
   List<ChatMessageHome> get chatHome => ChatMessageHomeList;
 
@@ -73,7 +70,7 @@ class ChatMessageModel extends ChangeNotifier{
   }
 
   Future<void> _getChatHomeHelper() async {
-    await getProfileFromDb(currentUser!.uid);
+    await getProfileFromDb();
     await getChatHistory();
     notifyListeners();
 
@@ -92,45 +89,47 @@ class ChatMessageModel extends ChangeNotifier{
 
   //TODO
   Future<void> getChatHistory() async {
-    String firebaseId = currentUser!.uid;
-    List<dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile/chathome/$firebaseId');
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      String? firebaseId = currentUser.uid;
+      List<dynamic> data;
+      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile/chathome/$firebaseId');
 
-    // var url = Uri.parse('http://localhost:8080/messages/profile/chathome/$firebaseId');
-    // var url = Uri.parse('http://localhost:8080/messages/profile/chathome/$firebaseId');
-    http.Response response = await http.get(url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      print(response.body);
-      String responseJson = Utf8Decoder().convert(response.bodyBytes);
-      data = json.decode(responseJson);
-      if (data.length == ChatMessageHomeList.length) {
+      // var url = Uri.parse('http://localhost:8080/messages/profile/chathome/$firebaseId');
+      // var url = Uri.parse('http://localhost:8080/messages/profile/chathome/$firebaseId');
+      http.Response response = await http.get(url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        String responseJson = Utf8Decoder().convert(response.bodyBytes);
+        data = json.decode(responseJson);
+        if (data.length == ChatMessageHomeList.length) {
           ChatMessageHomeList.clear();
+        }
+        for (int i = 0; i < data.length; i++) {
+          ChatMessageHome chatMessage = ChatMessageHome.fromJson(data[i]);
+          chatMessage.current_user_id = userIdFromDB;
+          ChatMessageHomeList.add(chatMessage);
+        }
+      } else {
+        print (response.statusCode);
       }
-      for (int i = 0; i < data.length; i++) {
-        ChatMessageHome chatMessage = ChatMessageHome.fromJson(data[i]);
-        chatMessage.current_user_id = userIdFromDB;
-        ChatMessageHomeList.add(chatMessage);
-      }
-      print("THE CHAT MESSAGE HOME LIST IS NOW OF LENGTH : " + ChatMessageHomeList.length.toString());
-    } else {
-      print (response.statusCode);
     }
   }
 
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      userIdFromDB = data['id'];
-
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
+  Future<void> getProfileFromDb() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      String? firebaseId = currentUser.uid;
+      Map<String, dynamic> data;
+      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      http.Response response = await http.get(
+          url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        // data.map<Item>((json) => Item.fromJson(json)).toList();
+        data = jsonDecode(response.body);
+        userIdFromDB = data['id'];
+      } else {
+        print(response.statusCode);
+      }
     }
   }
 
@@ -148,7 +147,6 @@ class ChatMessageModel extends ChangeNotifier{
 
     //  .then((response) {
     if (response.statusCode == 200) {
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }

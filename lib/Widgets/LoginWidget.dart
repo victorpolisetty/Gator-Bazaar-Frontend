@@ -1,9 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
 import 'package:student_shopping_v1/utils.dart';
+
+import '../buyerhome.dart';
 
 class LoginWidget extends StatefulWidget {
   final VoidCallback onClickedSignUp;
@@ -30,44 +33,63 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-    padding: EdgeInsets.all(16),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset('assets/images/GatorBazaar.jpg'),
-        SizedBox(height: 40),
-        Form(
-          key: _formKey, // Set the GlobalKey to the Form
-          child: Column(
-            children: [
-              TextFormField(
+  Widget build(BuildContext context) => 
+      ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        children: [
+      SizedBox(
+        height: 25.h,
+          width: 25.w,
+          child: Image.asset('assets/images/GatorBazaar.jpg')),
+      Form(
+        key: _formKey, // Set the GlobalKey to the Form
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(0,0,82.w,0),
+              child: Text("Email", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+            ),
+            Padding(
+              padding: EdgeInsets.all(3.w), // Use sizer to set padding
+              child: TextFormField(
                 cursorColor: Colors.black,
+                keyboardType: TextInputType.multiline,
+                maxLines: 1,
                 controller: emailController,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(labelText: 'Email',
-                  labelStyle: TextStyle(
-                      color: myFocusNode.hasFocus ? Colors.black : Colors.black
-                  ),),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your email';
                   }
                   return null;
                 },
-              ),
-              SizedBox(height: 4),
-              TextFormField(
-                cursorColor: Colors.black,
-                controller: passwordController,
-                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
-                    labelText: "Password",
-                  labelStyle: TextStyle(
-                      color: myFocusNode.hasFocus ? Colors.black : Colors.black
-                  ),),
-
+                  hintText: 'Email',
+                  fillColor: Colors.black,
+                  focusColor: Colors.black,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0,0,75.w,0),
+              child: Text("Password", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+            ),
+            Padding(
+              padding: EdgeInsets.all(3.w), // Use sizer to set padding
+              child: TextFormField(
+                cursorColor: Colors.black,
+                keyboardType: TextInputType.multiline,
+                maxLines: 1,
+                controller: passwordController,
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -75,25 +97,44 @@ class _LoginWidgetState extends State<LoginWidget> {
                   }
                   return null;
                 },
+                decoration: InputDecoration(
+                  hintText: 'Password',
+                  fillColor: Colors.black,
+                  focusColor: Colors.black,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        SizedBox(height: 20),
-        ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size.fromHeight(50),
-            primary: Colors.black,
+      ),
+      SizedBox(height: 20),
+      Padding(
+        padding: EdgeInsets.fromLTRB(3.w,0,3.w,3.5.h), // Use sizer to set padding
+        child: FloatingActionButton.extended(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0), // Set the border radius here
           ),
-          icon: Icon(Icons.lock_open, size: 32),
-          label: Text(
-            'Sign In',
-            style: TextStyle(fontSize: 24),
-          ),
-          onPressed: signIn,
+          backgroundColor: Colors.black,
+          onPressed: () {
+            signIn();
+          },
+          icon: Icon(Icons.check),
+          label: Text("Sign In"),
         ),
-        SizedBox(height: 24),
-        RichText(
+      ),
+      SizedBox(height: 1.h),
+      Center(
+        child: RichText(
           text: TextSpan(
             style: TextStyle(color: Colors.black),
             text: 'No account?  ',
@@ -110,8 +151,10 @@ class _LoginWidgetState extends State<LoginWidget> {
             ],
           ),
         ),
-        SizedBox(height: 10),
-        RichText(
+      ),
+      SizedBox(height: 10),
+      Center(
+        child: RichText(
           text: TextSpan(
             style: TextStyle(color: Colors.black),
             text: 'Forgot Password?  ',
@@ -128,8 +171,8 @@ class _LoginWidgetState extends State<LoginWidget> {
             ],
           ),
         ),
-      ],
-    ),
+      ),
+    ],
   );
 
   Future<void> signIn() async {
@@ -140,16 +183,27 @@ class _LoginWidgetState extends State<LoginWidget> {
         barrierDismissible: false,
         builder: (context) => Center(child: spinkit),
       );
+
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
+        // Navigate to BuyerHomePage after successful sign-in
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => Sizer(
+            builder: (context, orientation, deviceType) {
+              return BuyerHomePage("Gator Bazaar");
+            },
+          ),
+        ));
       } on FirebaseAuthException catch (e) {
         print(e);
         Utils.showSnackBar(e.message);
+      } finally {
+        // Close the loading spinner dialog regardless of success or failure
+        Navigator.of(context).pop();
       }
-      navigatorKey.currentState!.popUntil((route) => route.isFirst);
     }
   }
 }

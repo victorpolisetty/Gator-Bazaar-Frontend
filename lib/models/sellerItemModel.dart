@@ -37,7 +37,7 @@ class SellerItemModel extends ChangeNotifier {
   int currentPage = 1;
   int userIdFromDB = -1;
   @JsonKey(ignore: true)
-  User? currentUser = FirebaseAuth.instance.currentUser;
+  String? firebaseId = "";
 
 
   /// List of items in the cart.
@@ -63,7 +63,7 @@ class SellerItemModel extends ChangeNotifier {
 
   Future<bool?> initNextCatPage(int pageNum) async {
     _sellerItems.clear();
-    await getProfileFromDb(currentUser?.uid.toString());
+    await getProfileFromDb();
     totalPages = await getNextPage(pageNum);
     await get1stImageForItemIfAvailable();
     return false;
@@ -78,7 +78,7 @@ class SellerItemModel extends ChangeNotifier {
 
   Future<void> _getItems() async {
     _sellerItems.clear();
-    await getProfileFromDb(currentUser!.uid);
+    await getProfileFromDb();
     this.totalPages = await getItemRestList();
     await get1stImageForItemIfAvailable();
     notifyListeners();
@@ -98,7 +98,6 @@ class SellerItemModel extends ChangeNotifier {
         if (response.statusCode == 200) {
           data = response.bodyBytes;
         }
-        print(_sellerItems);
       } else { // Add default - no image
         data = (await rootBundle.load(
             'assets/images/GatorBazaar.jpg'))
@@ -115,12 +114,10 @@ class SellerItemModel extends ChangeNotifier {
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
       var items = data['content'];
       var totalPages = data['totalPages'];
-      print(totalPages);
-
 
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
@@ -131,10 +128,8 @@ class SellerItemModel extends ChangeNotifier {
         // }
       }
       return totalPages;
-      print(_sellerItems);
     } else {
       return 0;
-      print(response.statusCode);
     }
   }
 
@@ -155,7 +150,6 @@ class SellerItemModel extends ChangeNotifier {
       data = json.decode(responseJson);
       var items = data['content'];
       var totalPages = data['totalPages'];
-      print(totalPages);
 
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
@@ -181,7 +175,6 @@ class SellerItemModel extends ChangeNotifier {
         if (response.statusCode == 200) {
           data = response.bodyBytes;
         }
-        print(_sellerItems);
       } else {   // Add default - no image
         data = (await rootBundle.load('assets/images/GatorBazaar.jpg'))
             .buffer
@@ -225,18 +218,21 @@ class SellerItemModel extends ChangeNotifier {
     // you change the model.
     notifyListeners();
   }
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      userIdFromDB = data['id'];
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
+  Future<void> getProfileFromDb() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      firebaseId = currentUser.uid;
+      Map<String, dynamic> data;
+      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      http.Response response = await http.get(
+          url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        data = jsonDecode(response.body);
+        userIdFromDB = data['id'];
+      } else {
+        print(response.statusCode);
+      }
     }
+
   }
 }

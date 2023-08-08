@@ -78,7 +78,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState(){
     super.initState();
-
     LocalNotificationService.initialize(context);
 
     //gives you the message on which the user taps and it opens the app from terminated state
@@ -110,6 +109,7 @@ class _MyAppState extends State<MyApp> {
       }
       print(routeFromMessage);
     });
+
 
   }
 

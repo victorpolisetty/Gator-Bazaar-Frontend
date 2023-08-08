@@ -84,22 +84,17 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
     String firebaseId = currentUser!.uid;
     String itemId = item.id.toString();
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites/$itemId');
-    // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.post(url
         , headers: {
           "Accept": "application/json",
           "Content-Type": "application/json"
         }
-        // , body: tmpObj
     );
 
-    //  .then((response) {
     if (response.statusCode == 200) {
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }
-    //  });
   }
 
   Future<void> deleteUserFavoriteFromDb()  async {
@@ -113,15 +108,8 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
           "Accept": "application/json",
           "Content-Type": "application/json"
         }
-      // , body: tmpObj
     );
-
-    //  .then((response) {
     if (response.statusCode == 200) {
-      // data = jsonDecode(response.body);
-      // itm.id = data['id'];
-      //   return itm;
-      print(response.statusCode);
     } else {
       print(response.statusCode);
     }

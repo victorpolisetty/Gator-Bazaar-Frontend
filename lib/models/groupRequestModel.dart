@@ -22,7 +22,6 @@ class GroupRequestModel extends ChangeNotifier{
   List<GroupRequest> groupRequestList = [];
   List<GroupRequest> get groupRequest => groupRequestList;
 
-  User? currentUser = FirebaseAuth.instance.currentUser;
   int userIdFromDB = -1;
   int totalPages = 0;
   int currentPage = 1;
@@ -31,23 +30,26 @@ class GroupRequestModel extends ChangeNotifier{
 
   Future<void> getGroupRequestsPrfId() async {
     groupRequestList.clear();
-    await getProfileFromDb(currentUser!.uid.toString()).then((value) =>
+    await getProfileFromDb().then((value) =>
     getGroupRequestsByProfileId(userIdFromDB));
     notifyListeners();
   }
 
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      userIdFromDB = data['id'];
-      print(response.statusCode);
-    } else {
-      print(response.statusCode);
+  Future<void> getProfileFromDb() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      String? firebaseId = currentUser.uid;
+      Map<String, dynamic> data;
+      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      http.Response response = await http.get(
+          url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        // data.map<Item>((json) => Item.fromJson(json)).toList();
+        data = jsonDecode(response.body);
+        userIdFromDB = data['id'];
+      } else {
+        print(response.statusCode);
+      }
     }
   }
 
@@ -62,8 +64,6 @@ class GroupRequestModel extends ChangeNotifier{
         }
     );
     if (response.statusCode == 200) {
-      print("Request Successfully made");
-      //   return itm;
     } else {
       print(response.statusCode);
     }
@@ -85,7 +85,6 @@ class GroupRequestModel extends ChangeNotifier{
         GroupRequest groupRequest = GroupRequest.fromJson(groupRequests[i]);
         groupRequestList.add(groupRequest);
       }
-      print(response.statusCode);
       return totalPages;
     } else {
       print(response.statusCode);
