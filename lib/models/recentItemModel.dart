@@ -7,6 +7,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'ItemWithImagesSerializer.dart';
 part 'recentItemModel.g.dart';
 
 const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
@@ -15,6 +17,7 @@ const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image
 
 // Handle one Page of Items
 @JsonSerializable(explicitToJson: true)
+@RecentItemPageSerializer()
 class RecentItemPage {
   List<Item> recentItemList = [];
   List<Item> get recentItems => recentItemList;
@@ -28,6 +31,7 @@ class RecentItemPage {
 
 
 @JsonSerializable(explicitToJson: true)
+@FeaturedItemsSerializer()
 class RecentItemModel extends ChangeNotifier {
   /// Internal, private state of the cart. Stores the ids of each item.
   List<ItemWithImages> _recentItems = [];
@@ -52,9 +56,9 @@ class RecentItemModel extends ChangeNotifier {
     });
   }
   Future<void> init() async {
-    List<int> ufGroupList = [1];
+    this.totalPages = 1;
     await getProfileFromDb();
-    this.totalPages = await getItemsByGroupIds(ufGroupList);
+    await getFeaturedItems();
     await add1stImageToItemIfAvailable();
   }
 
@@ -70,7 +74,7 @@ class RecentItemModel extends ChangeNotifier {
   Future<void> getItems() async {
     _recentItems.clear();
     await getProfileFromDb();
-    this.totalPages = await getItemRestList();
+    await getFeaturedItems();
     await add1stImageToItemIfAvailable();
     notifyListeners();
   }
@@ -101,32 +105,62 @@ class RecentItemModel extends ChangeNotifier {
     }
   }
 
-  Future<int> getItemRestList() async {
+  // Future<int> getItemRestList() async {
+  //   Map<String, dynamic> data;
+  //   var url = Uri.parse(
+  //       'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items?size=10&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+  //   http.Response response = await http.get(
+  //       url, headers: {"Accept": "application/json"});
+  //   if (response.statusCode == 200) {
+  //     String responseJson = Utf8Decoder().convert(response.bodyBytes);
+  //     data = json.decode(responseJson);
+  //
+  //     var items = data['content'];
+  //     var totalPages = data['totalPages'];
+  //
+  //     for (int i = 0; i < items.length; i++) {
+  //       ItemWithImages itm = ItemWithImages.fromJson(items[i]);
+  //       _recentItems.add(itm);
+  //     }
+  //     return totalPages;
+  //   } else {
+  //     return 0;
+  //   }
+  // }
+
+  // Future<int> getItemsByGroupIds(List<int> groupIds) async {
+  //   String groupIdsParam = groupIds.join(",");
+  //   var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupIds?groupIds=$groupIdsParam&size=10&sort=createdAt,desc');
+  //
+  //   http.Response response = await http.get(
+  //     url,
+  //     headers: {"Accept": "application/json"},
+  //   );
+  //
+  //   if (response.statusCode == 200) {
+  //     String responseJson = Utf8Decoder().convert(response.bodyBytes);
+  //     Map<String, dynamic> data = json.decode(responseJson);
+  //
+  //     var items = data['content'];
+  //     var totalPages = data['totalPages'];
+  //     _recentItems.clear();
+  //
+  //     for (int i = 0; i < items.length; i++) {
+  //       ItemWithImages itm = ItemWithImages.fromJson(items[i]);
+  //       _recentItems.add(itm);
+  //     }
+  //
+  //     return totalPages;
+  //   } else {
+  //     print('Failed with status: ${response.statusCode}.');
+  //     print('Response body: ${response.body}');
+  //     throw Exception('Failed to load items');
+  //   }
+  // }
+
+  Future<int> getFeaturedItems() async {
     Map<String, dynamic> data;
-    var url = Uri.parse(
-        'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items?size=10&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      String responseJson = Utf8Decoder().convert(response.bodyBytes);
-      data = json.decode(responseJson);
-
-      var items = data['content'];
-      var totalPages = data['totalPages'];
-
-      for (int i = 0; i < items.length; i++) {
-        ItemWithImages itm = ItemWithImages.fromJson(items[i]);
-        _recentItems.add(itm);
-      }
-      return totalPages;
-    } else {
-      return 0;
-    }
-  }
-
-  Future<int> getItemsByGroupIds(List<int> groupIds) async {
-    String groupIdsParam = groupIds.join(",");
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupIds?groupIds=$groupIdsParam&size=10&sort=createdAt,desc');
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/api/featured-items/get-all-featured-items');
 
     http.Response response = await http.get(
       url,
@@ -135,26 +169,24 @@ class RecentItemModel extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       String responseJson = Utf8Decoder().convert(response.bodyBytes);
-      Map<String, dynamic> data = json.decode(responseJson);
+      data = json.decode(responseJson);
 
       var items = data['content'];
       var totalPages = data['totalPages'];
-      _recentItems.clear();
+
 
       for (int i = 0; i < items.length; i++) {
-        ItemWithImages itm = ItemWithImages.fromJson(items[i]);
+        ItemWithImages itm = ItemWithImages.fromJson(items[i], useCustomSerializer: true);
+        // ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         _recentItems.add(itm);
       }
-
       return totalPages;
     } else {
       print('Failed with status: ${response.statusCode}.');
       print('Response body: ${response.body}');
-      throw Exception('Failed to load items');
+      throw Exception('Failed to load selected items');
     }
   }
-
-
 
 
   Future<void> getProfileFromDb() async {

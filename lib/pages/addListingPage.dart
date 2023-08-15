@@ -1,22 +1,16 @@
 import 'dart:io';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:sizer/sizer.dart';
-import 'package:student_shopping_v1/MultiSelectAddCategoryToListingView.dart';
 import 'package:student_shopping_v1/Widgets/addedListingDialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
-
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
 import 'package:student_shopping_v1/pages/MulitSelectAddListingView.dart';
-
-import '../Widgets/MultiSelectDialog.dart';
-import '../models/adminProfileModel.dart';
 import '../models/groupModel.dart';
 import '../models/itemModel.dart';
-import '../new/size_config.dart';
 import 'itemDetailPage.dart';
 
 class AddListing extends StatefulWidget {
@@ -362,7 +356,7 @@ class _AddListingState extends State<AddListing> {
                           Row(
                             children: [
                               Text(
-                                'Select',
+                                _selectedCategory.toString(),
                                 style: TextStyle(fontSize: 16, color: Colors.black),
                               ),
                               InkWell(

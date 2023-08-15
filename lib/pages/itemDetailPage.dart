@@ -123,36 +123,10 @@ class _ItemDetailsState extends State<ItemDetails> {
                                           child: Center(
                                               child: Image.asset(
                                                   "assets/images/GatorBazaar.jpg")
-                                              // MemoryImage(item)
                                               ),
                                         ))
                                     .toList(),
-
-                            // items: [
-                            //   imageSliders,
-                            // ],
                           )
-                          //       // decoration: BoxDecoration(
-                          //   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
-                          //   boxShadow: [BoxShadow(spreadRadius: 0, blurRadius: 19, offset: Offset(0, 4), color: Colors.grey)],
-                          // child: Carousel(
-                          //   boxFit: BoxFit.contain,
-                          //   images: [
-                          //     numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
-                          //         "assets/images/no-picture-available-icon.png"),
-                          //     numberOfImagesInItem > 1 ? MemoryImage(snapshot.data[1]) : AssetImage(
-                          //         "assets/images/no-picture-available-icon.png"),
-                          //     numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
-                          //         "assets/images/no-picture-available-icon.png"),
-                          //   ],
-                          //   autoplay: false,
-                          //
-                          //
-                          //   //   image: DecorationImage(
-                          //   //image: MemoryImage(widget.itemPicture), fit: BoxFit.cover),
-                          // ),
-
-                          //     image: NetworkImage(widget.item_detail_picture),fit: BoxFit.cover)
                           ),
                       Container(
                           width: MediaQuery.of(context).size.width,

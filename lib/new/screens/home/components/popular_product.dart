@@ -66,7 +66,10 @@ class _PopularProductsState extends State<PopularProducts> {
             ],
           ),
         )
-            : spinkit
+            : Padding(
+              padding: EdgeInsets.only(top: 20.w),
+              child: Center(child: spinkit),
+            )
       ],
     );
   }

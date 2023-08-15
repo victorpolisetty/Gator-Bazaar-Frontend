@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+
+import 'ItemWithImagesSerializer.dart';
 part 'itemModel.g.dart';
 
 const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
@@ -18,8 +22,6 @@ class ItemPage{
   factory ItemPage.fromJson(Map<String, dynamic> parsedJson) => _$ItemPageFromJson(parsedJson);
   Map<String, dynamic> toJson() => _$ItemPageToJson(this);
 }
-
-
 
 @JsonSerializable()
 class ItemWithImages extends ChangeNotifier{
@@ -95,8 +97,17 @@ class ItemWithImages extends ChangeNotifier{
       return false;
     }
   }
+  // factory ItemWithImages.fromJson(Map<String, dynamic> json) =>
+  //     itemWithImagesFromJson(jsonEncode(json));
+  //
+  // Map<String, dynamic> toJson() => jsonDecode(itemWithImagesToJson(this));
 
-  factory ItemWithImages.fromJson(Map<String, dynamic> parsedJson) => _$ItemWithImagesFromJson(parsedJson);
+  factory ItemWithImages.fromJson(Map<String, dynamic> parsedJson, {bool useCustomSerializer = false}) {
+    if (useCustomSerializer) {
+      return FeaturedItemsSerializer().fromJson(parsedJson);
+    }
+    return _$ItemWithImagesFromJson(parsedJson);
+  }
   Map<String, dynamic> toJson() => _$ItemWithImagesToJson(this);
 
 }

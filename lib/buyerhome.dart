@@ -52,6 +52,7 @@ Future<int?> getUserDbIdRealFunc() async {
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       currDbId = data['id'];
+
     } else {
       print(response.statusCode);
     }

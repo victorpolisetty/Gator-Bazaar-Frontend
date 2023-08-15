@@ -1,20 +1,22 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
-import 'package:student_shopping_v1/Widgets/LoginWidget.dart';
-import 'package:student_shopping_v1/auth_page.dart';
 import 'package:student_shopping_v1/main.dart';
-import 'package:student_shopping_v1/pages/sellerProfilePage.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
 import '../new/components/productCardSellerView.dart';
-import '../new/size_config.dart';
 import 'itemDetailPage.dart';
-
 
 class SellerProfilePageNew extends StatefulWidget {
   const SellerProfilePageNew({Key? key}) : super(key: key);
@@ -24,16 +26,22 @@ class SellerProfilePageNew extends StatefulWidget {
 }
 
 class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
+  File? _image1;
+  int? currDbId = -1;
+  final TextEditingController _instagramController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isInstagramHandleFetched = false;
+
   Future<User?> isSignedIn() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     return currentUser;
   }
-  showAlertDialogSignOut(BuildContext context) {
 
+  showAlertDialogSignOut(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("No"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.of(context).pop();
       },
     );
@@ -45,13 +53,12 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
       child: Text("Yes"),
       onPressed: () async {
         Navigator.of(context).pop();
-        await _signOut().then((value) => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MainPage()),(route) => false));
+        await _signOut().then((value) => Navigator.of(context)
+            .pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => MainPage()),
+                (route) => false));
       },
     );
-    
-
-
-
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
@@ -71,18 +78,19 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
       },
     );
   }
-  showAlertDialogDeleteAccount(BuildContext context) async {
 
+  showAlertDialogDeleteAccount(BuildContext context) async {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("No"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.of(context).pop();
       },
     );
     Future<void> _signOut() async {
       await FirebaseAuth.instance.signOut();
     }
+
     Future<void> _signOutAndDelete(BuildContext context) async {
       try {
         await FirebaseAuth.instance.currentUser!.delete();
@@ -106,7 +114,8 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
         );
 
         await _signOutAndDelete(context);
-        await deleteUserFromDB(Provider.of<SellerItemModel>(context, listen: false).userIdFromDB);
+        await deleteUserFromDB(
+            Provider.of<SellerItemModel>(context, listen: false).userIdFromDB);
 
         // Close the loading dialog
         Navigator.of(context).pop();
@@ -137,21 +146,28 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
       },
     );
   }
+
   Future<void> deleteUserFromDB(int? id) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$id');
-    http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
+    var url = Uri.parse(
+        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$id');
+    http.Response response =
+        await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
     } else {
-      print (response.statusCode);
+      print(response.statusCode);
     }
   }
 
   final PagingController<int, ItemWithImages> _pagingController =
-  PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 0);
   int totalPages = 0;
+  String instagramHandle = "";
+  Uint8List? imageURL = new Uint8List(0);
+
   @override
   void initState() {
+    _initializeData();
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey, 1);
     });
@@ -159,23 +175,29 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
-    if(!mounted) _pagingController.dispose();
+    if (!mounted) _pagingController.dispose();
+    if (!mounted) _instagramController.dispose();
   }
 
   Future<void> _fetchPage(int pageKey, int categoryId) async {
     try {
-      await Provider.of<SellerItemModel>(context, listen: false).initNextCatPage(pageKey);
-      totalPages = Provider.of<SellerItemModel>(context, listen: false).totalPages;
-      if(mounted) {
-        final isLastPage = (totalPages-1) == pageKey;
+      await Provider.of<SellerItemModel>(context, listen: false)
+          .initNextCatPage(pageKey);
+      totalPages =
+          Provider.of<SellerItemModel>(context, listen: false).totalPages;
+      if (mounted) {
+        final isLastPage = (totalPages - 1) == pageKey;
 
         if (isLastPage) {
-          _pagingController.appendLastPage(Provider.of<SellerItemModel>(context, listen: false).items);
+          _pagingController.appendLastPage(
+              Provider.of<SellerItemModel>(context, listen: false).items);
         } else {
           final int? nextPageKey = pageKey + 1;
-          _pagingController.appendPage(Provider.of<SellerItemModel>(context, listen: false).items, nextPageKey);
+          _pagingController.appendPage(
+              Provider.of<SellerItemModel>(context, listen: false).items,
+              nextPageKey);
         }
       }
     } catch (error) {
@@ -183,15 +205,34 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
     }
   }
 
+  Future<void> _initializeData() async {
+    if (!isInstagramHandleFetched) {
+      await getInstagramHandle();
+    }
+    await getImageByProfile();
+  }
+
+  User? user = FirebaseAuth.instance.currentUser!;
+  String? firebaseId = FirebaseAuth.instance.currentUser?.uid;
+  String? displayName = FirebaseAuth.instance.currentUser?.displayName;
+  String? email = FirebaseAuth.instance.currentUser?.email;
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          User currentUser = snapshot.data!;
-          String? dname = snapshot.data!.displayName;
-          String? email = snapshot.data!.email;
+    return FutureBuilder<void>(
+      future: _initializeData(), // Change here to use first
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            color: Colors.white,
+            height: 350.sp, // Use sizer to set height
+            width: MediaQuery.of(context).size.width,
+            child: spinkit,
+          );
+        } else if (snapshot.hasError) {
+          // Handle error case
+          return Text('Error: ${snapshot.error}');
+        } else {
           return Scaffold(
             appBar: AppBar(
               leading: InkWell(
@@ -233,32 +274,112 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
               slivers: <Widget>[
                 SliverList(
                   delegate: SliverChildListDelegate([
-                    Center(
-                      child: Text(
-                        dname.toString(),
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 8.w, // Use sizer to set font size
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                    SizedBox(
+                      width: 5.w,
                     ),
-                    SizedBox(height: 8.sp), // Use sizer to set height
-                    Center(
-                      child: Text(
-                        email.toString(),
-                        style: TextStyle(
-                          fontSize: 4.w, // Use sizer to set font size
-                          fontFamily: 'Montserrat',
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                    SizedBox(width: 10.w), // Use sizer to set width
+                    Column(
+                      children: [
+                        buildProfileImage(),
+                        SizedBox(height: 1.h), // Use sizer to set width
+                        Center(
+                          child: Text(
+                            displayName!.toString(),
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 8.w, // Use sizer to set font size
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 8.sp), // Use sizer to set height
+                        Center(
+                          child: Text(
+                            email!.toString(),
+                            style: TextStyle(
+                              fontSize: 4.w, // Use sizer to set font size
+                              fontFamily: 'Montserrat',
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        instagramHandle == ""
+                            ? FloatingActionButton.extended(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      0), // Set the border radius here
+                                ),
+                                backgroundColor: Colors.black,
+                                onPressed: () {
+                                  _openInstagramDialog();
+                                },
+                                icon: Icon(Icons.add),
+                                label: Text("Add Instagram"),
+                              )
+                            : Padding(
+                              padding: EdgeInsets.fromLTRB(25.w,0,0,0),
+                              child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/instagrambw.png",
+                                      height: 10.h,
+                                      width: 10.w,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    FloatingActionButton.extended(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(0),
+                                      ),
+                                      backgroundColor: Colors.black,
+                                      onPressed: () {
+                                        _launchUrl(
+                                            "https://instagram.com/$instagramHandle");
+                                      },
+                                      label: Text(
+                                        "@" + instagramHandle,
+                                        style: TextStyle(fontSize: 2.5.w),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            _openInstagramDialog();
+                                          },
+                                          child: Icon(
+                                            Icons.edit,
+                                            size: 5
+                                                .w, // Adjust the icon size as needed
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            _unlinkInstagramDialog();
+                                          },
+                                          child: Icon(
+                                            Icons.cancel_outlined,
+                                            size: 5
+                                                .w, // Adjust the icon size as needed
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                            )
+                      ],
                     ),
-                    SizedBox(height: 2.h), // Use sizer to set height
+                    SizedBox(height: 1.h), // Use sizer to set height
                     Padding(
-                      padding: EdgeInsets.all(20.sp), // Use sizer to set padding
+                      padding:
+                          EdgeInsets.all(10.sp), // Use sizer to set padding
                       child: Text(
                         "My Listings",
                         style: TextStyle(
@@ -275,9 +396,16 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
                   sliver: PagedSliverGrid(
                     pagingController: _pagingController,
                     builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
-                      firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                      newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                      noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Yet :)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
+                      firstPageProgressIndicatorBuilder: (_) =>
+                          Center(child: spinkit),
+                      newPageProgressIndicatorBuilder: (_) =>
+                          Center(child: spinkit),
+                      noItemsFoundIndicatorBuilder: (_) => Center(
+                          child: Text(
+                        "No Items Yet :)",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                      )),
                       itemBuilder: (BuildContext context, item, int index) {
                         return ProductCardSeller(
                           product: item,
@@ -296,14 +424,281 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
               ],
             ),
           );
-        } else {
-          return Container(
-            height: 350.sp, // Use sizer to set height
-            width: MediaQuery.of(context).size.width,
-            child: spinkit,
-          );
         }
       },
     );
+  }
+
+  void _showPickOptionsDialog(BuildContext context, int imageNumber) {
+    BuildContext dialogContext;
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              // dialogContext = context;
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text("Pick from Gallery"),
+                    onTap: () {
+                      _loadPicker(ImageSource.gallery, imageNumber);
+                    },
+                  ),
+                  ListTile(
+                    title: Text("Take a picture"),
+                    onTap: () {
+                      _loadPicker(ImageSource.camera, imageNumber);
+                    },
+                  )
+                ],
+              ),
+            ));
+  }
+
+  void _openInstagramDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Add Instagram"),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      0, 0, 0, 0), // Use sizer to set padding
+                  child: TextFormField(
+                    cursorColor: Colors.black,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 1,
+                    controller: _instagramController,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(19),
+                    ],
+                    textCapitalization: TextCapitalization.none,
+                    decoration: InputDecoration(
+                      hintText: 'Instagram Handle',
+                      fillColor: Colors.black,
+                      focusColor: Colors.black,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 1.h), // Remove horizontal padding
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              ),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  // Perform actions with the entered Instagram username
+                  updateInstagramHandle(_instagramController.text);
+                  setState(() {
+                    instagramHandle = _instagramController.text;
+                    _instagramController.clear();
+                  });
+                  Navigator.of(context).pop(); // Close the dialog
+                }
+              },
+              child: Text(
+                "Update",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _unlinkInstagramDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Unlink Instagram"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              ),
+              onPressed: () {
+                  deleteInstagramHandle();
+                  Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                "Unlink Account",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _loadPicker(ImageSource source, int imageNumber) async {
+    XFile? picked = await ImagePicker()
+        .pickImage(source: source, maxHeight: 600, maxWidth: 600);
+    if (picked != null) {
+      switch (imageNumber) {
+        case 1:
+          setState(() {
+            _image1 = File(picked.path);
+          });
+          break;
+      }
+    }
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  Widget buildProfileImage() => GestureDetector(
+    onTap: () async {
+      _showPickOptionsDialog(context, 1);
+    },
+    child: CircleAvatar(
+      radius: 60, // Adjust the radius as needed
+      backgroundColor: Colors.grey.shade800,
+      backgroundImage: (_image1 != null && _image1!.existsSync())
+          ? Image.file(
+        _image1!,
+        height: 80, // Adjust the height as needed
+        width: 80, // Adjust the width as needed
+        fit: BoxFit.cover,
+      ).image
+          : (imageURL != null)
+          ? Image.memory(
+        imageURL!,
+        height: 100, // Adjust the height as needed
+        width: 100, // Adjust the width as needed
+        fit: BoxFit.cover,
+      ).image
+          : null,
+      child: (_image1 == null && imageURL!.length == 0)
+          ? Container(
+        width: 80, // Adjust the width as needed
+        height: 80, // Adjust the height as needed
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.black,
+        ),
+        child: Icon(
+          Icons.person,
+          color: Colors.white, // Set the color of the icon
+          size: 40, // Adjust the size of the icon
+        ),
+      )
+          : null,
+    ),
+  );
+
+  Future<void> updateInstagramHandle(String instagramUsername) async {
+    final url =
+        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/updateInstagramHandle/$firebaseId/$instagramUsername';
+
+    try {
+      final response = await http.post(Uri.parse(url));
+      if (response.statusCode == 200) {
+        print('Instagram handle updated successfully');
+      } else {
+        throw Exception('Failed to update Instagram handle');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server');
+    }
+  }
+
+  Future<void> getInstagramHandle() async {
+    Map<String, dynamic> data;
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId');
+    http.Response response =
+        await http.get(url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      data = jsonDecode(response.body);
+      if (data['instagramHandle'] != null) {
+        setState(() {
+          instagramHandle = data['instagramHandle'];
+          isInstagramHandleFetched = true; // Mark as fetched
+        });
+      }
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future<void> deleteInstagramHandle() async {
+    final url = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/deleteInstagramHandle/$firebaseId';
+
+    try {
+      final response = await http.delete(Uri.parse(url));
+      if (response.statusCode == 200) {
+          setState(() {
+            instagramHandle = "";
+            isInstagramHandleFetched = true; // Mark as fetched
+          });
+
+      } else {
+        throw Exception('Failed to delete Instagram handle');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server');
+    }
+  }
+
+  Future<void> _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw 'Could not launch';
+    }
+  }
+  Future<Uint8List?> getImageByProfile() async {
+    final url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profilePicture/$firebaseId');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        imageURL = response.bodyBytes;
+        return response.bodyBytes;
+      } else {
+        throw Exception('Failed to load image');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
   }
 }
