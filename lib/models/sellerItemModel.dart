@@ -69,6 +69,13 @@ class SellerItemModel extends ChangeNotifier {
     return false;
   }
 
+  Future<bool?> initNextPageUserClicksMessage(int pageNum, int id) async {
+    _sellerItems.clear();
+    totalPages = await getNextPageByIdPassedIn(pageNum, id);
+    await get1stImageForItemIfAvailable();
+    return false;
+  }
+
   void getProfileIdAndItems () {
     var initFuture = _getItems();
     initFuture.then((voidValue) {
@@ -111,6 +118,31 @@ class SellerItemModel extends ChangeNotifier {
   Future<int> getNextPage(int pageNum) async {
     Map<String, dynamic> data;
     var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB&size=5&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    http.Response response = await http.get(
+        url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
+      var items = data['content'];
+      var totalPages = data['totalPages'];
+
+      for (int i = 0; i < items.length; i++) {
+        ItemWithImages itm = ItemWithImages.fromJson(items[i]);
+        _sellerItems.add(itm);
+        // for (int imgId in itm.itemImageList) {
+        //   var url = Uri.parse(
+        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
+        // }
+      }
+      return totalPages;
+    } else {
+      return 0;
+    }
+  }
+
+  Future<int> getNextPageByIdPassedIn(int pageNum, int id) async {
+    Map<String, dynamic> data;
+    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/profile?profileId=$id&size=5&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

@@ -2,13 +2,16 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
-import 'package:student_shopping_v1/new/size_config.dart';
+import 'package:sizer/sizer.dart';
+import 'package:student_shopping_v1/buyerhome.dart';
+import 'package:student_shopping_v1/pages/SeeSellerDetailsAsBuyer.dart';
 import '../../models/chatMessageModel.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-
+import '../../pages/itemDetailPage.dart';
 import '../Screens/ChatDetail.dart';
 
 class ChatPage extends StatefulWidget {
@@ -17,170 +20,246 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  int currentUserId = -1;
   User? currentUser = FirebaseAuth.instance.currentUser;
+  final PagingController<int, ChatMessageHome> _pagingController =
+  PagingController(firstPageKey: 0);
+  int totalPages = 0;
 
   @override
   void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
     super.initState();
-    getProfileFromDb(currentUser?.uid.toString());
-    Provider.of<ChatMessageModel>(context, listen: false).getChatHomeHelper();
   }
 
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      await Provider.of<ChatMessageModel>(context, listen: false).initNextCatPage(pageKey);
+      totalPages =
+          Provider.of<ChatMessageModel>(context, listen: false).totalPages;
+      if (mounted) {
+        final isLastPage = (totalPages - 1) == pageKey;
+
+        if (isLastPage) {
+          _pagingController.appendLastPage(
+              Provider.of<ChatMessageModel>(context, listen: false).chatHome);
+        } else {
+          final int? nextPageKey = pageKey + 1;
+          _pagingController.appendPage(
+              Provider.of<ChatMessageModel>(context, listen: false).chatHome,
+              nextPageKey);
+        }
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pagingController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var chatProfiles = context.watch<ChatMessageModel>();
-           return  Scaffold(
-             appBar: AppBar(
-             elevation: 0,
-             automaticallyImplyLeading: false,
-             backgroundColor: Colors.white,
-               title: Text("Messaging", style: TextStyle(color: Colors.black),),
-           ),
-             body: chatProfiles.ChatMessageHomeList.isEmpty
-                 ? Center(
-               child: Text(
-                 "No messages found. Send a message!",
-                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-               ),
-             )
-                 : ListView.builder(
-               itemCount: chatProfiles.ChatMessageHomeList.length,
-               shrinkWrap: true,
-               itemBuilder: (context, index) {
-                 return GestureDetector(
-                   onTap: () {
-                     if (chatProfiles.chatHome[index].id != -1 &&
-                         chatProfiles.chatHome[index].is_message_read == false) {
-                       chatProfiles
-                           .changeLatestMessageToRead(chatProfiles.chatHome[index].id);
-                     }
-                     Navigator.of(context).push(
-                       MaterialPageRoute(
-                         builder: (BuildContext context) => ChatDetailPage(
-                           chatProfile: chatProfiles.chatHome[index],
-                           currentUserDbId: chatProfiles.chatHome[index].current_user_id!,
-                         ),
-                       ),
-                     ).then(
-                           (value) =>
-                           Provider.of<ChatMessageModel>(context, listen: false)
-                               .getChatHomeHelper(),
-                     );
-                   },
-                   child: Container(
-                     padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-                     child: Row(
-                       children: <Widget>[
-                         Expanded(
-                           child: Row(
-                             children: <Widget>[
-                               chatProfiles.chatHome[index].is_message_read! ||
-                                   chatProfiles.chatHome[index].creator_user_id ==
-                                       currentUserId
-                                   ? SizedBox()
-                                   : Icon(
-                                 Icons.circle,
-                                 color: Colors.blue.shade400,
-                                 size: 15,
-                               ),
-                               SizedBox(),
-                               CircleAvatar(
-                                 radius: 30,
-                                 backgroundColor: Colors.grey,
-                                 child: SvgPicture.asset(
-                                   "assets/personIcon.svg",
-                                   color: Colors.white,
-                                   height: 36,
-                                   width: 36,
-                                 ),
-                               ),
-                               SizedBox(width: 16,),
-                               Expanded(
-                                 child: Container(
-                                   color: Colors.transparent,
-                                   child: Column(
-                                     crossAxisAlignment: CrossAxisAlignment.start,
-                                     children: <Widget>[
-                                       Text(
-                                         chatProfiles.chatHome[index].current_user_id ==
-                                             chatProfiles.chatHome[index]
-                                                 .recipient_user_id
-                                             ? chatProfiles.chatHome[index]
-                                             .creator_profile_name
-                                             .toString()
-                                             : chatProfiles.chatHome[index]
-                                             .recipient_profile_name
-                                             .toString(),
-                                         style: TextStyle(
-                                           fontSize: 16,
-                                           color: Colors.black,
-                                         ),
-                                       ),
-                                       SizedBox(height: 6,),
-                                       Text(
-                                         chatProfiles.chatHome[index].message_text
-                                             .toString()
-                                             .length <= 20
-                                             ? chatProfiles.chatHome[index]
-                                             .message_text
-                                             .toString()
-                                             : '${chatProfiles.chatHome[index].message_text.toString().substring(0, 20)}...',
-                                         style: TextStyle(
-                                           fontSize: 13,
-                                           color: Colors.black,
-                                           fontWeight: chatProfiles.chatHome[index]
-                                               .is_message_read! ||
-                                               chatProfiles.chatHome[index]
-                                                   .creator_user_id ==
-                                                   currentUserId
-                                               ? FontWeight.normal
-                                               : FontWeight.bold,
-                                         ),
-                                       ),
-                                       // Text(widget.chatProfile.message_text.toString(), style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
-                                     ],
-                                   ),
-                                 ),
-                               ),
-                             ],
-                           ),
-                         ),
-                         Text(
-                           DateFormat('h:mm a')
-                               .format(DateTime.parse(chatProfiles
-                               .chatHome[index].createdAt)
-                               .toLocal())
-                               .toString(),
-                           style: TextStyle(
-                             fontSize: 12,
-                             fontWeight: false ? FontWeight.bold : FontWeight.normal,
-                           ),
-                         ),
-                       ],
-                     ),
-                   ),
-                 );
-               },
-             ),
-           );
-
-
-
-
-
-  }
-  Future<void> getProfileFromDb(String? firebaseid) async {
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      data = jsonDecode(response.body);
-      currentUserId = data['id'];
-    } else {
-      print(response.statusCode);
-    }
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        title: Column(
+          children: [
+            Text(
+              "Messaging",
+              style: TextStyle(color: Colors.black),
+            ),
+            SizedBox(height: 4), // Add a small gap between the titles
+            Text(
+              "Pull down to refresh",
+              style: TextStyle(color: Colors.grey, fontSize: 10.sp),
+            ),
+          ],
+        ),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () => Future.sync(() => _pagingController.refresh()),
+        child: Consumer<ChatMessageModel>(
+          builder: (context, chatMessageModel, child) {
+            return PagedListView(
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<ChatMessageHome>(
+                firstPageProgressIndicatorBuilder: (_) =>
+                    Center(child: spinkit),
+                newPageProgressIndicatorBuilder: (_) =>
+                    Center(child: spinkit),
+                noItemsFoundIndicatorBuilder: (_) => Center(
+                  child: Text(
+                    "No Messages Yet :)",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                itemBuilder: (BuildContext context, chatHomeObject, int index) {
+                  return GestureDetector(
+                    onTap: () async {
+                      if (chatHomeObject.id != -1 &&
+                          chatHomeObject.is_message_read ==
+                              false) {
+                        ChatMessageModel chatMessageModel =
+                        Provider.of<ChatMessageModel>(context,
+                            listen: false);
+                        await chatMessageModel.changeLatestMessageToRead(
+                            chatHomeObject.id);
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => ChatDetailPage(
+                            chatProfile: chatHomeObject,
+                            currentUserDbId:
+                            chatHomeObject.current_user_id!,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Row(
+                              children: <Widget>[
+                                chatHomeObject
+                                    .is_message_read! ||
+                                    chatHomeObject
+                                        .creator_user_id ==
+                                        chatHomeObject.current_user_id
+                                    ? SizedBox()
+                                    : Icon(
+                                  Icons.circle,
+                                  color: Colors.blue.shade400,
+                                  size: 15,
+                                ),
+                                SizedBox(),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) => SeeSellerDetailsAsBuyer(
+                                          chatHomeObject),
+                                      ),
+                                    );
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    child: chatHomeObject.image.isEmpty
+                                        ? SvgPicture.asset(
+                                      "assets/personIcon.svg",
+                                      color: Colors.white,
+                                      height: 36,
+                                    )
+                                        : Image.memory(
+                                      chatHomeObject.image,
+                                      height:
+                                      100, // Adjust the height as needed
+                                      width:
+                                      100, // Adjust the width as needed
+                                      fit: BoxFit.cover,
+                                    ),
+                                    radius: 20,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          chatHomeObject
+                                              .current_user_id ==
+                                              chatHomeObject
+                                                  .recipient_user_id
+                                              ? chatHomeObject
+                                              .creator_profile_name
+                                              .toString()
+                                              : chatHomeObject
+                                              .recipient_profile_name
+                                              .toString(),
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Text(
+                                          chatHomeObject
+                                              .message_text
+                                              .toString()
+                                              .length <=
+                                              20
+                                              ? chatHomeObject
+                                              .message_text
+                                              .toString()
+                                              : '${chatHomeObject.message_text.toString().substring(0, 20)}...',
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.black,
+                                            fontWeight: chatHomeObject
+                                                .is_message_read! ||
+                                                _pagingController.itemList![
+                                                index]
+                                                    .creator_user_id ==
+                                                    chatHomeObject.current_user_id
+                                                ? FontWeight.normal
+                                                : FontWeight.bold,
+                                          ),
+                                        ),
+// Text(widget.chatProfile.message_text.toString(), style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            DateFormat('h:mm a')
+                                .format(DateTime.parse(chatHomeObject.createdAt)
+                                .toLocal())
+                                .toString(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: false
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
+

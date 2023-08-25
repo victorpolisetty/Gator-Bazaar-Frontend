@@ -11,12 +11,16 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
+import 'package:path/path.dart' as path;
+
 import 'package:student_shopping_v1/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
 import '../new/components/productCardSellerView.dart';
+
 import 'itemDetailPage.dart';
+
 
 class SellerProfilePageNew extends StatefulWidget {
   const SellerProfilePageNew({Key? key}) : super(key: key);
@@ -285,6 +289,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
                         Center(
                           child: Text(
                             displayName!.toString(),
+                            textAlign: TextAlign.center, // Center-align the text within the widget
                             style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontSize: 8.w, // Use sizer to set font size
@@ -581,6 +586,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
           setState(() {
             _image1 = File(picked.path);
           });
+          await uploadItemImageToDB(_image1!);
           break;
       }
     }
@@ -601,7 +607,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
         width: 80, // Adjust the width as needed
         fit: BoxFit.cover,
       ).image
-          : (imageURL != null)
+          : (imageURL != null && !imageURL!.isEmpty)
           ? Image.memory(
         imageURL!,
         height: 100, // Adjust the height as needed
@@ -611,8 +617,8 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
           : null,
       child: (_image1 == null && imageURL!.length == 0)
           ? Container(
-        width: 80, // Adjust the width as needed
-        height: 80, // Adjust the height as needed
+        width: 120, // Adjust the width as needed
+        height: 120, // Adjust the height as needed
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.black,
@@ -686,7 +692,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
     }
   }
   Future<Uint8List?> getImageByProfile() async {
-    final url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profilePicture/$firebaseId');
+    final url = Uri.parse('http://localhost:5000/profilePicture/$firebaseId');
 
     try {
       final response = await http.get(url);
@@ -699,6 +705,49 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
       }
     } catch (e) {
       throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> uploadItemImageToDB(File imageFile) async {
+    const double MAX_FILE_SIZE_MB = 25.0;
+    try {
+      // Calculate file size
+      int sizeInBytes = imageFile.lengthSync();
+      double sizeInMb = sizeInBytes / (1024 * 1024);
+
+      // Check file size limit (adjust limit as needed)
+      if (sizeInMb > MAX_FILE_SIZE_MB) {
+        throw Exception('File size exceeds the limit.');
+      }
+
+      // Open file stream
+      var stream = await http.ByteStream(imageFile.openRead());
+
+      var length = await imageFile.length();
+      var uri = Uri.parse('http://localhost:5000/profile/profilePic/$firebaseId');
+
+      var request = http.MultipartRequest("PUT", uri);
+      var multipartFile = http.MultipartFile('file', stream, length,
+          filename: path.basename(imageFile.path));
+
+      request.files.add(multipartFile);
+
+      // Send the request and wait for response
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        var data = response.bodyBytes;
+        print(data);
+      } else {
+        // Handle different status codes if needed
+        print('Image upload failed. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      // Handle exceptions
+      print('Error uploading image: $e');
+      return null;
     }
   }
 }

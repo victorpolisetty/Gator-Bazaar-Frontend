@@ -32,15 +32,9 @@ class ItemDetails extends StatefulWidget {
 
 class _ItemDetailsState extends State<ItemDetails> {
   User? currentUser = FirebaseAuth.instance.currentUser;
-  // String recipientProfileName = "";
-  // int currentUserId = -1;
-  // String sellerUserName = "";
 
   @override
   void initState() {
-    // TODO: implement initState
-    // getProfileFromDb(currentUser?.uid.toString());
-    // getProfileFromDbWithSellerId(widget.item.seller_id);
 
     super.initState();
   }

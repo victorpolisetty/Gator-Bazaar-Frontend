@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:http/http.dart' as http;
 
+import '../../pages/SeeSellerDetailsAsBuyer.dart';
+
 
 
 class ChatDetailPage extends StatefulWidget{
@@ -46,20 +48,26 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       _controller.clear();
     }
   }
+
+
   _connectSocket() {
     _socket.onConnect((data) => print('Connection Established'));
     _socket.onConnectError((data) => print('Connect Error: $data'));
     _socket.onDisconnect((data) => print('Socket.IO server disconnected'));
-    _socket.on('message',
-          (data) {
-      if(mounted) {
-        Provider.of<MessageModel>(context, listen: false).sendMessage(
-          UserMessage.fromJson(data),
-        );
+    _socket.on('message', (data) {
+      if (mounted) {
+        final messageModel = Provider.of<MessageModel>(context, listen: false);
+        final chatMessageModel = Provider.of<ChatMessageModel>(context, listen: false);
+
+        if (messageModel != null && chatMessageModel != null) {
+          messageModel.sendMessage(UserMessage.fromJson(data));
+        }
+
+
       }
-          }
-    );
+    });
   }
+
 
 
   // @override
@@ -122,14 +130,29 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   //   backgroundImage: SVgP("<https://randomuser.me/api/portraits/men/5.jpg>"),
                   //   maxRadius: 20,
                   // ),
-                  CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child:
-                    SvgPicture.asset("assets/personIcon.svg",
-                      color: Colors.white,
-                      height: 36,
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => SeeSellerDetailsAsBuyer(
+                              widget.chatProfile),
+                        ),
+                      );
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      child:
+                      widget.chatProfile.image.isEmpty ? SvgPicture.asset("assets/personIcon.svg",
+                        color: Colors.white,
+                        height: 36,
+                      ) : Image.memory(
+                        widget.chatProfile.image,
+                        height: 100, // Adjust the height as needed
+                        width: 100, // Adjust the width as needed
+                        fit: BoxFit.cover,
+                      ),
+                      radius: 20,
                     ),
-                    radius: 20,
                   ),
                   SizedBox(width: 12),
                   Expanded(

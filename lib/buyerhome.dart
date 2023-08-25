@@ -149,16 +149,16 @@ class _HomePageState extends State<BuyerHomePage>
 
   void _handleSelected(int givenIndex) async {
     int index = givenIndex;
-    if (_selectedPage == 3) {
-      Provider.of<ChatMessageModel>(context, listen: false)
-          .getChatHomeHelper()
-          .then((value) => setState(() {
-                _selectedPage = index;
-              }));
-    } else {
+    // if (_selectedPage == 3) {
+    //   Provider.of<ChatMessageModel>(context, listen: false)
+    //       .getChatHomeHelper()
+    //       .then((value) => setState(() {
+    //             _selectedPage = index;
+    //           }));
+    // } else {
       setState(() {
         _selectedPage = index;
       });
-    }
+    // }
   }
 }

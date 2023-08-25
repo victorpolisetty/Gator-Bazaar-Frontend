@@ -58,7 +58,6 @@ class ItemWithImages extends ChangeNotifier{
     }
     this.imageDataLoaded = true;
     return imageDataList;
-    notifyListeners();
   }
 
   ItemWithImages() {

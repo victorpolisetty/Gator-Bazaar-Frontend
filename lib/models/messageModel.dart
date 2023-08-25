@@ -132,15 +132,15 @@ class MessageModel extends ChangeNotifier{
 
   Future<void> getDeviceToken(int? recipientUserId) async {
     Map<String, dynamic> data;
-    // var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/1'); // TODO -  call the recentItem service when it is built
+    // var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/1');
 
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/id/$recipientUserId'); // TODO -  call the recentItem service when it is built
+    var url = Uri.parse('http://localhost:5000/$recipientUserId/deviceToken');
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      recipientDeviceToken = data['deviceToken'];
+      print(response.body);
+      recipientDeviceToken = response.body;
     } else {
       print(response.statusCode);
     }
@@ -190,6 +190,7 @@ class MessageModel extends ChangeNotifier{
       for (int i = 0; i < messages.length; i++) {
         UserMessage msg = UserMessage.fromJson(messages[i]);
         messageList.add(msg);
+        notifyListeners();
         //Provider.of<RecentItemModel>(context, listen: false).add(itm);
 
 

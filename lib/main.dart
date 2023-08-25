@@ -97,6 +97,8 @@ class _MyAppState extends State<MyApp> {
         print(message.notification?.title);
       }
 
+      // Provider.of<ChatMessageModel>(context, listen: false).getChatHomeHelper();
+
       LocalNotificationService.display(message);
     });
 

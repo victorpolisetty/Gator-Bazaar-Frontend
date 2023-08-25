@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
 part 'chatMessageModel.g.dart';
@@ -19,6 +21,8 @@ class ChatMessageHome extends ChangeNotifier {
   String createdAt = "";
   @JsonKey(ignore: true)
   int? current_user_id = -1;
+  @JsonKey(ignore : true)
+  Uint8List image = new Uint8List(0);
   bool? is_message_read = false;
   int? id = -1;
 
@@ -60,60 +64,103 @@ class ChatMessageModel extends ChangeNotifier{
   List<ChatMessageHome> get chatHome => ChatMessageHomeList;
 
   int userIdFromDB = -1;
+  int totalPages = 0;
 
   ChatMessageModel() {
-    // var initFuture = init();
-    // initFuture.then((voidValue) {
-    //   // state = HomeScreenModelState.initialized;
-    //   notifyListeners();
-    // });
   }
 
-  Future<void> _getChatHomeHelper() async {
-    await getProfileFromDb();
-    await getChatHistory();
-    notifyListeners();
 
-  }
-
-  Future<void> getChatHomeHelper() async {
+  Future<bool?> initNextCatPage(int pageNum) async {
     ChatMessageHomeList.clear();
-    var initFuture = _getChatHomeHelper();
-    initFuture.then((voidValue) {
-      // state = HomeScreenModelState.initialized;
-      notifyListeners();
-    });
+    await getProfileFromDb();
+    await getNextPageChatHistory(pageNum);
+    await fetchAllProfilePictures();
+    return false;
   }
 
+  Future<Uint8List> fetchProfilePictureForUser(int userId) async {
+    var profilePictureUrl = Uri.parse('http://localhost:5000/profilePicture/profileId/$userId');
+    http.Response profileResponse = await http.get(profilePictureUrl);
 
+    if (profileResponse.statusCode == 200) {
+      return profileResponse.bodyBytes;
+    } else {
+      print(profileResponse.statusCode);
+      return Uint8List(0);
+    }
+  }
 
-  //TODO
-  Future<void> getChatHistory() async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      String? firebaseId = currentUser.uid;
-      List<dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile/chathome/$firebaseId');
+  Future<void> fetchAllProfilePictures() async {
+    for (int i = 0; i < ChatMessageHomeList.length; i++) {
+      int? otherUserId = ChatMessageHomeList[i].current_user_id ==
+          ChatMessageHomeList[i].creator_user_id
+          ? ChatMessageHomeList[i].recipient_user_id
+          : ChatMessageHomeList[i].creator_user_id;
 
-      // var url = Uri.parse('http://localhost:8080/messages/profile/chathome/$firebaseId');
-      // var url = Uri.parse('http://localhost:8080/messages/profile/chathome/$firebaseId');
-      http.Response response = await http.get(url, headers: {"Accept": "application/json"});
-      if (response.statusCode == 200) {
-        String responseJson = Utf8Decoder().convert(response.bodyBytes);
-        data = json.decode(responseJson);
-        if (data.length == ChatMessageHomeList.length) {
-          ChatMessageHomeList.clear();
+      var profilePictureUrl = Uri.parse('http://localhost:5000/profilePicture/profileId/$otherUserId');
+      http.Response profileResponse = await http.get(profilePictureUrl);
+      if (profileResponse.statusCode == 200) {
+        if (!profileResponse.bodyBytes.isEmpty) {
+          ChatMessageHomeList[i].image = profileResponse.bodyBytes;
+        } else {
+          ChatMessageHomeList[i].image = Uint8List(0);
         }
-        for (int i = 0; i < data.length; i++) {
-          ChatMessageHome chatMessage = ChatMessageHome.fromJson(data[i]);
-          chatMessage.current_user_id = userIdFromDB;
-          ChatMessageHomeList.add(chatMessage);
-        }
+        // notifyListeners();
       } else {
-        print (response.statusCode);
+        print(profileResponse.statusCode);
       }
     }
   }
+
+
+  Future<int> getNextPageChatHistory(int pageNum) async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      String? firebaseId = currentUser.uid;
+
+      var url = Uri.parse('http://localhost:5000/messages/profile/chathome/$firebaseId?page=$pageNum&size=5&sort=updatedAt,asc');
+      Map<String, dynamic> data;
+      http.Response response = await http.get(
+          url, headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        String responseJson = Utf8Decoder().convert(response.bodyBytes);
+        data = json.decode(responseJson);
+        var chatHomes = data['content'];
+        totalPages = data['totalPages'];
+        // if (chatHomes.length == ChatMessageHomeList.length) {
+        //   ChatMessageHomeList.clear();
+        // }
+        for (int i = 0; i < chatHomes.length; i++) {
+          ChatMessageHome chatMessage = ChatMessageHome.fromJson(chatHomes[i]);
+
+          chatMessage.current_user_id = userIdFromDB;
+          int? otherUserId = chatMessage.current_user_id ==
+              chatMessage.creator_user_id
+              ? chatMessage.recipient_user_id
+              : chatMessage.creator_user_id;
+
+          // Use pre-fetched profile pictures
+          // Uint8List profilePictureBytes = profilePictures[otherUserId] ?? Uint8List(0);
+
+          // if (!profilePictureBytes.isEmpty) {
+          //   chatMessage.image = profilePictureBytes;
+          // }
+
+          ChatMessageHomeList.add(chatMessage);
+        }
+        return totalPages;
+      } else {
+        print(response.statusCode);
+        return -1;
+      }
+    }
+    print("Couldn't find firebaseId");
+    return -1;
+  }
+
+
+
+
 
   Future<void> getProfileFromDb() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
@@ -155,6 +202,11 @@ class ChatMessageModel extends ChangeNotifier{
 
   int getCurrentUserDbId(){
     return userIdFromDB;
+  }
+
+  Future<void> refreshChatHistory() async {
+    await getNextPageChatHistory(1); // Fetch the latest page of messages
+    await fetchAllProfilePictures(); // Update profile pictures if needed
   }
 
 }
