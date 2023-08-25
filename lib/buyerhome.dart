@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
 import 'package:student_shopping_v1/pages/manageGroupsPage.dart';
 import 'HomePageContent.dart';
+import 'api_utils.dart';
 import 'models/chatMessageModel.dart';
 import 'pages/addListingPage.dart';
 import 'package:http/http.dart' as http;
@@ -23,8 +24,8 @@ int? currDbId = -1;
 
 Future<void> saveTokenToDatabase(String token) async {
   Future<void> updatedUserDeviceToken() async {
-    var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$currDbId/deviceToken/$token');
+    var url = ApiUtils.buildApiUrl(
+        '/profiles/$currDbId/deviceToken/$token');
     final http.Response response = await http.put(url, headers: {
       "Accept": "application/json",
       "Content-Type": "application/json"
@@ -45,8 +46,8 @@ Future<int?> getUserDbIdRealFunc() async {
 
   Future<void> updatedUserDbId() async {
     Map<String, dynamic> data;
-    var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl(
+        '/profiles/$firebaseId');
     http.Response response =
         await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

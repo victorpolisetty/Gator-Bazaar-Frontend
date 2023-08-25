@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import '../api_utils.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -10,10 +11,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'ItemWithImagesSerializer.dart';
 part 'recentItemModel.g.dart';
-
-const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
-const String RECENT_ITEMS_URL = '${BASE_URI}items?size=10&sort=createdAt,desc';
-const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
 // Handle one Page of Items
 @JsonSerializable(explicitToJson: true)
@@ -50,16 +47,24 @@ class RecentItemModel extends ChangeNotifier {
   Map<String, dynamic> toJson() => _$RecentItemModelToJson(this);
 
   RecentItemModel() {
-    var initFuture = init();
-    initFuture.then((voidValue) {
-      notifyListeners();
-    });
+    // var initFuture = init();
+    // initFuture.then((voidValue) {
+    //   notifyListeners();
+    // });
   }
-  Future<void> init() async {
-    this.totalPages = 1;
+  // Future<void> init() async {
+  //   this.totalPages = 1;
+  //   await getProfileFromDb();
+  //   await getFeaturedItems();
+  //   await add1stImageToItemIfAvailable();
+  // }
+
+  Future<bool?> initNextCatPage(int pageNum) async {
+    _recentItems.clear();
     await getProfileFromDb();
-    await getFeaturedItems();
+    totalPages = await getFeaturedItems();
     await add1stImageToItemIfAvailable();
+    return false;
   }
 
   void getRecentItems() {
@@ -88,7 +93,7 @@ class RecentItemModel extends ChangeNotifier {
 
   Future<int> getNextPage(int pageNum) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items?size=6&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/items?size=6&page=$pageNum&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -105,62 +110,9 @@ class RecentItemModel extends ChangeNotifier {
     }
   }
 
-  // Future<int> getItemRestList() async {
-  //   Map<String, dynamic> data;
-  //   var url = Uri.parse(
-  //       'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items?size=10&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
-  //   http.Response response = await http.get(
-  //       url, headers: {"Accept": "application/json"});
-  //   if (response.statusCode == 200) {
-  //     String responseJson = Utf8Decoder().convert(response.bodyBytes);
-  //     data = json.decode(responseJson);
-  //
-  //     var items = data['content'];
-  //     var totalPages = data['totalPages'];
-  //
-  //     for (int i = 0; i < items.length; i++) {
-  //       ItemWithImages itm = ItemWithImages.fromJson(items[i]);
-  //       _recentItems.add(itm);
-  //     }
-  //     return totalPages;
-  //   } else {
-  //     return 0;
-  //   }
-  // }
-
-  // Future<int> getItemsByGroupIds(List<int> groupIds) async {
-  //   String groupIdsParam = groupIds.join(",");
-  //   var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupIds?groupIds=$groupIdsParam&size=10&sort=createdAt,desc');
-  //
-  //   http.Response response = await http.get(
-  //     url,
-  //     headers: {"Accept": "application/json"},
-  //   );
-  //
-  //   if (response.statusCode == 200) {
-  //     String responseJson = Utf8Decoder().convert(response.bodyBytes);
-  //     Map<String, dynamic> data = json.decode(responseJson);
-  //
-  //     var items = data['content'];
-  //     var totalPages = data['totalPages'];
-  //     _recentItems.clear();
-  //
-  //     for (int i = 0; i < items.length; i++) {
-  //       ItemWithImages itm = ItemWithImages.fromJson(items[i]);
-  //       _recentItems.add(itm);
-  //     }
-  //
-  //     return totalPages;
-  //   } else {
-  //     print('Failed with status: ${response.statusCode}.');
-  //     print('Response body: ${response.body}');
-  //     throw Exception('Failed to load items');
-  //   }
-  // }
-
   Future<int> getFeaturedItems() async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/api/featured-items/get-all-featured-items');
+    var url = ApiUtils.buildApiUrl('/api/featured-items/get-all-featured-items');
 
     http.Response response = await http.get(
       url,
@@ -177,7 +129,6 @@ class RecentItemModel extends ChangeNotifier {
 
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i], useCustomSerializer: true);
-        // ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         _recentItems.add(itm);
       }
       return totalPages;
@@ -194,7 +145,7 @@ class RecentItemModel extends ChangeNotifier {
     if(currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId');
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId');
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -212,9 +163,9 @@ class RecentItemModel extends ChangeNotifier {
     Uint8List data = new Uint8List(0) ;
     for (int i = 0; i < _recentItems.length; i++) {
       if (_recentItems[i].itemPictureIds!.isNotEmpty) {
-        String urlString = ITEMS_IMAGES_URL +
+        String urlString = '/itemImages/' +
             (_recentItems[i].itemPictureIds![0]).toString();
-        var url = Uri.parse(urlString);
+        var url = ApiUtils.buildApiUrl(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:student_shopping_v1/models/recentItemModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
+import '../api_utils.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -16,9 +17,7 @@ part 'groupItemModel.g.dart';
 
 
 
-const String BASE_URI = 'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
-const String CATEGORY_ITEMS_URL = '${BASE_URI}categories/';  // TODO -  call the CategoryItem service when it is built
-const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
+
 
 
 @JsonSerializable(explicitToJson: true)
@@ -85,7 +84,7 @@ class GroupItemModel extends ChangeNotifier {
 
   Future<Item> postItemSingle(Item itm)  async {
     Map<String, dynamic> data;
-    var url = Uri.parse(CATEGORY_ITEMS_URL +
+    var url = ApiUtils.buildApiUrl('/categories/' +
         '${categoryId}/items?profileId=$userIdFromDb');
     var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.post(url
@@ -129,7 +128,7 @@ class GroupItemModel extends ChangeNotifier {
     // Convert groupIds to a comma-separated string for the URL
     String groupIdsString = groupIds.join(',');
 
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupIds?size=6&page=$pageNum&sort=createdAt,desc&groupIds=$groupIdsString');
+    var url = ApiUtils.buildApiUrl('/getItemsByGroupIds?size=6&page=$pageNum&sort=createdAt,desc&groupIds=$groupIdsString');
 
     http.Response response = await http.get(
       url,
@@ -155,7 +154,7 @@ class GroupItemModel extends ChangeNotifier {
   Future<int> getNextPageCat(int pageNum, Set<int> groupIds, int selectedCategoryId) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupAndCategoryIds?size=6&page=$pageNum&sort=createdAt,desc'
+    var url = ApiUtils.buildApiUrl('/getItemsByGroupAndCategoryIds?size=6&page=$pageNum&sort=createdAt,desc'
         '&groupIds=${groupIds.toList().join(",")}&categoryIds=$selectedCategoryId');
 
     http.Response response = await http.get(
@@ -183,7 +182,7 @@ class GroupItemModel extends ChangeNotifier {
   Future<int> getNextSearchedPage(int categoryId, String searchWord, int pageNum) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$searchWord?size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/items/search/$categoryId/$searchWord?size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -212,7 +211,7 @@ class GroupItemModel extends ChangeNotifier {
   }
 
   Future<void> getItemRestList(Set<int> groupIds) async {
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupIds');
+    var url = ApiUtils.buildApiUrl('/getItemsByGroupIds');
     String jsonBody = json.encode({'groupIds': groupIds.toList()});
     final http.Response response = await http.post(
       url,
@@ -234,7 +233,7 @@ class GroupItemModel extends ChangeNotifier {
   Future<void> getSearchedItemRestList() async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$keyword'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/items/search/$categoryId/$keyword'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -251,16 +250,6 @@ class GroupItemModel extends ChangeNotifier {
     }
   }
 
-  // Future<List<Uint8List>> getAllImagesForItem(ItemWithImages itm) async {
-  //   // If images exist them get them
-  //   if (itm.imageDataLoaded == false && itm.itemPictureIds.length > 0) {
-  //     // call itemmodel to get the images
-  //     return itm.getAllImagesForItem();
-  //   } else {
-  //     throw NullThrownError();
-  //   }
-  // }
-
 
   Future<void> get1stImageForItemIfAvailable() async {
     if (groupItems.isEmpty) return;
@@ -268,9 +257,9 @@ class GroupItemModel extends ChangeNotifier {
 
     for (int i = 0; i < groupItems.length; i++) {
       if (groupItems[i].itemPictureIds!.isNotEmpty) {
-        String urlString = ITEMS_IMAGES_URL +
+        String urlString = '/itemImages/' +
             (groupItems[i].itemPictureIds![0]).toString();
-        var url = Uri.parse(urlString);
+        var url = ApiUtils.buildApiUrl(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {
@@ -312,7 +301,7 @@ class GroupItemModel extends ChangeNotifier {
     var stream  = new http.ByteStream(imageFile.openRead()); stream.cast();
     var length = await imageFile.length();
     var itemId = itmRest.id!;
-    var uri = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/$itemId/itemImages');
+    var uri = ApiUtils.buildApiUrl('/items/$itemId/itemImages');
 
     var request = new http.MultipartRequest("POST", uri);
     var multipartFile = new http.MultipartFile('file', stream, length,
@@ -355,7 +344,7 @@ class GroupItemModel extends ChangeNotifier {
   }
 
   Future<void> addItemToGroups(int? itemId, Set<int> groupIdsForItem) async {
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/setGroupsItemIsIn/$itemId/items');
+    var url = ApiUtils.buildApiUrl('/setGroupsItemIsIn/$itemId/items');
 
     Map<String, dynamic> body = {
       "groupIds": groupIdsForItem.toList(),
@@ -401,7 +390,7 @@ class GroupItemModel extends ChangeNotifier {
     if (currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId');
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId');
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {

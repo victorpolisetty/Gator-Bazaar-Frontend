@@ -12,6 +12,7 @@ import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/new/components/product_card.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../api_utils.dart';
 import '../models/chatMessageModel.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
@@ -152,8 +153,8 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
 
   Future<void> deleteUserFromDB(int? id) async {
     Map<String, dynamic> data;
-    var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$id');
+    var url = ApiUtils.buildApiUrl(
+        '/profiles/$id');
     http.Response response =
     await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -450,7 +451,7 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
 
   Future<void> getInstagramHandle() async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://localhost:5000/profiles/profileId/$currentDbId');
+    var url = ApiUtils.buildApiUrl('/profiles/profileId/$currentDbId');
     http.Response response =
     await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -474,7 +475,7 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
   }
 
   Future<Uint8List?> getImageByProfile() async {
-    final url = Uri.parse('http://localhost:5000/profilePicture/profileId/$currentDbId');
+    final url = ApiUtils.buildApiUrl('/profilePicture/profileId/$currentDbId');
 
     try {
       final response = await http.get(url);

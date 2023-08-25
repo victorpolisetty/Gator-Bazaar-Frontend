@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
+
+import '../api_utils.dart';
 part 'groupRequestModel.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -40,7 +42,7 @@ class GroupRequestModel extends ChangeNotifier{
     if (currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId');
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -56,7 +58,7 @@ class GroupRequestModel extends ChangeNotifier{
   Future<void> postGroupRequest(int? groupId)  async {
     Map<String, dynamic> data;
     //TODO: need to call this somewhere
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/addGroupReq/$userIdFromDB/$groupId');
+    var url = ApiUtils.buildApiUrl('/group/addGroupReq/$userIdFromDB/$groupId');
     final http.Response response =  await http.post(url
         , headers: {
           "Accept": "application/json",
@@ -71,7 +73,7 @@ class GroupRequestModel extends ChangeNotifier{
 
   Future<int> getGroupRequestsByProfileId(int? profileId) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/checkAllGroupReq/$profileId'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/group/checkAllGroupReq/$profileId'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

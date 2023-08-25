@@ -20,19 +20,22 @@ class _HomePageBodyState extends State<HomePageBody> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: .2.h),
-            HomeHeader(),
-            DiscountBanner(),
-            Categories(),
-            Categories1(),
-            SizedBox(height: 1.5.h),
-            PopularProducts(),
-            SizedBox(height: 30.sp),
-          ],
-        ),
+      child: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.only(top: 0.2.h),
+            sliver: SliverToBoxAdapter(child: HomeHeader()),
+          ),
+          SliverToBoxAdapter(child: DiscountBanner()),
+          SliverToBoxAdapter(child: Categories()),
+          SliverToBoxAdapter(child: Categories1()),
+          SliverToBoxAdapter(child: SectionTitle(title: "Featured Products"),),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(vertical: 1.5.h),
+            sliver: PopularProducts(),
+          ),
+          SliverToBoxAdapter(child: SizedBox(height: 30.sp)),
+        ],
       ),
     );
   }

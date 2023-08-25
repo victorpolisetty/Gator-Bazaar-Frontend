@@ -9,6 +9,7 @@ import 'package:student_shopping_v1/models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
+import '../api_utils.dart';
 import '../new/constants.dart';
 import '../new/size_config.dart';
 
@@ -83,7 +84,7 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
     Map<String, dynamic> data;
     String firebaseId = currentUser!.uid;
     String itemId = item.id.toString();
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites/$itemId');
+    var url = ApiUtils.buildApiUrl('/profiles/$firebaseId/favorites/$itemId');
     final http.Response response =  await http.post(url
         , headers: {
           "Accept": "application/json",
@@ -101,7 +102,7 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
     Map<String, dynamic> data;
     String firebaseId = currentUser!.uid;
     String itemId = item.id.toString();
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites/$itemId');
+    var url = ApiUtils.buildApiUrl('/profiles/$firebaseId/favorites/$itemId');
     // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.delete(url
         , headers: {

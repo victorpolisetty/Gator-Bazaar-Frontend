@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:student_shopping_v1/api_utils.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,7 +70,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<int> getNextPageMembersInGroup(int pageNum, int groupId) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/findAllProfilesInGroup/$groupId?size=10&page=$pageNum');
+    var url = ApiUtils.buildApiUrl('/profile/findAllProfilesInGroup/$groupId?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
@@ -93,7 +94,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<int> getNextPageRequestsInGroup(int pageNum, int groupId) async {
     try {
       Map<String, dynamic> data;
-      var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/findAllPendingRequestsInGroup/$groupId');
+      var url = ApiUtils.buildApiUrl('/profile/findAllPendingRequestsInGroup/$groupId');
       http.Response response = await http.get(url, headers: {"Accept": "application/json"});
 
       if (response.statusCode == 200) {
@@ -122,7 +123,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<int> getNextPageAdminsInGroup(int pageNum, int groupId) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/findAllAdminProfilesInGroup/$groupId?size=10&page=$pageNum');
+    var url = ApiUtils.buildApiUrl('/profile/findAllAdminProfilesInGroup/$groupId?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
@@ -144,7 +145,7 @@ class AdminProfileModel extends ChangeNotifier {
     if(currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId');
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -160,7 +161,7 @@ class AdminProfileModel extends ChangeNotifier {
   Future<void> removeUserFromGroup(int? profileId, int? groupId) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/deleteGroupFromProfile/$profileId/$groupId');
+    var url = ApiUtils.buildApiUrl('/group/deleteGroupFromProfile/$profileId/$groupId');
     http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
     } else {
@@ -169,7 +170,7 @@ class AdminProfileModel extends ChangeNotifier {
   }
 
   Future<bool> deleteGroupRequest(int profileId, int groupId) async {
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/deleteGroupReq/$profileId/$groupId');
+    var url = ApiUtils.buildApiUrl('/group/deleteGroupReq/$profileId/$groupId');
     http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
 
     if (response.statusCode == 200) {
@@ -185,7 +186,7 @@ class AdminProfileModel extends ChangeNotifier {
   }
 
   Future<bool> acceptGroupRequest(int profileId, int groupId) async {
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/acceptGroupReq/$profileId/$groupId');
+    var url = ApiUtils.buildApiUrl('/group/acceptGroupReq/$profileId/$groupId');
     http.Response response = await http.put(url, headers: {"Accept": "application/json"});
 
     if (response.statusCode == 200) {
@@ -203,9 +204,7 @@ class AdminProfileModel extends ChangeNotifier {
 
 
   Future<void> makeUserAdmin(int? profileId, int? groupId) async {
-    // String firebaseId = currentUser!.uid;
-    Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/admin/$profileId/$groupId');
+    var url = ApiUtils.buildApiUrl('/profile/admin/$profileId/$groupId');
     http.Response response = await http.put(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
     } else {

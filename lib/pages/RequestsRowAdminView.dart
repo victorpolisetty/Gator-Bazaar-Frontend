@@ -12,6 +12,7 @@ import '../../Widgets/FavoriteWidget.dart';
 import '../../models/itemModel.dart';
 import '../../models/recentItemModel.dart';
 import '../../pages/itemDetailPageSellerView.dart';
+import '../api_utils.dart';
 import '../constants.dart';
 import '../models/groupModel.dart';
 import '../models/groupRequestModel.dart';
@@ -261,7 +262,7 @@ class _RequestsRowAdminViewState extends State<RequestsRowAdminView> {
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

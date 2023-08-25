@@ -5,12 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
+
+import '../api_utils.dart';
 part 'messageModel.g.dart';
-
-const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
-const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
-
-
 
 @JsonSerializable()
 class UserMessage extends ChangeNotifier {
@@ -80,7 +77,7 @@ class MessageModel extends ChangeNotifier{
   //TODO
   Future<void> getMessages(int creatorId, int recipientId) async {
     Map<String, dynamic> map;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
+    var url = ApiUtils.buildApiUrl('/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       String responseJson = Utf8Decoder().convert(response.bodyBytes);
@@ -105,7 +102,7 @@ class MessageModel extends ChangeNotifier{
     //   myjsonNew["item_id"] = lastMessageItemId;
     // }
 
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages');
+    var url = ApiUtils.buildApiUrl('/messages');
     var tmpObj =  json.encode(myjsonNew);
     // var tmpObj =  json.encode(message.toJson());
     final http.Response response =  await http.post(url
@@ -134,7 +131,7 @@ class MessageModel extends ChangeNotifier{
     Map<String, dynamic> data;
     // var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/1');
 
-    var url = Uri.parse('http://localhost:5000/$recipientUserId/deviceToken');
+    var url = ApiUtils.buildApiUrl('/$recipientUserId/deviceToken');
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -180,7 +177,7 @@ class MessageModel extends ChangeNotifier{
     Map<String, dynamic> map;
 
 
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=1&recipientId=3&page=$pageNum');
+    var url = ApiUtils.buildApiUrl('/messages/profile?creatorId=1&recipientId=3&page=$pageNum');
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -191,13 +188,6 @@ class MessageModel extends ChangeNotifier{
         UserMessage msg = UserMessage.fromJson(messages[i]);
         messageList.add(msg);
         notifyListeners();
-        //Provider.of<RecentItemModel>(context, listen: false).add(itm);
-
-
-        // for (int imgId in itm.itemImageList) {
-        //   var url = Uri.parse(
-        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
-        // }
       }
       return totalPages;
 
@@ -208,16 +198,6 @@ class MessageModel extends ChangeNotifier{
       return -1;
     }
   }
-
-
-
-  /// Adds [item] to cart. This is the only way to modify the cart from outside.
-  // void add(UserMessage msg) {
-  //   messageList.insert(0, msg);
-  //   // This line tells [Model] that it should rebuild the widgets that
-  //   // depend on it.
-  //   notifyListeners();
-  // }
 }
 
 toNull(_) => null;

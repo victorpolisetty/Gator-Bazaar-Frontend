@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:student_shopping_v1/models/recentItemModel.dart';
 import 'package:student_shopping_v1/models/sellerItemModel.dart';
+import '../api_utils.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -13,13 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:provider/provider.dart';
 part 'categoryItemModel.g.dart';
-
-
-
-const String BASE_URI = 'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
-const String CATEGORY_ITEMS_URL = '${BASE_URI}categories/';  // TODO -  call the CategoryItem service when it is built
-const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
-
 
 @JsonSerializable(explicitToJson: true)
 class CategoryItemModel extends ChangeNotifier {
@@ -53,6 +47,7 @@ class CategoryItemModel extends ChangeNotifier {
     notifyListeners();
   }
 
+
   Future<void> init1() async{
     await getProfileFromDb();
   }
@@ -85,8 +80,7 @@ class CategoryItemModel extends ChangeNotifier {
 
   Future<Item> postItemSingle(Item itm)  async {
     Map<String, dynamic> data;
-    var url = Uri.parse(CATEGORY_ITEMS_URL +
-        '${categoryId}/items?profileId=$userIdFromDb');
+    var url = ApiUtils.buildApiUrl('/categories/${categoryId}/items?profileId=$userIdFromDb');
     var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.post(url
         , headers: {
@@ -126,7 +120,8 @@ class CategoryItemModel extends ChangeNotifier {
     Map<String, dynamic> data;
 
     String groupIdsParam = groupIds.join(",");
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/getItemsByGroupAndCategoryIds?groupIds=$groupIdsParam&categoryIds=$selectedCategoryId&size=6&page=$pageNum&sort=createdAt,desc');
+    var url = ApiUtils.buildApiUrl('/getItemsByGroupAndCategoryIds?groupIds=$groupIdsParam&categoryIds=$selectedCategoryId&size=6&page=$pageNum&sort=createdAt,desc');
+
 
     http.Response response = await http.get(
       url,
@@ -154,7 +149,7 @@ class CategoryItemModel extends ChangeNotifier {
   Future<int> getNextSearchedPage(int categoryId, String searchWord, int pageNum) async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$searchWord?size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/items/search/$categoryId/$searchWord?size=10&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -164,13 +159,6 @@ class CategoryItemModel extends ChangeNotifier {
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         categoryItems.add(itm);
-        //Provider.of<RecentItemModel>(context, listen: false).add(itm);
-
-
-        // for (int imgId in itm.itemImageList) {
-        //   var url = Uri.parse(
-        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
-        // }
       }
       return totalPages;
     } else {
@@ -180,9 +168,7 @@ class CategoryItemModel extends ChangeNotifier {
   }
 
   Future<List<Uint8List>> getAllImagesForItem(ItemWithImages itm) async {
-    // If images exist them get them
     if (itm.imageDataLoaded == false && itm.itemPictureIds!.length > 0) {
-      // call itemmodel to get the images
       return itm.getAllImagesForItem();
     } else {
       throw NullThrownError();
@@ -192,7 +178,7 @@ class CategoryItemModel extends ChangeNotifier {
   Future<void> getItemRestList() async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse(CATEGORY_ITEMS_URL+'${categoryId}/items?size=10&page=0&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/categories/${categoryId}/items?size=10&page=0&sort=createdAt,desc'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -207,15 +193,14 @@ class CategoryItemModel extends ChangeNotifier {
         categoryItems.add(itm);
         totalPages = data['totalPages'];
       }
-    } else {
-      print(response.statusCode);
+    } else {print(response.statusCode);
     }
   }
 
   Future<void> getSearchedItemRestList() async {
     Map<String, dynamic> data;
 
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/search/$categoryId/$keyword'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/items/search/$categoryId/$keyword');
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -225,13 +210,6 @@ class CategoryItemModel extends ChangeNotifier {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         categoryItems.add(itm);
         totalPages = data['totalPages'];
-        //Provider.of<RecentItemModel>(context, listen: false).add(itm);
-
-
-        // for (int imgId in itm.itemImageList) {
-        //   var url = Uri.parse(
-        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
-        // }
       }
 
     } else {
@@ -239,26 +217,15 @@ class CategoryItemModel extends ChangeNotifier {
     }
   }
 
-  // Future<List<Uint8List>> getAllImagesForItem(ItemWithImages itm) async {
-  //   // If images exist them get them
-  //   if (itm.imageDataLoaded == false && itm.itemPictureIds.length > 0) {
-  //     // call itemmodel to get the images
-  //     return itm.getAllImagesForItem();
-  //   } else {
-  //     throw NullThrownError();
-  //   }
-  // }
-
-
   Future<void> get1stImageForItemIfAvailable() async {
     if (categoryItems.isEmpty) return;
     Uint8List data = new Uint8List(0);
 
     for (int i = 0; i < categoryItems.length; i++) {
       if (categoryItems[i].itemPictureIds!.isNotEmpty) {
-        String urlString = ITEMS_IMAGES_URL +
+        String urlString = '/itemImages/' +
             (categoryItems[i].itemPictureIds![0]).toString();
-        var url = Uri.parse(urlString);
+        var url = ApiUtils.buildApiUrl(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {
@@ -281,7 +248,6 @@ class CategoryItemModel extends ChangeNotifier {
     this.categoryId = categoryId;
     var initFuture = _getItems();
     initFuture.then((voidValue) {
-//      notifyListeners();
     });
   }
 
@@ -290,7 +256,6 @@ class CategoryItemModel extends ChangeNotifier {
     this.keyword = keyword;
     var initFuture = _getSearchedItems();
     initFuture.then((voidValue) {
-//      notifyListeners();
     });
   }
 
@@ -312,7 +277,7 @@ class CategoryItemModel extends ChangeNotifier {
 
       var length = await imageFile.length();
       var itemId = itmRest.id!;
-      var uri = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/$itemId/itemImages');
+      var uri = ApiUtils.buildApiUrl('/items/$itemId/itemImages');
 
       var request = http.MultipartRequest("POST", uri);
       var multipartFile = http.MultipartFile('file', stream, length,
@@ -359,7 +324,6 @@ class CategoryItemModel extends ChangeNotifier {
                Provider.of<SellerItemModel>(context, listen: false).add(itmRest);
                Provider.of<RecentItemModel>(context, listen: false).shouldReload = true;
              }
-             //TODO: add logic here to put group ids inside item
       }).then((value) => addItemToGroups(itm.id,groupIdsForItem));
     } catch (e) {
       print(e);
@@ -367,7 +331,7 @@ class CategoryItemModel extends ChangeNotifier {
   }
 
   Future<void> addItemToGroups(int? itemId, Set<int> groupIdsForItem) async {
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/setGroupsItemIsIn/$itemId/items');
+    var url = ApiUtils.buildApiUrl('/setGroupsItemIsIn/$itemId/items');
 
     Map<String, dynamic> body = {
       "groupIds": groupIdsForItem.toList(),
@@ -413,7 +377,7 @@ class CategoryItemModel extends ChangeNotifier {
     if(currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId');
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {

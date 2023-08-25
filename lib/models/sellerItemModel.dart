@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import '../api_utils.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -9,11 +10,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'sellerItemModel.g.dart';
-
-
-const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
-const String RECENT_ITEMS_URL = '${BASE_URI}items?size=10&sort=createdAt,desc';  // TODO -  call the recentItem service when it is built
-const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
 // Handle one Page of Items
 @JsonSerializable(explicitToJson: true)
@@ -97,9 +93,9 @@ class SellerItemModel extends ChangeNotifier {
 
     for (int i = 0; i < _sellerItems.length; i++) {
       if (_sellerItems[i].itemPictureIds!.isNotEmpty) {
-        String urlString = ITEMS_IMAGES_URL +
+        String urlString = '/itemImages/' +
             (_sellerItems[i].itemPictureIds![0]).toString();
-        var url = Uri.parse(urlString);
+        var url = ApiUtils.buildApiUrl(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {
@@ -117,7 +113,7 @@ class SellerItemModel extends ChangeNotifier {
 
   Future<int> getNextPage(int pageNum) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB&size=5&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/items/profile?profileId=$userIdFromDB&size=5&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -142,7 +138,7 @@ class SellerItemModel extends ChangeNotifier {
 
   Future<int> getNextPageByIdPassedIn(int pageNum, int id) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/profile?profileId=$id&size=5&page=$pageNum'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/items/profile?profileId=$id&size=5&page=$pageNum'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -170,10 +166,8 @@ class SellerItemModel extends ChangeNotifier {
 
   Future<int> getItemRestList() async {
     Map<String, dynamic> data;
-    var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/items/profile?profileId=$userIdFromDB');
-    // var url = Uri.parse(
-    //     'http://localhost:8080/items/profile?profileId=$userIdFromDB&size=10'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl(
+        '/items/profile?profileId=$userIdFromDB');
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -199,9 +193,9 @@ class SellerItemModel extends ChangeNotifier {
     Uint8List data = new Uint8List(0) ;
     for (int i = 0; i < _sellerItems.length; i++) {
       if (_sellerItems[i].itemPictureIds!.isNotEmpty) {
-        String urlString = ITEMS_IMAGES_URL +
+        String urlString = '/itemImages/' +
             (_sellerItems[i].itemPictureIds![0]).toString();
-        var url = Uri.parse(urlString);
+        var url = ApiUtils.buildApiUrl(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {
@@ -255,7 +249,7 @@ class SellerItemModel extends ChangeNotifier {
     if (currentUser != null) {
       firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId');
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {

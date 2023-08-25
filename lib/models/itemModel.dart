@@ -5,11 +5,10 @@ import 'package:json_annotation/json_annotation.dart';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
+import '../api_utils.dart';
 import 'ItemWithImagesSerializer.dart';
 part 'itemModel.g.dart';
 
-const String BASE_URI = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/';
-const String ITEMS_IMAGES_URL = '${BASE_URI}itemImages/';  // append id of image to fetch
 
 @JsonSerializable()
 class ItemPage{
@@ -46,9 +45,9 @@ class ItemWithImages extends ChangeNotifier{
   Future<List<Uint8List>> getAllImagesForItem() async {
     Uint8List data = new Uint8List(0);
     for (int i = this.imageDataList.length; i < this.itemPictureIds!.length && imageDataLoaded == false; i++) {
-        String urlString = ITEMS_IMAGES_URL +
+        String urlString = '/itemImages/' +
             (this.itemPictureIds![i]).toString();
-        var url = Uri.parse(urlString);
+        var url = ApiUtils.buildApiUrl(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {
@@ -96,10 +95,6 @@ class ItemWithImages extends ChangeNotifier{
       return false;
     }
   }
-  // factory ItemWithImages.fromJson(Map<String, dynamic> json) =>
-  //     itemWithImagesFromJson(jsonEncode(json));
-  //
-  // Map<String, dynamic> toJson() => jsonDecode(itemWithImagesToJson(this));
 
   factory ItemWithImages.fromJson(Map<String, dynamic> parsedJson, {bool useCustomSerializer = false}) {
     if (useCustomSerializer) {

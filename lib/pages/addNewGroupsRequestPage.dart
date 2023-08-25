@@ -14,6 +14,7 @@ import 'package:student_shopping_v1/pages/MulitSelectAddListingView.dart';
 import 'package:student_shopping_v1/pages/addNewGroupRequestDialog.dart';
 import 'package:sizer/sizer.dart';
 
+import '../api_utils.dart';
 import '../models/groupModel.dart';
 import '../models/itemModel.dart';
 import '../new/size_config.dart';
@@ -51,8 +52,8 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
 
     Future<void> updatedUserDbId() async {
       Map<String, dynamic> data;
-      var url = Uri.parse(
-          'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      var url = ApiUtils.buildApiUrl(
+          '/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
       http.Response response =
       await http.get(url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -337,7 +338,7 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
       ) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/createNewGroupRequest/$profileId'),
+      ApiUtils.buildApiUrl('/group/createNewGroupRequest/$profileId'),
     );
 
     // Add form fields

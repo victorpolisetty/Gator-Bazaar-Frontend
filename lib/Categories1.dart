@@ -10,10 +10,9 @@ class Categories1 extends StatelessWidget {
     List<Map<String, dynamic>> categories1 = [
       {"icon": "assets/icons/subleases.svg", "text": "Subleases", "pressNumber": 5},
       {"icon": "assets/icons/electronics.svg", "text": "Electronics", "pressNumber": 6},
-      {"icon": "assets/icons/misc.svg", "text": "Misc.", "pressNumber": 7},
+      {"icon": "assets/icons/misc.svg", "text": "Misc.", "pressNumber": 8},
       {"icon": "assets/icons/free.svg", "text": "Free", "pressNumber": 9},
     ];
-    List<Map<String, dynamic>> categories2 = [];
     return Padding(
       padding: EdgeInsets.all(1.5.w), // 1.5% of screen width
       child: Row(

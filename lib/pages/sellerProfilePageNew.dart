@@ -15,6 +15,7 @@ import 'package:path/path.dart' as path;
 
 import 'package:student_shopping_v1/main.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../api_utils.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
 import '../new/components/productCardSellerView.dart';
@@ -153,8 +154,8 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
 
   Future<void> deleteUserFromDB(int? id) async {
     Map<String, dynamic> data;
-    var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$id');
+    var url = ApiUtils.buildApiUrl(
+        '/profiles/$id');
     http.Response response =
         await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -635,10 +636,10 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
 
   Future<void> updateInstagramHandle(String instagramUsername) async {
     final url =
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/updateInstagramHandle/$firebaseId/$instagramUsername';
+        '/updateInstagramHandle/$firebaseId/$instagramUsername';
 
     try {
-      final response = await http.post(Uri.parse(url));
+      final response = await http.post(ApiUtils.buildApiUrl(url));
       if (response.statusCode == 200) {
         print('Instagram handle updated successfully');
       } else {
@@ -651,7 +652,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
 
   Future<void> getInstagramHandle() async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId');
+    var url = ApiUtils.buildApiUrl('/profiles/$firebaseId');
     http.Response response =
         await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -668,10 +669,10 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
   }
 
   Future<void> deleteInstagramHandle() async {
-    final url = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/deleteInstagramHandle/$firebaseId';
+    final url = '/deleteInstagramHandle/$firebaseId';
 
     try {
-      final response = await http.delete(Uri.parse(url));
+      final response = await http.delete(ApiUtils.buildApiUrl(url));
       if (response.statusCode == 200) {
           setState(() {
             instagramHandle = "";
@@ -692,7 +693,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
     }
   }
   Future<Uint8List?> getImageByProfile() async {
-    final url = Uri.parse('http://localhost:5000/profilePicture/$firebaseId');
+    final url = ApiUtils.buildApiUrl('/profilePicture/$firebaseId');
 
     try {
       final response = await http.get(url);
@@ -724,7 +725,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
       var stream = await http.ByteStream(imageFile.openRead());
 
       var length = await imageFile.length();
-      var uri = Uri.parse('http://localhost:5000/profile/profilePic/$firebaseId');
+      var uri = ApiUtils.buildApiUrl('/profile/profilePic/$firebaseId');
 
       var request = http.MultipartRequest("PUT", uri);
       var multipartFile = http.MultipartFile('file', stream, length,

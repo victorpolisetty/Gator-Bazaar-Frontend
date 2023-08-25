@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import '../api_utils.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -36,7 +37,7 @@ class FavoriteModel extends ChangeNotifier {
     if(currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites?page=$pageNum&size=5&sort=createdAt,desc');
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId/favorites?page=$pageNum&size=5&sort=createdAt,desc');
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -89,8 +90,8 @@ class FavoriteModel extends ChangeNotifier {
     if (currentUser != null) {
       Map<String, dynamic> data; // Updated data type to Map<String, dynamic>
       String? firebaseId = currentUser.uid;
-      var url = Uri.parse(
-          'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId/favorites');
+      var url = ApiUtils.buildApiUrl(
+          '/profiles/$firebaseId/favorites');
       http.Response response =
       await http.get(url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -124,9 +125,9 @@ class FavoriteModel extends ChangeNotifier {
     for (int i = 0; i < _favoriteItems.length; i++) {
       if (_favoriteItems[i].itemPictureIds != null &&
           _favoriteItems[i].itemPictureIds!.isNotEmpty) {
-        String urlString = ITEMS_IMAGES_URL +
+        String urlString = '/itemImages/' +
             _favoriteItems[i].itemPictureIds![0].toString();
-        var url = Uri.parse(urlString);
+        var url = ApiUtils.buildApiUrl(urlString);
         http.Response response =
         await http.get(url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {
@@ -147,7 +148,7 @@ class FavoriteModel extends ChangeNotifier {
     if(currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {

@@ -5,6 +5,7 @@ import 'package:student_shopping_v1/new/models/Product.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
 
 import '../../../../models/itemModel.dart';
+import '../../../components/productCardSellerView.dart';
 import '../../../size_config.dart';
 import 'section_title.dart';
 
@@ -29,9 +30,36 @@ class _PopularProductsState extends State<PopularProducts> {
   void initState() {
     Provider.of<RecentItemModel>(context, listen: false);
     Provider.of<FavoriteModel>(context, listen: false).getCategoryItems();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey, 1);
+    });
+    super.initState();
     super.initState();
   }
 
+  Future<void> _fetchPage(int pageKey, int categoryId) async {
+    try {
+      await Provider.of<RecentItemModel>(context, listen: false)
+          .initNextCatPage(pageKey);
+      totalPages =
+          Provider.of<RecentItemModel>(context, listen: false).totalPages;
+      if (mounted) {
+        final isLastPage = (totalPages - 1) == pageKey;
+
+        if (isLastPage) {
+          _pagingController.appendLastPage(
+              Provider.of<RecentItemModel>(context, listen: false).items);
+        } else {
+          final int? nextPageKey = pageKey + 1;
+          _pagingController.appendPage(
+              Provider.of<RecentItemModel>(context, listen: false).items,
+              nextPageKey);
+        }
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
   @override
   void dispose() {
     super.dispose();
@@ -40,38 +68,34 @@ class _PopularProductsState extends State<PopularProducts> {
 
   @override
   Widget build(BuildContext context) {
-    var itemList = context.watch<RecentItemModel>();
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 2.h), // Use sizer to set the horizontal padding
-          child: SectionTitle(title: "Featured Products", press: () {}),
-        ),
-        SizedBox(height: 2.w), // Use sizer to set the vertical spacing
-        itemList.items.length != 0
-            ? SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              ...List.generate(
-                itemList.items.length,
-                    (index) {
-                  return ProductCard(
-                    product: itemList.items[index],
-                    uniqueIdentifier: "recentProduct",
-                  );
-                },
+    return PagedSliverGrid(
+        pagingController: _pagingController,
+        builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
+          firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+          newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+          noItemsFoundIndicatorBuilder: (_) => Center(
+            child: Text(
+              "No Items Yet :)",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
-              SizedBox(width: 2.w), // Use sizer to set the horizontal spacing
-            ],
+            ),
           ),
-        )
-            : Padding(
-              padding: EdgeInsets.only(top: 20.w),
-              child: Center(child: spinkit),
-            )
-      ],
-    );
+          itemBuilder: (BuildContext context, item, int index) {
+            return ProductCardSeller(
+              product: item,
+              uniqueIdentifier: "sellerPopularProductTag",
+              pagingController: _pagingController,
+            );
+          },
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: .7,
+          crossAxisCount: 2,
+          mainAxisSpacing: 0, // Use sizer to set main axis spacing
+        ),
+      );
   }
 }
 

@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
+
+import '../api_utils.dart';
 part 'groupModel.g.dart';
 
 
@@ -69,8 +71,8 @@ class GroupModel extends ChangeNotifier{
   }
 
   Future<void> deleteGroupFromProfile(int? profileId, int? groupId) async {
-    var url = Uri.parse(
-        'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/deleteGroupFromProfile/$profileId/$groupId');
+    var url = ApiUtils.buildApiUrl(
+        '/group/deleteGroupFromProfile/$profileId/$groupId');
     http.Response response = await http.delete(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -84,7 +86,7 @@ class GroupModel extends ChangeNotifier{
   //TODO
   Future<void> getGroupsMyGroups() async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getAllGroups');
+    var url = ApiUtils.buildApiUrl('/group/getAllGroups');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
@@ -100,7 +102,7 @@ class GroupModel extends ChangeNotifier{
 
   Future<void> getGroupsFindGroups() async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getAllGroups');
+    var url = ApiUtils.buildApiUrl('/group/getAllGroups');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
@@ -118,7 +120,7 @@ class GroupModel extends ChangeNotifier{
   Future<int> getNextPageGroupsAdminGroups(int pageNum) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupsProfileIsAdmin/$userIdFromDB?size=10&page=$pageNum');
+    var url = ApiUtils.buildApiUrl('/group/getGroupsProfileIsAdmin/$userIdFromDB?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
@@ -138,7 +140,7 @@ class GroupModel extends ChangeNotifier{
   Future<int> getNextPageGroupsUserIn(int pageNum) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupsInProfile/$userIdFromDB?size=10&page=$pageNum');
+    var url = ApiUtils.buildApiUrl('/group/getGroupsInProfile/$userIdFromDB?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       // data.map<Item>((json) => Item.fromJson(json)).toList();
@@ -161,7 +163,7 @@ class GroupModel extends ChangeNotifier{
   Future<int> getNextPageGroupsUserNotIn(int pageNum) async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupsNotInProfile/$userIdFromDB?size=10&page=$pageNum');
+    var url = ApiUtils.buildApiUrl('/group/getGroupsNotInProfile/$userIdFromDB?size=10&page=$pageNum');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
@@ -183,8 +185,8 @@ class GroupModel extends ChangeNotifier{
     Uint8List data = new Uint8List(0);
     for (int i = 0; i < groupListMyGroups.length; i++) {
       int? groupId = groupListMyGroups[i].id;
-      String urlString = "http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupImageById/$groupId";
-      var url = Uri.parse(urlString);
+      String urlString = "/group/getGroupImageById/$groupId";
+      var url = ApiUtils.buildApiUrl(urlString);
       http.Response response = await http.get(url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
         data = response.bodyBytes;
@@ -199,8 +201,8 @@ class GroupModel extends ChangeNotifier{
     Uint8List data = new Uint8List(0);
     for (int i = 0; i < groupListFindGroups.length; i++) {
       int? groupId = groupListFindGroups[i].id;
-      String urlString = "http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupImageById/$groupId";
-      var url = Uri.parse(urlString);
+      String urlString = "/group/getGroupImageById/$groupId";
+      var url = ApiUtils.buildApiUrl(urlString);
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -216,8 +218,8 @@ class GroupModel extends ChangeNotifier{
     Uint8List data = new Uint8List(0);
     for (int i = 0; i < groupListAdminGroups.length; i++) {
       int? groupId = groupListAdminGroups[i].id;
-      String urlString = "http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/group/getGroupImageById/$groupId";
-      var url = Uri.parse(urlString);
+      String urlString = "/group/getGroupImageById/$groupId";
+      var url = ApiUtils.buildApiUrl(urlString);
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -235,7 +237,7 @@ class GroupModel extends ChangeNotifier{
     if(currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {

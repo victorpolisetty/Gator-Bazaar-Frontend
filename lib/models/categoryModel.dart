@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
+
+import '../api_utils.dart';
 part 'categoryModel.g.dart';
 
 
@@ -62,7 +64,7 @@ class CategoryModel extends ChangeNotifier{
   Future<void> getCategories() async {
     // String firebaseId = currentUser!.uid;
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categories');
+    var url = ApiUtils.buildApiUrl('/categories');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
@@ -81,8 +83,8 @@ class CategoryModel extends ChangeNotifier{
     int? categoryId = -1;
     for (int i = 0; i < categoryList.length; i++) {
         categoryId = categoryList[i].id;
-        String urlString = "http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categoryImage/$categoryId";
-        var url = Uri.parse(urlString);
+        String urlString = "/categoryImage/$categoryId";
+        var url = ApiUtils.buildApiUrl(urlString);
         http.Response response = await http.get(
             url, headers: {"Accept": "application/json"});
         if (response.statusCode == 200) {

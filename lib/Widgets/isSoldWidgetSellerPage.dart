@@ -8,6 +8,7 @@ import 'package:student_shopping_v1/models/itemModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
+import '../api_utils.dart';
 import '../buyerhome.dart';
 import '../models/recentItemModel.dart';
 import '../models/sellerItemModel.dart';
@@ -108,7 +109,7 @@ class _isSoldWidgetSellerPageState extends State<isSoldWidgetSellerPage> {
     Map<String, dynamic> data;
     String itemId = widget.item.id.toString();
     String categoryId = widget.item.category_id.toString();
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categories/$categoryId/items/soldStatus/$itemId');
+    var url = ApiUtils.buildApiUrl('/categories/$categoryId/items/soldStatus/$itemId');
     // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.put(url
         , headers: {
@@ -161,8 +162,8 @@ class _isSoldWidgetSellerPageState extends State<isSoldWidgetSellerPage> {
 
   Future<void> deleteListing(int? itemId) async {
     Map<String, dynamic> data;
-    var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categories/items/$itemId');
+    var url = ApiUtils.buildApiUrl(
+        '/categories/items/$itemId');
     // var url = Uri.parse(
     //     'http://localhost:8080/items/profile?profileId=$userIdFromDB&size=10'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.delete(

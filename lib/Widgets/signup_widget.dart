@@ -9,6 +9,7 @@ import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../api_utils.dart';
 import '../pages/itemDetailPage.dart';
 
 
@@ -319,7 +320,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   }
   Future<void> addProfileToDB(String? email, String? name, String? uid) async {
     final http.Response response =  await http.post(
-      Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles'),
+      ApiUtils.buildApiUrl('/profiles'),
 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -339,9 +340,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   }
 
   Future<void> createAuthPinAndVerificationCode( String? uid, String? email) async {
-    String url = 'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/setPinAndSendEmail/$uid/$email';
+    String url = '/setPinAndSendEmail/$uid/$email';
     final http.Response response =  await http.post(
-      Uri.parse(url),
+        ApiUtils.buildApiUrl(url),
         headers: {
         "Accept": "application/json",
           "Content-Type": "application/json"
@@ -355,7 +356,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -368,7 +369,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   }
 
   Future<void> addGroupToProfile(int profileId, int groupId) async {
-    final url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profile/addGroupToProfile/$profileId/$groupId');
+    final url = ApiUtils.buildApiUrl('/profile/addGroupToProfile/$profileId/$groupId');
 
     final response = await http.put(url);
 

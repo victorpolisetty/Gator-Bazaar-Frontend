@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
+
+import '../api_utils.dart';
 part 'chatMessageModel.g.dart';
 
 
@@ -79,7 +81,7 @@ class ChatMessageModel extends ChangeNotifier{
   }
 
   Future<Uint8List> fetchProfilePictureForUser(int userId) async {
-    var profilePictureUrl = Uri.parse('http://localhost:5000/profilePicture/profileId/$userId');
+    var profilePictureUrl = ApiUtils.buildApiUrl('/profilePicture/profileId/$userId');
     http.Response profileResponse = await http.get(profilePictureUrl);
 
     if (profileResponse.statusCode == 200) {
@@ -97,7 +99,7 @@ class ChatMessageModel extends ChangeNotifier{
           ? ChatMessageHomeList[i].recipient_user_id
           : ChatMessageHomeList[i].creator_user_id;
 
-      var profilePictureUrl = Uri.parse('http://localhost:5000/profilePicture/profileId/$otherUserId');
+      var profilePictureUrl = ApiUtils.buildApiUrl('/profilePicture/profileId/$otherUserId');
       http.Response profileResponse = await http.get(profilePictureUrl);
       if (profileResponse.statusCode == 200) {
         if (!profileResponse.bodyBytes.isEmpty) {
@@ -118,7 +120,7 @@ class ChatMessageModel extends ChangeNotifier{
     if (currentUser != null) {
       String? firebaseId = currentUser.uid;
 
-      var url = Uri.parse('http://localhost:5000/messages/profile/chathome/$firebaseId?page=$pageNum&size=5&sort=updatedAt,asc');
+      var url = ApiUtils.buildApiUrl('/messages/profile/chathome/$firebaseId?page=$pageNum&size=5&sort=updatedAt,asc');
       Map<String, dynamic> data;
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
@@ -167,7 +169,7 @@ class ChatMessageModel extends ChangeNotifier{
     if (currentUser != null) {
       String? firebaseId = currentUser.uid;
       Map<String, dynamic> data;
-      var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+      var url = ApiUtils.buildApiUrl('/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
@@ -182,7 +184,7 @@ class ChatMessageModel extends ChangeNotifier{
 
   Future<void> changeLatestMessageToRead(int? userMessageId)  async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/message/readStatus/$userMessageId');
+    var url = ApiUtils.buildApiUrl('/message/readStatus/$userMessageId');
     // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.put(url
         , headers: {

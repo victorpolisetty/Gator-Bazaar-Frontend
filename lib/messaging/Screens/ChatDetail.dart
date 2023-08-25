@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../api_utils.dart';
 import '../../models/chatMessageModel.dart';
 import '../../models/messageModel.dart';
 import 'package:provider/provider.dart';
@@ -404,7 +405,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getLatestItemDbId(int? creatorId, int? recipientId) async{
     Map<String, dynamic> map;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
+    var url = ApiUtils.buildApiUrl('/messages/profile?creatorId=$creatorId&recipientId=$recipientId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       map = jsonDecode(response.body);
@@ -419,7 +420,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getLatestItemInformation(int? latestItemDbId) async{
     Map<String, dynamic> map;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/categories/items/$latestItemDbId');
+    var url = ApiUtils.buildApiUrl('/categories/items/$latestItemDbId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       map = jsonDecode(response.body);
@@ -432,7 +433,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> getMessagesForSpecificItem(int? creatorId, int? recipientId, int? itemId) async {
     Map<String, dynamic> map;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/messages/profile/itemMessages?creatorId=$creatorId&recipientId=$recipientId&itemId=$itemId');
+    var url = ApiUtils.buildApiUrl('/messages/profile/itemMessages?creatorId=$creatorId&recipientId=$recipientId&itemId=$itemId');
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       map = jsonDecode(response.body);

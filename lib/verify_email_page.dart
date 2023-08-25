@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:http/http.dart' as http;
+import 'api_utils.dart';
 import 'buyerhome.dart';
 
 class VerifyEmailPage extends StatefulWidget {
@@ -48,8 +49,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   Future<void> updatedUserDbId() async {
     Map<String, dynamic> data;
-    var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl(
+        '/profiles/$firebaseId'); // TODO -  call the recentItem service when it is built
     http.Response response =
         await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
@@ -308,9 +309,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   }
 
   Future<void> setEmailVerification(String? uid, String? providedAuthPin, BuildContext context) async {
-    //TODO: need to call this somewhere
-    var url = Uri.parse(
-        'http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/emailVerifiedStatus/$uid/$providedAuthPin');
+    var url = ApiUtils.buildApiUrl(
+        '/emailVerifiedStatus/$uid/$providedAuthPin');
     final http.Response response = await http.post(url, headers: {
       "Accept": "application/json",
       "Content-Type": "application/json"
@@ -344,7 +344,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   Future<void> getProfileFromDb(String? firebaseid) async {
     Map<String, dynamic> data;
-    var url = Uri.parse('http://Gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
+    var url = ApiUtils.buildApiUrl('/profiles/$firebaseid'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
