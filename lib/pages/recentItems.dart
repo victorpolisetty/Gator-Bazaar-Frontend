@@ -87,7 +87,7 @@ class _RecentItemsState extends State<RecentItems> {
 }
 
 class SingleItem extends StatelessWidget {
-  ItemWithImages item;
+  final ItemWithImages item;
 
   SingleItem({
     required this.item

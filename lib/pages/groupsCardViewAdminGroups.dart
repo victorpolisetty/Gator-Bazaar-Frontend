@@ -1,18 +1,11 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:provider/provider.dart';
+
 import 'package:student_shopping_v1/pages/adminSpecificGroupView.dart';
-import '../../Widgets/FavoriteWidget.dart';
-import '../../models/itemModel.dart';
-import '../../models/recentItemModel.dart';
-import '../../pages/itemDetailPageSellerView.dart';
-import '../constants.dart';
+
 import '../models/groupModel.dart';
 import '../new/constants.dart';
-import '../new/size_config.dart';
-import 'manageGroupsPage.dart';
+
 import 'package:sizer/sizer.dart'; // Import the sizer package
 
 class GroupsCardViewAdminGroups extends StatelessWidget {

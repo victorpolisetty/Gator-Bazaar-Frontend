@@ -374,8 +374,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     final response = await http.put(url);
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      // Assuming the response contains the ProfileGroup dat
       return;
     } else {
       throw Exception('Failed to add group to profile');

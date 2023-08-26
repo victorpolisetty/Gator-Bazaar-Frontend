@@ -183,7 +183,6 @@ class ChatMessageModel extends ChangeNotifier{
   }
 
   Future<void> changeLatestMessageToRead(int? userMessageId)  async {
-    Map<String, dynamic> data;
     var url = ApiUtils.buildApiUrl('/message/readStatus/$userMessageId');
     // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.put(url

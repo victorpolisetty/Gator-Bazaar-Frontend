@@ -16,7 +16,6 @@ import '../api_utils.dart';
 import '../models/chatMessageModel.dart';
 import '../models/itemModel.dart';
 import '../models/sellerItemModel.dart';
-import '../new/components/productCardSellerView.dart';
 
 import 'itemDetailPage.dart';
 

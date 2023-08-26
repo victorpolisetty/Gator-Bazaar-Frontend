@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:student_shopping_v1/Widgets/addedListingDialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,15 +9,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
-import 'package:student_shopping_v1/pages/MulitSelectAddListingView.dart';
 import 'package:student_shopping_v1/pages/addNewGroupRequestDialog.dart';
 import 'package:sizer/sizer.dart';
 
 import '../api_utils.dart';
 import '../models/groupModel.dart';
 import '../models/itemModel.dart';
-import '../new/size_config.dart';
-import 'itemDetailPage.dart';
 import 'package:http/http.dart' as http;
 
 class AddNewGroupsRequest extends StatefulWidget {

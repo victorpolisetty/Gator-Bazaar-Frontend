@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 
 import '../api_utils.dart';
-import '../buyerhome.dart';
 import '../models/recentItemModel.dart';
 import '../models/sellerItemModel.dart';
 

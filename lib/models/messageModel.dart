@@ -128,14 +128,10 @@ class MessageModel extends ChangeNotifier{
   }
 
   Future<void> getDeviceToken(int? recipientUserId) async {
-    Map<String, dynamic> data;
-    // var url = Uri.parse('http://studentshopspringbackend-env.eba-b2yvpimm.us-east-1.elasticbeanstalk.com/profiles/id/1');
-
     var url = ApiUtils.buildApiUrl('/$recipientUserId/deviceToken');
     http.Response response = await http.get(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
       print(response.body);
       recipientDeviceToken = response.body;
     } else {

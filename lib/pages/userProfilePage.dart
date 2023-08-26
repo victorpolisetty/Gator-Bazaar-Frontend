@@ -303,7 +303,6 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   void _showPickOptionsDialog(BuildContext context){
-    BuildContext dialogContext;
     showDialog(context: context,
         builder: (context) => AlertDialog(
           // dialogContext = context;
@@ -348,7 +347,7 @@ class _UserProfileState extends State<UserProfile> {
   //   );
   // }
 class SingleItem extends StatelessWidget {
-  ItemWithImages item;
+  final ItemWithImages item;
 
   SingleItem({
     required this.item

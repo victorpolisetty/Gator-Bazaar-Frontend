@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sizer/sizer.dart';
-import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
 import 'package:student_shopping_v1/utils.dart';
 

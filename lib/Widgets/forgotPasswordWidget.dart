@@ -1,14 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sizer/sizer.dart';
-import 'package:student_shopping_v1/main.dart';
 import 'package:student_shopping_v1/utils.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 
 class ForgotPasswordWidget extends StatefulWidget {

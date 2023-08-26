@@ -1,16 +1,11 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/pages/specificGroupPage.dart';
-import '../../Widgets/FavoriteWidget.dart';
-import '../constants.dart';
+
 import '../models/groupModel.dart';
 import '../new/constants.dart';
-import '../new/size_config.dart';
 
 class GroupsCardViewMyGroups extends StatelessWidget {
   const GroupsCardViewMyGroups({
@@ -100,7 +95,6 @@ class GroupsCardViewMyGroups extends StatelessWidget {
     );
 }
   void _showConfirmDeleteButton(BuildContext buildContext, int? itemId) {
-    BuildContext dialogContext;
     showDialog(
       context: buildContext,
       builder: (context) => WillPopScope(

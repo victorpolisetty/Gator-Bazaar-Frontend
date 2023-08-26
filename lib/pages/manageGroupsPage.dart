@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:student_shopping_v1/models/groupRequestModel.dart';
-import 'package:student_shopping_v1/models/sellerItemModel.dart';
-import 'package:student_shopping_v1/new/components/productCardSellerView.dart';
 import 'package:student_shopping_v1/pages/addNewGroupsRequestPage.dart';
 import 'package:student_shopping_v1/pages/groupsCardViewMyGroups.dart';
-import 'package:student_shopping_v1/pages/sellerProfilePageBody.dart';
 import 'package:provider/provider.dart';
 import '../models/groupModel.dart';
-import '../new/size_config.dart';
 import 'groupsCardViewAdminGroups.dart';
 import 'groupsCardViewFindGroups.dart';
 import 'itemDetailPage.dart';
@@ -176,12 +172,6 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
     int numTabs = 4; // Number of tabs
     double availableWidth = MediaQuery.of(context).size.width / numTabs;
     double maxFontSize = availableWidth * 0.2; // Adjust the scaling factor (0.1) as needed
-    final upperTab = new TabBar(labelColor: Colors.black, tabs: <Tab>[
-      new Tab(child: Text("My Groups", style: TextStyle(fontSize: maxFontSize))),
-      new Tab(child: Text("Find Groups", style: TextStyle(fontSize: maxFontSize))),
-      new Tab(child: Text("New Groups", style: TextStyle(fontSize: maxFontSize))),
-      new Tab(child: Text("Admin Groups", style: TextStyle(fontSize: maxFontSize)),
-      )]);
     //MY GROUPS
     return WillPopScope(
         onWillPop: () async {

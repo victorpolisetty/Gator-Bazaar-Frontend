@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:student_shopping_v1/models/sellerItemModel.dart';
-import 'package:student_shopping_v1/new/components/productCardSellerView.dart';
+
 import 'package:student_shopping_v1/pages/GroupsManageCardView.dart';
-import 'package:student_shopping_v1/pages/groupsCardViewMyGroups.dart';
-import 'package:student_shopping_v1/pages/sellerProfilePageBody.dart';
+
 import 'package:provider/provider.dart';
 import '../models/groupModel.dart';
-import '../models/itemModel.dart';
-import '../new/size_config.dart';
+
 import 'itemDetailPage.dart';
 
 class addGroupsPage extends StatefulWidget {

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sizer/sizer.dart';
-import 'package:student_shopping_v1/new/models/Product.dart';
 
 import '../../Widgets/FavoriteWidget.dart';
 import '../../models/itemModel.dart';
 import '../../models/recentItemModel.dart';
 import '../../pages/itemDetailPage.dart';
 import 'new/constants.dart';
-import 'new/size_config.dart';
 
 class ProductCardFav extends StatelessWidget {
   const ProductCardFav({

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -56,8 +55,6 @@ class GroupRequestModel extends ChangeNotifier{
   }
 
   Future<void> postGroupRequest(int? groupId)  async {
-    Map<String, dynamic> data;
-    //TODO: need to call this somewhere
     var url = ApiUtils.buildApiUrl('/group/addGroupReq/$userIdFromDB/$groupId');
     final http.Response response =  await http.post(url
         , headers: {

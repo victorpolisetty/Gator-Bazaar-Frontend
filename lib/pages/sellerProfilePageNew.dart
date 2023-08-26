@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -92,9 +91,6 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
         Navigator.of(context).pop();
       },
     );
-    Future<void> _signOut() async {
-      await FirebaseAuth.instance.signOut();
-    }
 
     Future<void> _signOutAndDelete(BuildContext context) async {
       try {
@@ -153,7 +149,6 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
   }
 
   Future<void> deleteUserFromDB(int? id) async {
-    Map<String, dynamic> data;
     var url = ApiUtils.buildApiUrl(
         '/profiles/$id');
     http.Response response =
@@ -436,7 +431,6 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
   }
 
   void _showPickOptionsDialog(BuildContext context, int imageNumber) {
-    BuildContext dialogContext;
     showDialog(
         context: context,
         builder: (context) => AlertDialog(

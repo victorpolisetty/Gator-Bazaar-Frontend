@@ -1,20 +1,11 @@
-import 'dart:convert';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import '../../Widgets/FavoriteWidget.dart';
-import '../../models/itemModel.dart';
-import '../../models/recentItemModel.dart';
-import '../../pages/itemDetailPageSellerView.dart';
-import '../constants.dart';
 import '../models/groupModel.dart';
 import '../models/groupRequestModel.dart';
 import '../new/constants.dart';
-import '../new/size_config.dart';
-import 'manageGroupsPage.dart';
+
 
 class GroupsCardViewFindGroups extends StatelessWidget {
   const GroupsCardViewFindGroups({

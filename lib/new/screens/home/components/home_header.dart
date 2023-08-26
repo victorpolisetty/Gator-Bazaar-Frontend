@@ -1,15 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:student_shopping_v1/pages/filterPage.dart';
 
 import '../../../../pages/favoritePage.dart';
-import '../../../../pages/sellerProfilePage.dart';
 import '../../../../pages/sellerProfilePageNew.dart';
-import '../../../size_config.dart';
 import 'icon_btn_with_counter.dart';
-import 'search_field.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({

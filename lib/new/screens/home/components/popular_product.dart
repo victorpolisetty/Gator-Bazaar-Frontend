@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:student_shopping_v1/models/favoriteModel.dart';
-import 'package:student_shopping_v1/new/components/product_card.dart';
-import 'package:student_shopping_v1/new/models/Product.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
 
 import '../../../../models/itemModel.dart';
 import '../../../components/productCardSellerView.dart';
-import '../../../size_config.dart';
-import 'section_title.dart';
+
 
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/recentItemModel.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:sizer/sizer.dart'; // Import the sizer package
 
 class PopularProducts extends StatefulWidget {
   const PopularProducts({Key? key}) : super(key: key);

@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/favoriteModel.dart';
 import 'package:student_shopping_v1/new/components/product_card.dart';
 import 'package:student_shopping_v1/pages/itemDetailPage.dart';
-import '../ProductCardFav.dart';
 import '../models/itemModel.dart';
 
 
@@ -33,7 +32,6 @@ class FavoriteItems extends StatefulWidget {
 
 
 class _FavoriteItemsState extends State<FavoriteItems> {
-  @override
   final PagingController<int, ItemWithImages> _pagingController =
   PagingController(firstPageKey: 0);
   int totalPages = 0;
@@ -91,60 +89,12 @@ class _FavoriteItemsState extends State<FavoriteItems> {
           ),
         )
     );
-          return new ListView.builder(
-            itemCount: favoriteList.items.length == null ? 0 : favoriteList.items.length,
-              itemBuilder: (context, index){
-                int reverseIndex = favoriteList.items.length - 1 - index;
-                // while(favoriteList.items.length == 0){
-                //   return Container(
-                //     child: Center(
-                //         child: Text("No Favorites Added!")
-                //     ),
-                //   );
-                // }
-                return ProductCardFav(
-                  product: favoriteList.items[reverseIndex],
-                  uniqueIdentifier: "favorite",
-                );
-              });
-        // );
-
   }
 }
-// class Child extends StatelessWidget {
-//   final favoriteList;
-//   Child({this.favoriteList});
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // var futureProvider = Provider.of<FavoriteModel>(context);
-//     // return FutureBuilder(
-//     //   initialData: <Widget>[],
-//     //   future: FavoriteModel().getItemRestList(),
-//     //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-//     //     if (snapshot.connectionState == ConnectionState.none &&
-//     //         snapshot.hasData == true) {
-//           return ListView.builder(
-//             itemCount: futureProvider.items.length == null ? 0 : futureProvider.items.length,
-//             itemBuilder: (BuildContext context, int index) {
-//             return FavoriteItem(
-//               item: futureProvider.items[index]
-//             );
-//             },
-//           );
-//         }
-//         // else {
-//         //   return Text('ALAWS');
-//         // }
-//       // },
-// //     );
-// //   }
-// }
 
 class FavoriteItem extends StatelessWidget {
 
-  ItemWithImages item;
+  final ItemWithImages item;
 
   FavoriteItem({
     required this.item

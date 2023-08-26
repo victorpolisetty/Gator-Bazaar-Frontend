@@ -23,7 +23,6 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
   late SearchBar searchBar;
   String keyword = "";
 
-  ScrollController _controller = new ScrollController();
   bool isBottom = false;
   bool loading = false, allLoaded = false, isSearching = false;
 
@@ -37,17 +36,7 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
           Icons.arrow_back_ios,
           color: Colors.black54,
         ),
-        // child: Container(
-        //   // margin: EdgeInsets.only(right: 10),
-        //   // child: Icon(
-        //   //   Icons.search,
-        //   //   color: Colors.grey[800],
-        //   //   size: 27,
-        //   // ),
-        // ),
       ),
-      // iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-      // backgroundColor: Colors.grey[200],
       elevation: .1,
       title:
         Text(
@@ -57,20 +46,8 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
 
 
       actions: [
-        // searchBar.getSearchAction(context),
-        // Container(
-        //   margin: EdgeInsets.only(right: 10),
-        //   child: Icon(
-        //     Icons.notifications,
-        //     color: Colors.grey[800],
-        //     size: 27,
-        //   ),
-        // ),
       ],
     );
-    return new AppBar(
-        title: new Text('Student Shop'),
-        actions: [searchBar.getSearchAction(context)]);
   }
 
   void onSubmitted(String value) {
@@ -181,7 +158,7 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
 }
 
 class singleItem extends StatelessWidget {
-  ItemWithImages item;
+  final ItemWithImages item;
   singleItem({
     required this.item,
   });

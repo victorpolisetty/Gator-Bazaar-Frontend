@@ -1,13 +1,11 @@
 
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:student_shopping_v1/api_utils.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:http/http.dart' as http;
-import 'package:student_shopping_v1/pages/userProfilePage.dart';
 part 'adminProfileModel.g.dart';
 
 
@@ -159,8 +157,6 @@ class AdminProfileModel extends ChangeNotifier {
   }
 
   Future<void> removeUserFromGroup(int? profileId, int? groupId) async {
-    // String firebaseId = currentUser!.uid;
-    Map<String, dynamic> data;
     var url = ApiUtils.buildApiUrl('/group/deleteGroupFromProfile/$profileId/$groupId');
     http.Response response = await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

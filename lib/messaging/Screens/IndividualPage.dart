@@ -75,8 +75,6 @@ class _IndividualPageState extends State<IndividualPage> {
   TextEditingController _controller = TextEditingController();
   ScrollController _scrollController = ScrollController();
 
-  @override
-
   void _scrollDown() {
     _scrollController.animateTo(
       _scrollController.position.minScrollExtent,

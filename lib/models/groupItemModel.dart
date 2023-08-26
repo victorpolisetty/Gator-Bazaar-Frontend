@@ -223,7 +223,6 @@ class GroupItemModel extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
     } else {
       print(response.statusCode);
     }

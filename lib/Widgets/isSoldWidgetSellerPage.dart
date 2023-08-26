@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 
 import '../api_utils.dart';
-import '../buyerhome.dart';
 import '../models/recentItemModel.dart';
 import '../models/sellerItemModel.dart';
 
@@ -161,11 +160,8 @@ class _isSoldWidgetSellerPageState extends State<isSoldWidgetSellerPage> {
   }
 
   Future<void> deleteListing(int? itemId) async {
-    Map<String, dynamic> data;
     var url = ApiUtils.buildApiUrl(
         '/categories/items/$itemId');
-    // var url = Uri.parse(
-    //     'http://localhost:8080/items/profile?profileId=$userIdFromDB&size=10'); // TODO -  call the recentItem service when it is built
     http.Response response = await http.delete(
         url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {

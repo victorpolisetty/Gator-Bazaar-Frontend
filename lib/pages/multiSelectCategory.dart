@@ -1,25 +1,13 @@
 import 'dart:convert';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:provider/provider.dart';
-import 'package:student_shopping_v1/models/adminProfileModel.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:student_shopping_v1/models/categoryModel.dart';
 
-import '../../Widgets/FavoriteWidget.dart';
-import '../../models/itemModel.dart';
-import '../../models/recentItemModel.dart';
-import '../../pages/itemDetailPageSellerView.dart';
 import '../api_utils.dart';
-import '../constants.dart';
-import '../models/groupModel.dart';
-import '../models/groupRequestModel.dart';
-import '../new/constants.dart';
-import '../new/size_config.dart';
-import 'manageGroupsPage.dart';
+
 
 class MultiSelectCategory extends StatefulWidget {
   final Category category;
@@ -50,17 +38,7 @@ class _MultiSelectCategoryState extends State<MultiSelectCategory> {
 
   int userIdFromDb = -1;
   bool _isChecked = false;
-  Set<int> _selectedGroupIds = {};
 
-  void _onCheckboxChanged(int groupId, bool? value) {
-    setState(() {
-      if (value == true) {
-        _selectedGroupIds.add(groupId);
-      } else {
-        _selectedGroupIds.remove(groupId);
-      }
-    });
-  }
   @override
   Widget build(BuildContext context) {
     return Padding(

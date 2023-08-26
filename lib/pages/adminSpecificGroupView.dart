@@ -3,18 +3,13 @@ import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:student_shopping_v1/models/adminProfileModel.dart';
 import 'package:student_shopping_v1/models/groupRequestModel.dart';
-import 'package:student_shopping_v1/models/sellerItemModel.dart';
-import 'package:student_shopping_v1/new/components/productCardSellerView.dart';
 import 'package:student_shopping_v1/pages/AdminRowView.dart';
 import 'package:student_shopping_v1/pages/RequestsRowAdminView.dart';
-import 'package:student_shopping_v1/pages/groupsCardViewMyGroups.dart';
-import 'package:student_shopping_v1/pages/sellerProfilePageBody.dart';
+
 import 'package:provider/provider.dart';
 import '../models/groupModel.dart';
-import '../new/size_config.dart';
 import 'MembersRowAdminView.dart';
-import 'groupsCardViewAdminGroups.dart';
-import 'groupsCardViewFindGroups.dart';
+
 import 'itemDetailPage.dart';
 
 class adminSpecificGroupView extends StatefulWidget {
@@ -33,7 +28,6 @@ class adminSpecificGroupView extends StatefulWidget {
 }
 
 class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   late SearchBar searchBar;
   final PagingController<int, AdminProfile> _pagingControllerMembers =
   PagingController(firstPageKey: 0);

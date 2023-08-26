@@ -11,7 +11,6 @@ import 'dart:async';
 
 import '../api_utils.dart';
 import '../new/constants.dart';
-import '../new/size_config.dart';
 
 class FavoriteWidget extends StatefulWidget {
   final item;
