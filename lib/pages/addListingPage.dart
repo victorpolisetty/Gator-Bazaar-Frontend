@@ -27,7 +27,7 @@ class _AddListingState extends State<AddListing> {
   bool itemAddSuccess = false;
   String _value = "-1";
   bool dialogShowed = false;
-  Set<int> _selectedGroupIds = {};
+  List<int> _selectedGroupIds = [];
   String _selectedCategory = "Select"; // Initialize with a default value that matches one of the category names in the map
   Map<String, int?> categoryList = {
     "Select": -1,
@@ -55,7 +55,7 @@ class _AddListingState extends State<AddListing> {
   final PagingController<int, Group> _pagingControllerMyGroups =
   PagingController(firstPageKey: 0);
   int totalPages = 0;
-  Set<int> resultOfGroupsSelected = {};
+  List<int> resultOfGroupsSelected = [];
 
   @override
   void initState() {
@@ -355,8 +355,12 @@ class _AddListingState extends State<AddListing> {
                           Text('Category', style: TextStyle(fontSize: 16, color: Colors.black)),
                           Row(
                             children: [
-                              Text(
+                              _selectedCategory.toString() == "Select" ? Text(
                                 _selectedCategory.toString(),
+                                style: TextStyle(fontSize: 16, color: Colors.black),
+                              ) : Text(
+                                // _selectedCategory.toString() + "✅",
+                                "Selected Category✅",
                                 style: TextStyle(fontSize: 16, color: Colors.black),
                               ),
                               InkWell(
@@ -384,8 +388,11 @@ class _AddListingState extends State<AddListing> {
                           Text('Group', style: TextStyle(fontSize: 16, color: Colors.black)),
                           Row(
                             children: [
-                              Text(
+                              _selectedGroupIds.isEmpty ? Text(
                                 'Select',
+                                style: TextStyle(fontSize: 16, color: Colors.black),
+                              ) : Text(
+                                'Selected Group(s)' + "✅",
                                 style: TextStyle(fontSize: 16, color: Colors.black),
                               ),
                               InkWell(
@@ -408,36 +415,50 @@ class _AddListingState extends State<AddListing> {
                         borderRadius: BorderRadius.circular(0), // Set the border radius here
                       ),
                       backgroundColor: Colors.black,
-                      onPressed: () {
-                        _value != "-1" &&
+                      onPressed: () async {
+                        if (_value != "-1" &&
                             itemNameController.text.isNotEmpty &&
                             itemDescriptionController.text.isNotEmpty &&
-                            itemPriceController.text.isNotEmpty && resultOfGroupsSelected.length != 0
-                            ? itemAddSuccess = addNewItemToDB(
+                            itemPriceController.text.isNotEmpty &&
+                            resultOfGroupsSelected.length != 0 &&
+                            _selectedCategory != "Select") {
+                          bool? itemAddSuccess = await addNewItemToDB(
                             context,
                             itemNameController.text,
                             itemDescriptionController.text,
                             itemPriceController.text,
-                            _value, // _value = categoryid
+                            _value,
                             _image1,
                             _image2,
                             _image3,
-                            resultOfGroupsSelected)
-                            : null;
-                        showDialog(
+                            _selectedGroupIds,
+                          );
+
+                          showDialog(
                             context: context,
                             builder: (BuildContext context) =>
-                                addedListingDialog(itemAddSuccess));
-                        if (itemAddSuccess) {
-                          itemNameController.clear();
-                          itemDescriptionController.clear();
-                          itemPriceController.clear();
-                          setState(() {
-                            _image1 = null;
-                            _image2 = null;
-                            _image3 = null;
-                            _value = "-1";
-                          });
+                                addedListingDialog(itemAddSuccess ?? false),
+                          );
+
+                          if (itemAddSuccess ?? false) {
+                            itemNameController.clear();
+                            itemDescriptionController.clear();
+                            itemPriceController.clear();
+                            setState(() {
+                              _image1 = null;
+                              _image2 = null;
+                              _image3 = null;
+                              _value = "-1";
+                              _selectedGroupIds.clear();
+                              _selectedCategory = "Select";
+                            });
+                          }
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                addedListingDialog(false),
+                          );
                         }
                       },
                       icon: Icon(Icons.add),
@@ -513,7 +534,7 @@ class _AddListingState extends State<AddListing> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(_selectedCategory);
                   },
                   child: Text('Done'),
                 ),
@@ -591,7 +612,7 @@ Widget _displayChild1() {
   }
 
   //TODO: add clothing filters
-  bool addNewItemToDB(
+  Future<bool?> addNewItemToDB(
       BuildContext context,
       String name,
       String description,
@@ -600,25 +621,27 @@ Widget _displayChild1() {
       File? image1,
       File? image2,
       File? image3,
-      Set<int> groupIdsForItem) {
+      List<int> groupIdsForItem) async {
     var item = Item(int.parse(categoryId), name, num.parse(price), description);
     List<File> imageDataList = [];
 
-    if (_image1 != null) {
-      imageDataList.add(_image1!);
+    if (image1 != null) {
+      imageDataList.add(image1);
     }
 
-    if (_image2 != null) {
-      imageDataList.add(_image2!);
+    if (image2 != null) {
+      imageDataList.add(image2);
     }
 
-    if (_image3 != null) {
-      imageDataList.add(_image3!);
+    if (image3 != null) {
+      imageDataList.add(image3);
     }
 
-    Provider.of<CategoryItemModel>(context, listen: false)
-        .addCategoryItem(int.parse(categoryId), item, imageDataList, context, groupIdsForItem);
-
+    // Here, we are using the local parameter "groupIdsForItem" instead of "_selectedGroupIds"
+    int? itemId = await Provider.of<CategoryItemModel>(context, listen: false)
+        .addCategoryItem(int.parse(categoryId), item, imageDataList, context);
+    // await addItemToGroups(itm.id, capturedGroupIds);
+    Provider.of<CategoryItemModel>(context, listen: false).addItemToGroups(itemId, groupIdsForItem);
     return true;
   }
 
@@ -686,7 +709,7 @@ Widget _displayChild1() {
   }
 
   void _showPagedListViewDialog(BuildContext context) async {
-    resultOfGroupsSelected = (await showDialog<Set<int>>(
+    resultOfGroupsSelected = (await showDialog<List<int>>(
       context: context,
       barrierDismissible: true, // Allows tapping outside to close the dialog
       builder: (BuildContext context) {

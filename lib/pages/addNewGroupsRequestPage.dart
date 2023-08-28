@@ -288,29 +288,6 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
     }
   }
 
-  bool addNewItemToDB(
-      BuildContext context,
-      String name,
-      String description,
-      String price,
-      String categoryId,
-      File? image1,
-      File? image2,
-      File? image3,
-      Set<int> groupIdsForItem) {
-    var item = Item(int.parse(categoryId), name, num.parse(price), description);
-    List<File> imageDataList = [];
-
-    if (_image1 != null) {
-      imageDataList.add(_image1!);
-    }
-
-    Provider.of<CategoryItemModel>(context, listen: false)
-        .addCategoryItem(int.parse(categoryId), item, imageDataList, context, groupIdsForItem);
-
-    return true;
-  }
-
   bool addNewGroupRequestToDB(
       String profileId,
       String groupName,

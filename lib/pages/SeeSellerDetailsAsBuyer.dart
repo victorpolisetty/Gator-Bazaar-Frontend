@@ -386,7 +386,7 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
                           Center(child: spinkit),
                       noItemsFoundIndicatorBuilder: (_) => Center(
                           child: Text(
-                            "No Items Yet :)",
+                            "No Items Found.",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, color: Colors.black),
                           )),

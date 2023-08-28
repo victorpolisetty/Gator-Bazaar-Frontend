@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/recentItemModel.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '../../../components/product_card.dart';
+
 class PopularProducts extends StatefulWidget {
   const PopularProducts({Key? key}) : super(key: key);
 
@@ -24,17 +26,16 @@ class _PopularProductsState extends State<PopularProducts> {
 
   @override
   void initState() {
-    Provider.of<RecentItemModel>(context, listen: false);
-    Provider.of<FavoriteModel>(context, listen: false).getCategoryItems();
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey, 1);
     });
-    super.initState();
     super.initState();
   }
 
   Future<void> _fetchPage(int pageKey, int categoryId) async {
     try {
+      await Provider.of<FavoriteModel>(context, listen: false)
+          .getItemRestList();
       await Provider.of<RecentItemModel>(context, listen: false)
           .initNextCatPage(pageKey);
       totalPages =
@@ -71,7 +72,7 @@ class _PopularProductsState extends State<PopularProducts> {
           newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
           noItemsFoundIndicatorBuilder: (_) => Center(
             child: Text(
-              "No Items Yet :)",
+              "No Items Found.",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -79,10 +80,9 @@ class _PopularProductsState extends State<PopularProducts> {
             ),
           ),
           itemBuilder: (BuildContext context, item, int index) {
-            return ProductCardSeller(
+            return ProductCard(
               product: item,
               uniqueIdentifier: "sellerPopularProductTag",
-              pagingController: _pagingController,
             );
           },
         ),

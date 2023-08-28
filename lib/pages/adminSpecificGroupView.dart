@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/models/adminProfileModel.dart';
 import 'package:student_shopping_v1/models/groupRequestModel.dart';
 import 'package:student_shopping_v1/pages/AdminRowView.dart';
@@ -188,6 +189,18 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                                 Center(child: spinkit),
                             newPageProgressIndicatorBuilder: (_) =>
                                 Center(child: spinkit),
+                            noItemsFoundIndicatorBuilder: (_) => Padding(
+                              padding: EdgeInsets.fromLTRB(0,30.h,0,0),
+                              child: Center(
+                                child: Text(
+                                  "No Members Found.",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
                             itemBuilder:
                                 (BuildContext context, profile, int index) {
                               return MembersRowAdminView(
@@ -231,6 +244,18 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                                   Center(child: spinkit),
                               newPageProgressIndicatorBuilder: (_) =>
                                   Center(child: spinkit),
+                              noItemsFoundIndicatorBuilder: (_) => Padding(
+                                padding: EdgeInsets.fromLTRB(0,30.h,0,0),
+                                child: Center(
+                                  child: Text(
+                                    "No Requests Found.",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
                               itemBuilder:
                                   (BuildContext context, profile, int index) {
                                 return RequestsRowAdminView(
@@ -274,6 +299,18 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                                 Center(child: spinkit),
                             newPageProgressIndicatorBuilder: (_) =>
                                 Center(child: spinkit),
+                            noItemsFoundIndicatorBuilder: (_) => Padding(
+                              padding: EdgeInsets.fromLTRB(0,30.h,0,0),
+                              child: Center(
+                                child: Text(
+                                  "No Admins Found.",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
                             itemBuilder:
                                 (BuildContext context, profile, int index) {
                               return AdminRowView(

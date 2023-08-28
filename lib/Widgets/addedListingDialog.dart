@@ -32,12 +32,6 @@ class _addedListingDialogState extends State<addedListingDialog> {
           new FlatButton(
             onPressed: () {
               Navigator.of(context).pop();
-              if(widget.itemAddSuccess) {
-                Provider.of<RecentItemModel>(context, listen: false).getRecentItems();
-                    Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (context) =>
-                    new BuyerHomePage("Gator Marketplace")));
-              }
             },
             textColor: Theme.of(context).primaryColor,
             child: const Text('Ok'),

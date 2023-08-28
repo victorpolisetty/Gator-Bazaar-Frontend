@@ -4,6 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:student_shopping_v1/models/categoryItemModel.dart';
+import '../models/favoriteModel.dart';
 import '../new/components/product_card.dart';
 import 'itemDetailPage.dart';
 import '../models/itemModel.dart';
@@ -92,6 +93,8 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
 
   Future<void> _fetchPage(int pageKey, int categoryId) async {
     try {
+      await Provider.of<FavoriteModel>(context, listen: false)
+          .getItemRestList();
       await Provider.of<CategoryItemModel>(context, listen: false).initNextCatPage(pageKey, categoryId);
       totalPages = Provider.of<CategoryItemModel>(context, listen: false).totalPages;
       if(mounted) {
@@ -137,7 +140,7 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
                               builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
                                 firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
                                 newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                                noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Yet :)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
+                                noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Found.", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
                                 itemBuilder: (BuildContext context, item, int index) {
                                   return ProductCard(
                                     product: item,

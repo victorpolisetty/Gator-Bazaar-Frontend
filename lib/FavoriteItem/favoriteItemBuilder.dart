@@ -41,7 +41,6 @@ class _FavoriteItemsState extends State<FavoriteItems> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
-    // Provider.of<FavoriteModel>(context, listen: false).getCategoryItems();
     super.initState();
   }
   Future<void> _fetchPage(int pageKey) async {
@@ -74,7 +73,7 @@ class _FavoriteItemsState extends State<FavoriteItems> {
             builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
                 firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
                 newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Favorites Yet :)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
+                noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Favorites Found.", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
                 itemBuilder: (BuildContext context, item, int index) {
                   return ProductCard(
                     product: item,

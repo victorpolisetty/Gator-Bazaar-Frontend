@@ -23,6 +23,7 @@ class CategoryItemModel extends ChangeNotifier {
   int totalPages = 0;
   int currentPage = 1;
   int userIdFromDb = -1;
+  List<int> groupIdsForItem = [];
   List<ItemWithImages> categoryItems = [];
   List<ItemWithImages> categorySearchedItems = [];
 
@@ -48,15 +49,6 @@ class CategoryItemModel extends ChangeNotifier {
   }
 
 
-  Future<void> init1() async{
-    await getProfileFromDb();
-  }
-
-  Future<void> init2() async{
-    await init1();
-  }
-
-
   Future<void> _getSearchedItems() async {
     categoryItems.clear();
     await getSearchedItemRestList();
@@ -65,15 +57,8 @@ class CategoryItemModel extends ChangeNotifier {
   }
 
   Future <Item?> postItem(Item itm) async  {
-      await init2();
-      itm = await postItemSingle(itm) //;
-   //   notifyListeners();
-     // return itm;
-       .then((value)  {
-         itm = value;
-         return itm;
-       }) ;
-      return null;
+    await getProfileFromDb();
+    return itm = await postItemSingle(itm);
   }
 
 
@@ -308,33 +293,35 @@ class CategoryItemModel extends ChangeNotifier {
 
 
 
-  Future<void> addCategoryItem (int categoryId, Item itm, List<File> imageDataList, BuildContext context, Set<int> groupIdsForItem) async {
+  Future<int?> addCategoryItem (int categoryId, Item itm, List<File> imageDataList, BuildContext context) async {
+    this.groupIdsForItem = groupIdsForItem;
     this.categoryId = categoryId;
+// Capture the value
 
     try {
-      postItem(itm)
-          .then((retItm) async {
-             if (itm.id != null) {
-               //TODO: put seller_id instead of 1
-               ItemWithImages itmRest = new ItemWithImages.CreateItem(itm.category_id, 1 ,itm.name,itm.price,itm.description,itm.id, new List.empty());
-               for (File img in imageDataList) { // Insert images
-                  uploadItemImageToDB(img, itmRest);
-               }
-               categoryItems.add(itmRest);
-               Provider.of<SellerItemModel>(context, listen: false).add(itmRest);
-               Provider.of<RecentItemModel>(context, listen: false).shouldReload = true;
-             }
-      }).then((value) => addItemToGroups(itm.id,groupIdsForItem));
+      await postItem(itm);
+      if (itm.id != null) {
+        ItemWithImages itmRest = new ItemWithImages.CreateItem(itm.category_id, 1 ,itm.name,itm.price,itm.description,itm.id, new List.empty());
+        for (File img in imageDataList) { // Insert images
+          await uploadItemImageToDB(img, itmRest); // await here
+        }
+        categoryItems.add(itmRest);
+        Provider.of<SellerItemModel>(context, listen: false).add(itmRest);
+        Provider.of<RecentItemModel>(context, listen: false).shouldReload = true;
+      }
+      return itm.id;
     } catch (e) {
       print(e);
+      return -1;
     }
   }
 
-  Future<void> addItemToGroups(int? itemId, Set<int> groupIdsForItem) async {
+
+  Future<void> addItemToGroups(int? itemId, List<int> groupIdsForItem) async {
     var url = ApiUtils.buildApiUrl('/setGroupsItemIsIn/$itemId/items');
 
     Map<String, dynamic> body = {
-      "groupIds": groupIdsForItem.toList(),
+      "groupIds": groupIdsForItem,
     };
 
     final http.Response response = await http.put(
@@ -381,7 +368,6 @@ class CategoryItemModel extends ChangeNotifier {
       http.Response response = await http.get(
           url, headers: {"Accept": "application/json"});
       if (response.statusCode == 200) {
-        // data.map<Item>((json) => Item.fromJson(json)).toList();
         data = jsonDecode(response.body);
         userIdFromDb = data['id'];
       } else {

@@ -12,7 +12,7 @@ class MultiSelectAddListingView extends StatefulWidget {
   final Group group;
   final String uniqueIdentifier;
   final ValueChanged<int> onCheckboxChanged;
-  final Set<int> selectedGroupIds;
+  final List<int> selectedGroupIds;
 
   const MultiSelectAddListingView({
     Key? key,
@@ -38,7 +38,7 @@ class _MultiSelectAddListingViewState extends State<MultiSelectAddListingView> {
 
   int userIdFromDb = -1;
   bool _isChecked = false;
-  Set<int> _selectedGroupIds = {};
+  List<int> _selectedGroupIds = [];
 
   void _onCheckboxChanged(int groupId, bool? value) {
     setState(() {

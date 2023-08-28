@@ -97,8 +97,12 @@ class FavoriteModel extends ChangeNotifier {
       if (response.statusCode == 200) {
         String responseJson = Utf8Decoder().convert(response.bodyBytes);
         data = json.decode(responseJson);
-        // Now data is a Map<String, dynamic> representing the JSON object
-        _favoriteItems = [ItemWithImages.fromJson(data)]; // Assuming _favoriteItems is a List<ItemWithImages>
+        var items = data['content'];
+        totalPages = data['totalPages'];
+        for (int i = 0; i < items.length; i++) {
+          ItemWithImages itm = ItemWithImages.fromJson(items[i]);
+          _favoriteItems.add(itm);
+        }
       } else {
         print(response.statusCode);
       }

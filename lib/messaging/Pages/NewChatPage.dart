@@ -28,16 +28,15 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
+      _fetchPage(pageKey, context);
     });
     super.initState();
   }
 
-  Future<void> _fetchPage(int pageKey) async {
+  Future<void> _fetchPage(int pageKey, BuildContext context) async {
     try {
       await Provider.of<ChatMessageModel>(context, listen: false).initNextCatPage(pageKey);
-      totalPages =
-          Provider.of<ChatMessageModel>(context, listen: false).totalPages;
+      totalPages = Provider.of<ChatMessageModel>(context, listen: false).totalPages;
       if (mounted) {
         final isLastPage = (totalPages - 1) == pageKey;
 
@@ -55,6 +54,7 @@ class _ChatPageState extends State<ChatPage> {
       _pagingController.error = error;
     }
   }
+
 
   @override
   void dispose() {
@@ -96,7 +96,7 @@ class _ChatPageState extends State<ChatPage> {
                     Center(child: spinkit),
                 noItemsFoundIndicatorBuilder: (_) => Center(
                   child: Text(
-                    "No Messages Yet :)",
+                    "No Messages Found.",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
