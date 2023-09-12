@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:student_shopping_v1/pages/categoryItemPage.dart';
+
 
 class DiscountBanner extends StatelessWidget {
   const DiscountBanner({
@@ -8,30 +10,21 @@ class DiscountBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100.w, // 100% of screen width
-      margin: EdgeInsets.all(5.w), // 5% of screen width
-      padding: EdgeInsets.symmetric(
-        horizontal: 5.w, // 5% of screen width
-        vertical: 3.75.h, // 3.75% of screen height
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        new MaterialPageRoute(
+          builder: (context) => CategoryItemPage(3, "Tickets"),
+        ),
       ),
-      decoration: BoxDecoration(
-        color: Color(0xFF4A3298),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text.rich(
-        TextSpan(
-          style: TextStyle(color: Colors.white),
-          children: [
-            TextSpan(text: "University of Florida\n"),
-            TextSpan(
-              text: "Go Gators🐊🐊🐊",
-              style: TextStyle(
-                fontSize: 24.sp, // 24 scaled points
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+      child: Container(
+        width: 100.w, // Set the width to match the parent width
+        height: 25.h, // Set the height as needed
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          clipBehavior: Clip.hardEdge,
+          child: Image.asset(
+            "assets/images/ticket_banner.png",
+          ),
         ),
       ),
     );

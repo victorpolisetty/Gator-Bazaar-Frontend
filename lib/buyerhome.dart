@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +10,6 @@ import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
 import 'package:student_shopping_v1/pages/manageGroupsPage.dart';
 import 'HomePageContent.dart';
 import 'api_utils.dart';
-import 'models/chatMessageModel.dart';
 import 'pages/addListingPage.dart';
 import 'package:http/http.dart' as http;
 
@@ -32,7 +33,6 @@ Future<void> saveTokenToDatabase(String token) async {
     });
 
     if (response.statusCode == 200) {
-      print("Updated user device token to : " + token);
     } else {
       print(response.statusCode);
     }
@@ -53,7 +53,9 @@ Future<int?> getUserDbIdRealFunc() async {
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       currDbId = data['id'];
-
+      if(currDbId == null) {
+        FirebaseAuth.instance.signOut();
+      }
     } else {
       print(response.statusCode);
     }
@@ -84,24 +86,33 @@ class _HomePageState extends State<BuyerHomePage>
 
   @override
   void initState() {
+    getUserDbIdRealFunc();
     getUserDbId().then((value) => setupToken(currDbId));
     super.initState();
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
+    // Set the status bar background color to black
+
     return Scaffold(
+      backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       extendBody: false,
       bottomNavigationBar: Container(
-        color: Colors.white,
+        color: Colors.black,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15,
           vertical: 20),
           child: GNav(
-            backgroundColor: Colors.white,
-            color: Colors.black,
-            activeColor: Colors.white,
-            tabBackgroundColor: Colors.black,
+            backgroundColor: Colors.black,
+            color: Colors.white,
+            activeColor: Colors.black,
+            tabBackgroundColor: Colors.white,
             padding: EdgeInsets.all(16),
             gap: 8,
             onTabChange: (index){
@@ -129,8 +140,6 @@ class _HomePageState extends State<BuyerHomePage>
                   text:
                   "Groups"),
             ],
-
-
           ),
         ),
       ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'constants.dart';
 
 ThemeData theme() {
   return ThemeData(
-    scaffoldBackgroundColor: Colors.white,
-    fontFamily: "Muli",
+    scaffoldBackgroundColor: Colors.black,
+    fontFamily: "Gotham-Font",
     appBarTheme: appBarTheme(),
     textTheme: textTheme(),
     inputDecorationTheme: inputDecorationTheme(),
@@ -40,12 +41,12 @@ TextTheme textTheme() {
 
 AppBarTheme appBarTheme() {
   return AppBarTheme(
-    color: Colors.white,
+    color: Colors.black,
     elevation: 0,
-    brightness: Brightness.light,
-    iconTheme: IconThemeData(color: Colors.black),
+    iconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(
       headline6: TextStyle(color: Color(0XFF8B8B8B), fontSize: 18),
     ),
+    // systemOverlayStyle: SystemUiOverlayStyle.dark,
   );
 }

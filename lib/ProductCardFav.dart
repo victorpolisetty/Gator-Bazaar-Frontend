@@ -49,7 +49,7 @@ class ProductCardFav extends StatelessWidget {
                     tag: uniqueIdentifier + product.id.toString(),
                     child: product.imageDataList.length > 0
                         ? Image.memory(product.imageDataList[0])
-                        : Image.asset('assets/images/GatorBazaar.jpg'),
+                        : Image.asset('assets/gb_placeholder.jpg'),
                   ),
                 ),
               ),

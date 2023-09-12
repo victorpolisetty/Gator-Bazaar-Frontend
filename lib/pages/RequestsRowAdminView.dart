@@ -45,7 +45,7 @@ class _RequestsRowAdminViewState extends State<RequestsRowAdminView> {
       child: Row(
         children: [
           Expanded(
-            child: Text(widget.profile.name!, style: TextStyle(color: Colors.black)),
+            child: Text(widget.profile.name!, style: TextStyle(color: Colors.white)),
           ),
           IconButton(
             icon: Icon(Icons.check),

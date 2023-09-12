@@ -125,14 +125,14 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
         },
         child: Icon(
           Icons.arrow_back_ios,
-          color: Colors.black54,
+          color: Colors.white,
         ),
       ),
       elevation: .1,
       title:
       Text(
         "My Groups",
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: Colors.white),
       ),
       actions: [
       ],
@@ -153,90 +153,38 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
   }
   @override
   Widget build(BuildContext context) {
-    final upperTab = new TabBar(labelColor: Colors.black, tabs: <Tab>[
+    final upperTab = new TabBar(labelColor: Colors.white, tabs: <Tab>[
       new Tab(text: "Members"),
       new Tab(text: "Requests"),
       new Tab(text: "Admins")
     ]);
-    return WillPopScope(
-        onWillPop: () async {
-          return true;
-        },
-        child: new DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            appBar: AppBar(
-              bottom: upperTab,
-            ),
-            body: TabBarView(
-              children: [
-                //MEMBERS
-                RefreshIndicator(
-                  onRefresh: () {
-                    Provider.of<GroupRequestModel>(context, listen: false).getGroupRequestsPrfId();
-                    return Future.sync(() => _pagingControllerMembers.refresh());
-                  },
+    return Container(
+      child: WillPopScope(
+          onWillPop: () async {
+            return true;
+          },
+          child: new DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              backgroundColor: Color(0xFF333333),
+              appBar: AppBar(
+                title: Text("Admin"),
+                bottom: upperTab,
+              ),
+              body: TabBarView(
+                children: [
+                  //MEMBERS
+                  RefreshIndicator(
+                    onRefresh: () {
+                      Provider.of<GroupRequestModel>(context, listen: false).getGroupRequestsPrfId();
+                      return Future.sync(() => _pagingControllerMembers.refresh());
+                    },
 
-                  child: Column(
-                    children: [
-                      Flexible(
-                        child: PagedListView(
-                          pagingController: _pagingControllerMembers,
-                          shrinkWrap: true,
-                          builderDelegate:
-                          PagedChildBuilderDelegate<AdminProfile>(
-                            firstPageProgressIndicatorBuilder: (_) =>
-                                Center(child: spinkit),
-                            newPageProgressIndicatorBuilder: (_) =>
-                                Center(child: spinkit),
-                            noItemsFoundIndicatorBuilder: (_) => Padding(
-                              padding: EdgeInsets.fromLTRB(0,30.h,0,0),
-                              child: Center(
-                                child: Text(
-                                  "No Members Found.",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            itemBuilder:
-                                (BuildContext context, profile, int index) {
-                              return MembersRowAdminView(
-                                profile: profile,
-                                group: widget.group,
-                                uniqueIdentifier: "uniqueIdentifier",
-                                onUserRemoved: () {
-                                  widget.onUserRemoved();
-                                  // Refresh all your lists here
-                                  // For example:
-                                  Provider.of<AdminProfileModel>(context, listen: false).getNextPageMembersInGroup(0, widget.group.id!)
-                                      .then((value) => Future.sync(() => _pagingControllerMembers.refresh()))
-                                      .then((value) => Provider.of<AdminProfileModel>(context, listen: false).getNextPageAdminsInGroup(0, widget.group.id!))
-                                      .then((value) => Future.sync(() => _pagingControllerAdmins.refresh()));
-                                  // etc.
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                //REQUESTS
-                RefreshIndicator(
-                  onRefresh: () {
-                    Provider.of<GroupRequestModel>(context, listen: false).getGroupRequestsPrfId();
-                    return Future.sync(() => _pagingControllerRequests.refresh());
-                  },
-
-                  child: Column(
-                    children: [
+                    child: Column(
+                      children: [
                         Flexible(
                           child: PagedListView(
-                            pagingController: _pagingControllerRequests,
+                            pagingController: _pagingControllerMembers,
                             shrinkWrap: true,
                             builderDelegate:
                             PagedChildBuilderDelegate<AdminProfile>(
@@ -248,17 +196,17 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                                 padding: EdgeInsets.fromLTRB(0,30.h,0,0),
                                 child: Center(
                                   child: Text(
-                                    "No Requests Found.",
+                                    "No Members Found.",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
                               ),
                               itemBuilder:
                                   (BuildContext context, profile, int index) {
-                                return RequestsRowAdminView(
+                                return MembersRowAdminView(
                                   profile: profile,
                                   group: widget.group,
                                   uniqueIdentifier: "uniqueIdentifier",
@@ -266,10 +214,119 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                                     widget.onUserRemoved();
                                     // Refresh all your lists here
                                     // For example:
-                                    Provider.of<AdminProfileModel>(context, listen: false).getNextPageRequestsInGroup(0, widget.group.id!)
-                                        .then((value) => Future.sync(() => _pagingControllerRequests.refresh()))
-                                        .then((value) => Provider.of<AdminProfileModel>(context, listen: false).getNextPageMembersInGroup(0, widget.group.id!))
-                                        .then((value) => Future.sync(() => _pagingControllerMembers.refresh()));
+                                    Provider.of<AdminProfileModel>(context, listen: false).getNextPageMembersInGroup(0, widget.group.id!)
+                                        .then((value) => Future.sync(() => _pagingControllerMembers.refresh()))
+                                        .then((value) => Provider.of<AdminProfileModel>(context, listen: false).getNextPageAdminsInGroup(0, widget.group.id!))
+                                        .then((value) => Future.sync(() => _pagingControllerAdmins.refresh()));
+                                    // etc.
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //REQUESTS
+                  RefreshIndicator(
+                    onRefresh: () {
+                      Provider.of<GroupRequestModel>(context, listen: false).getGroupRequestsPrfId();
+                      return Future.sync(() => _pagingControllerRequests.refresh());
+                    },
+
+                    child: Column(
+                      children: [
+                          Flexible(
+                            child: PagedListView(
+                              pagingController: _pagingControllerRequests,
+                              shrinkWrap: true,
+                              builderDelegate:
+                              PagedChildBuilderDelegate<AdminProfile>(
+                                firstPageProgressIndicatorBuilder: (_) =>
+                                    Center(child: spinkit),
+                                newPageProgressIndicatorBuilder: (_) =>
+                                    Center(child: spinkit),
+                                noItemsFoundIndicatorBuilder: (_) => Padding(
+                                  padding: EdgeInsets.fromLTRB(0,30.h,0,0),
+                                  child: Center(
+                                    child: Text(
+                                      "No Requests Found.",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                itemBuilder:
+                                    (BuildContext context, profile, int index) {
+                                  return RequestsRowAdminView(
+                                    profile: profile,
+                                    group: widget.group,
+                                    uniqueIdentifier: "uniqueIdentifier",
+                                    onUserRemoved: () {
+                                      widget.onUserRemoved();
+                                      // Refresh all your lists here
+                                      // For example:
+                                      Provider.of<AdminProfileModel>(context, listen: false).getNextPageRequestsInGroup(0, widget.group.id!)
+                                          .then((value) => Future.sync(() => _pagingControllerRequests.refresh()))
+                                          .then((value) => Provider.of<AdminProfileModel>(context, listen: false).getNextPageMembersInGroup(0, widget.group.id!))
+                                          .then((value) => Future.sync(() => _pagingControllerMembers.refresh()));
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+
+                      ],
+                    ),
+                  ),
+                  //ADMINS
+                  RefreshIndicator(
+                    onRefresh: () {
+                      Provider.of<GroupRequestModel>(context, listen: false).getGroupRequestsPrfId();
+                      return Future.sync(() => _pagingControllerAdmins.refresh());
+                    },
+
+                    child: Column(
+                      children: [
+                        Flexible(
+                          child: PagedListView(
+                            pagingController: _pagingControllerAdmins,
+                            shrinkWrap: true,
+                            builderDelegate:
+                            PagedChildBuilderDelegate<AdminProfile>(
+                              firstPageProgressIndicatorBuilder: (_) =>
+                                  Center(child: spinkit),
+                              newPageProgressIndicatorBuilder: (_) =>
+                                  Center(child: spinkit),
+                              noItemsFoundIndicatorBuilder: (_) => Padding(
+                                padding: EdgeInsets.fromLTRB(0,30.h,0,0),
+                                child: Center(
+                                  child: Text(
+                                    "No Admins Found.",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              itemBuilder:
+                                  (BuildContext context, profile, int index) {
+                                return AdminRowView(
+                                  profile: profile,
+                                  group: widget.group,
+                                  uniqueIdentifier: "uniqueIdentifier",
+                                  onUserRemoved: () {
+                                    widget.onUserRemoved();
+                                    // Refresh all your lists here
+                                    // For example:
+                                    Provider.of<AdminProfileModel>(context, listen: false).getNextPageAdminsInGroup(0, widget.group.id!)
+                                        .then((value) => Future.sync(() => _pagingControllerAdmins.refresh()));
+                                    // etc.
                                   },
                                 );
                               },
@@ -277,66 +334,13 @@ class _adminSpecificGroupViewState extends State<adminSpecificGroupView> {
                           ),
                         ),
 
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                //ADMINS
-                RefreshIndicator(
-                  onRefresh: () {
-                    Provider.of<GroupRequestModel>(context, listen: false).getGroupRequestsPrfId();
-                    return Future.sync(() => _pagingControllerAdmins.refresh());
-                  },
-
-                  child: Column(
-                    children: [
-                      Flexible(
-                        child: PagedListView(
-                          pagingController: _pagingControllerAdmins,
-                          shrinkWrap: true,
-                          builderDelegate:
-                          PagedChildBuilderDelegate<AdminProfile>(
-                            firstPageProgressIndicatorBuilder: (_) =>
-                                Center(child: spinkit),
-                            newPageProgressIndicatorBuilder: (_) =>
-                                Center(child: spinkit),
-                            noItemsFoundIndicatorBuilder: (_) => Padding(
-                              padding: EdgeInsets.fromLTRB(0,30.h,0,0),
-                              child: Center(
-                                child: Text(
-                                  "No Admins Found.",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            itemBuilder:
-                                (BuildContext context, profile, int index) {
-                              return AdminRowView(
-                                profile: profile,
-                                group: widget.group,
-                                uniqueIdentifier: "uniqueIdentifier",
-                                onUserRemoved: () {
-                                  widget.onUserRemoved();
-                                  // Refresh all your lists here
-                                  // For example:
-                                  Provider.of<AdminProfileModel>(context, listen: false).getNextPageAdminsInGroup(0, widget.group.id!)
-                                      .then((value) => Future.sync(() => _pagingControllerAdmins.refresh()));
-                                  // etc.
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 }

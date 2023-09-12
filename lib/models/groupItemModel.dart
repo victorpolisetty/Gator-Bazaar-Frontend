@@ -266,7 +266,7 @@ class GroupItemModel extends ChangeNotifier {
         }
       } else { // Add default - no image
         data = (await rootBundle.load(
-            'assets/images/GatorBazaar.jpg'
+            'assets/gb_placeholder.jpg'
 
         ))
             .buffer

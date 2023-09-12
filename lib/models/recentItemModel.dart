@@ -174,7 +174,7 @@ class RecentItemModel extends ChangeNotifier {
       } else {   // Add default - no image
         data = (await rootBundle.load(
             // 'assets/images/no-picture-available-icon.png'
-            'assets/images/GatorBazaar.jpg'
+            'assets/gb_placeholder.jpg'
         ))
             .buffer
             .asUint8List();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
@@ -29,20 +30,24 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
+      // systemOverlayStyle: SystemUiOverlayStyle.dark,
+      // backgroundColor: Colors.black,
+      // iconTheme: IconThemeData(color: Colors.white), // Set the color of the back arrow
+
       leading: InkWell(
         onTap: (){
           Navigator.pop(context);
         },
         child: Icon(
           Icons.arrow_back_ios,
-          color: Colors.black54,
+          color: Colors.white,
         ),
       ),
       elevation: .1,
       title:
         Text(
           widget.categoryName,
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
 
 
@@ -134,25 +139,28 @@ class _CategoryItemPageState extends State<CategoryItemPage> {
     // RefreshIndicator(
     //           onRefresh: () => Future.sync(() => _pagingController.refresh()),
               Center(
-                child: new
-                    PagedGridView(
-                              pagingController: _pagingController,
-                              builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
-                                firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                                newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                                noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Found.", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
-                                itemBuilder: (BuildContext context, item, int index) {
-                                  return ProductCard(
-                                    product: item,
-                                    uniqueIdentifier: "categoryItem",
-                                  );
-                                }
+                child: Container(
+                  color: Color(0xFF333333),
+                  child: new
+                      PagedGridView(
+                                pagingController: _pagingController,
+                                builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
+                                  firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                                  newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                                  noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Found.", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),)),
+                                  itemBuilder: (BuildContext context, item, int index) {
+                                    return ProductCard(
+                                      product: item,
+                                      uniqueIdentifier: "categoryItem",
+                                    );
+                                  }
+                                ),
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  childAspectRatio: .7,
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 0,),
                               ),
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: .7,
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 0,),
-                            ),
+                ),
               )
         // ),
       ));

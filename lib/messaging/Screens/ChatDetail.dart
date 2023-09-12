@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
@@ -17,9 +19,10 @@ import '../../pages/SeeSellerDetailsAsBuyer.dart';
 
 
 class ChatDetailPage extends StatefulWidget{
-  ChatDetailPage({Key? key,required this.chatProfile, required this.currentUserDbId}) : super(key: key);
+  ChatDetailPage({Key? key,required this.chatProfile, required this.currentUserDbId, required this.sellerImage}) : super(key: key);
   final ChatMessageHome chatProfile;
   final int currentUserDbId;
+  final Uint8List sellerImage;
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
@@ -69,43 +72,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     });
   }
 
-
-
-  // @override
-  // void dispose() {
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
-
   @override
   void initState() {
     super.initState();
 
-
-    // getSellerId(widget.chatProfile.item_id);
-
     _socket = IO.io("http://messagingbackendstudentshop2-env.eba-7vhh5ptn.us-east-1.elasticbeanstalk.com", IO.OptionBuilder().enableForceNew()
         .setTransports(['websocket']).setQuery({'username': widget.chatProfile.recipient_profile_name}).build());
     _connectSocket();
-    Provider.of<MessageModel>(context, listen: false).getMessagesHelper(widget.chatProfile.creator_user_id!, widget.chatProfile.recipient_user_id!);
-    // if(widget.chatProfile.item_id == -1) {
-    //   getLatestItemDbId(widget.chatProfile.creator_user_id, widget.chatProfile.recipient_user_id).then((value) => getLatestItemInformation(latestItemDbId).then((value) => getMessagesForSpecificItem(widget.chatProfile.creator_user_id,widget.chatProfile.recipient_user_id,latestItemDbId)));
-    // } else {
-    //   getLatestItemInformation(widget.chatProfile.item_id).then((value) => getMessagesForSpecificItem(widget.chatProfile.creator_user_id,widget.chatProfile.recipient_user_id, widget.chatProfile.item_id));
-    // }
+    Provider.of<MessageModel>(context, listen: false).getMessagesHelperReal(widget.chatProfile.creator_user_id!, widget.chatProfile.recipient_user_id!);
   }
 
-
-
-  // void connect() {
-  //   // socket = IO.io("http://192.168.1.170:5000", <String,dynamic>{
-  //   //   "transports": ["websocket"],
-  //   //   "autoConnect": false,
-  //   // });
-  //   socket.connect();
-  //   socket.onConnect((data) => print("Connected"));
-  //   print(socket.connected);
-  // }
   @override
   Widget build(BuildContext context) {
     var messages = context.watch<MessageModel>();
@@ -114,7 +90,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
           flexibleSpace: SafeArea(
             child: Container(
               padding: EdgeInsets.only(right: 16),
@@ -124,13 +100,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     onPressed: (){
                       Navigator.pop(context);
                     },
-                    icon: Icon(Icons.arrow_back,color: Colors.black,),
+                    icon: Icon(Icons.arrow_back,color: Colors.white,),
                   ),
                   SizedBox(width: 2,),
-                  // CircleAvatar(
-                  //   backgroundImage: SVgP("<https://randomuser.me/api/portraits/men/5.jpg>"),
-                  //   maxRadius: 20,
-                  // ),
                   GestureDetector(
                     onTap: (){
                       Navigator.of(context).push(
@@ -142,18 +114,23 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.grey,
-                      child:
-                      widget.chatProfile.image.isEmpty ? SvgPicture.asset("assets/personIcon.svg",
-                        color: Colors.white,
-                        height: 36,
-                      ) : Image.memory(
-                        widget.chatProfile.image,
-                        height: 100, // Adjust the height as needed
-                        width: 100, // Adjust the width as needed
-                        fit: BoxFit.cover,
+                      child: ClipOval( // Use ClipOval to create a circular clipping for the image
+                        child: widget.sellerImage.isEmpty
+                            ? SvgPicture.asset(
+                          "assets/personIcon.svg",
+                          color: Colors.white,
+                          height: 36,
+                        )
+                            : Image.memory(
+                          widget.sellerImage,
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       radius: 20,
                     ),
+
                   ),
                   SizedBox(width: 12),
                   Expanded(
@@ -171,7 +148,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(widget.chatProfile.current_user_id == widget.chatProfile.recipient_user_id ?
-                          widget.chatProfile.creator_profile_name.toString() : widget.chatProfile.recipient_profile_name.toString(),style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600, color: Colors.black),),
+                          widget.chatProfile.creator_profile_name.toString() : widget.chatProfile.recipient_profile_name.toString(),style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600, color: Colors.white)),
                           SizedBox(height: 6,),
                         ],
                       ),
@@ -179,7 +156,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                   PopupMenuButton(
                     // add icon, by default "3 dot" icon
-                    // icon: Icon(Icons.book)
+                    icon: Icon(Icons.more_horiz_outlined, color: Colors.white,),
                       itemBuilder: (context){
                         return [
                           PopupMenuItem<int>(
@@ -207,126 +184,121 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             ),
           ),
         ),
-      body: GestureDetector(
-        onTap: FocusScope.of(context).unfocus,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 0,
-              bottom: 75,
-              left: 0,
-              right: 0,
-              child: ListView.builder(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                itemCount: messages.messageList.length,
-                shrinkWrap: true,
-                reverse: true,
-                padding: EdgeInsets.only(top: 10,bottom: 10),
-                // physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index){
-                  return Container(
-                    padding: EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
-                    child: Align(
-                      alignment: (messages.messageList[index].creator_user_id != widget.currentUserDbId?Alignment.topLeft:Alignment.topRight),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: (messages.messageList[index].creator_user_id != widget.currentUserDbId ? Colors.grey.shade200:Colors.blue[200]),
+      body: Container(
+        color: Color(0xFF333333),
+        child: GestureDetector(
+          onTap: FocusScope.of(context).unfocus,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: 0,
+                bottom: 75,
+                left: 0,
+                right: 0,
+                child: ListView.builder(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  itemCount: messages.messageList.length,
+                  shrinkWrap: true,
+                  reverse: true,
+                  padding: EdgeInsets.only(top: 10,bottom: 10),
+                  // physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index){
+                    return Container(
+                      padding: EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
+                      child: Align(
+                        alignment: (messages.messageList[index].creator_user_id != widget.currentUserDbId?Alignment.topLeft:Alignment.topRight),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: (messages.messageList[index].creator_user_id != widget.currentUserDbId ? Colors.grey.shade200:Colors.blue[200]),
+                          ),
+                          padding: EdgeInsets.all(16),
+                          child: Text(messages.messageList[index].message_text.toString(), style: TextStyle(fontSize: 15, color: Colors.black),),
                         ),
-                        padding: EdgeInsets.all(16),
-                        child: Text(messages.messageList[index].message_text.toString(), style: TextStyle(fontSize: 15, color: Colors.black),),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: EdgeInsets.fromLTRB(2.w, 1.w, .8.w, 2.5.h),
-                height: 80,
-                width: double.infinity,
-                color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    // GestureDetector(
-                    //   onTap: (){
-                    //   },
-                    //   child: Container(
-                    //     height: 30,
-                    //     width: 30,
-                    //     decoration: BoxDecoration(
-                    //       color: Colors.lightBlue,
-                    //       borderRadius: BorderRadius.circular(30),
-                    //     ),
-                    //     child: Icon(Icons.add, color: Colors.white, size: 20, ),
-                    //   ),
-                    // ),
-                    SizedBox(width: 1.h,),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(0,0,0,0),
-                        child: TextFormField(
-                          cursorColor: Colors.black,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 3,
-                          controller: _controller,
-                          textCapitalization: TextCapitalization.sentences,
-                          decoration: InputDecoration(
-                            hintText: 'Write Message...',
-                            fillColor: Colors.black,
-                            focusColor: Colors.black,
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+
+                  padding: EdgeInsets.fromLTRB(2.w, 1.w, .8.w, 2.5.h),
+                  height: 80,
+                  width: double.infinity,
+                  color: Colors.black,
+                  child: Row(
+                    children: <Widget>[
+                      SizedBox(width: 1.h,),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(0,0,0,0),
+                          child: TextFormField(
+                            style: TextStyle(color: Colors.white), // Set the text color to white
+                            cursorColor: Colors.white,
+                            keyboardType: TextInputType.multiline,
+                            minLines: 1,
+                            maxLines: 20,
+                            controller: _controller,
+                            textCapitalization: TextCapitalization.sentences,
+                            decoration: InputDecoration(
+                              hintText: 'Write Message...',
+                              hintStyle: TextStyle(color: Colors.white),
+                              fillColor: Colors.white,
+                              focusColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 1.h, vertical: 1.w),
+                              labelStyle: TextStyle(color: Colors.white), // Remove horizontal padding
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 1.h, vertical: 1.w), // Remove horizontal padding
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 2.w),
-                    FloatingActionButton(
-                      onPressed: (){
-                        if(_controller.text.trim().isNotEmpty) {
-                          // if(userMessagesForSpecificItem.length == 0) {
-                          //   _sendMessage("Interested in: " + latestItemName, widget.currentUserDbId,
-                          //       widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
-                          //       widget.chatProfile.recipient_profile_name);
-                          // }
+                      SizedBox(width: 2.w),
+                      FloatingActionButton(
+                        onPressed: (){
+                          if(_controller.text.trim().isNotEmpty) {
+                            // if(userMessagesForSpecificItem.length == 0) {
+                            //   _sendMessage("Interested in: " + latestItemName, widget.currentUserDbId,
+                            //       widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
+                            //       widget.chatProfile.recipient_profile_name);
+                            // }
 
-                          UserMessage message = new UserMessage.CreateMessage(_controller.text,widget.currentUserDbId,
-                              widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
-                              widget.chatProfile.recipient_profile_name);
-                          setState(() {
+                            UserMessage message = new UserMessage.CreateMessage(_controller.text,widget.currentUserDbId,
+                                widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
+                                widget.chatProfile.recipient_profile_name);
                             setState(() {
-                              Provider.of<MessageModel>(context, listen: false).messageList.insert(0, message);
+                              setState(() {
+                                Provider.of<MessageModel>(context, listen: false).messageList.insert(0, message);
+                              });
                             });
-                          });
-                          String messageText = _controller.text;
-                          _controller.clear();
-                          _sendMessage(messageText,widget.currentUserDbId,
-                              widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
-                              widget.chatProfile.recipient_profile_name);
-                        }
+                            String messageText = _controller.text;
+                            _controller.clear();
+                            _sendMessage(messageText,widget.currentUserDbId,
+                                widget.currentUserDbId == widget.chatProfile.creator_user_id ? widget.chatProfile.recipient_user_id : widget.chatProfile.creator_user_id ,widget.chatProfile.item_id != -1 ? widget.chatProfile.item_id : latestItemDbId,DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()),
+                                widget.chatProfile.recipient_profile_name);
+                          }
 
-                      },
-                      child: Icon(Icons.send,color: Colors.white,size: 18,),
-                      backgroundColor: Colors.blue,
-                      elevation: 0,
-                    ),
-                    SizedBox(width: 15,),
-                  ],
+                        },
+                        child: Icon(Icons.send,color: Colors.white,size: 18,),
+                        backgroundColor: Colors.blueAccent,
+                        elevation: 0,
+                      ),
+                      SizedBox(width: 15,),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

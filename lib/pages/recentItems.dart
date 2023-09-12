@@ -111,7 +111,7 @@ class SingleItem extends StatelessWidget {
               alignment: Alignment.topRight,
               decoration: BoxDecoration(
                   image: DecorationImage(image: item.imageDataList.length > 0 ?
-                  MemoryImage(item.imageDataList[0]) : AssetImage('assets/images/GatorBazaar.jpg') as ImageProvider, fit: BoxFit.contain),
+                  MemoryImage(item.imageDataList[0]) : AssetImage('assets/gb_placeholder.jpg') as ImageProvider, fit: BoxFit.contain),
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(18)),
               child: Container(

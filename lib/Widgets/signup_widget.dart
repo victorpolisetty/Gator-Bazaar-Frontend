@@ -42,250 +42,259 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   @override
   Widget build(BuildContext context) => Form(
     key: formKey,
-    child: ListView(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      children: [
-        SizedBox(
-            height: 25.h,
-            width: 25.w,
-            child: Image.asset('assets/images/GatorBazaar.jpg')),        // TextFormField(
-        //   cursorColor: Colors.black,
-        //   controller: emailController,
-        //   textInputAction: TextInputAction.next,
-        //   decoration: InputDecoration(labelText: 'Email'),
-        //   autovalidateMode: AutovalidateMode.onUserInteraction,
-        //   validator: (email) =>
-        //   //TODO: uncomment this delete underneath this
-        //      (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
-        // ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
-          child: Text("Email", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
-        ),
-        Padding(
-          padding: EdgeInsets.all(3.w), // Use sizer to set padding
-          child: TextFormField(
-            cursorColor: Colors.black,
-            keyboardType: TextInputType.multiline,
-            maxLines: 1,
-            controller: emailController,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (email) =>
-              //TODO: uncomment this delete underneath this
-                 (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
-            decoration: InputDecoration(
-              hintText: 'Email',
-              fillColor: Colors.black,
-              focusColor: Colors.black,
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+    child: Container(
+      color: Colors.black87,
+      child: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        children: [
+          SizedBox(
+              height: 25.h,
+              width: 25.w,
+              child: Image.asset('assets/GatorBZR_Home.png')),        // TextFormField(
+          //   cursorColor: Colors.black,
+          //   controller: emailController,
+          //   textInputAction: TextInputAction.next,
+          //   decoration: InputDecoration(labelText: 'Email'),
+          //   autovalidateMode: AutovalidateMode.onUserInteraction,
+          //   validator: (email) =>
+          //   //TODO: uncomment this delete underneath this
+          //      (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
+          // ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+            child: Text("Email", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.white)),
+          ),
+          Padding(
+            padding: EdgeInsets.all(3.w), // Use sizer to set padding
+            child: TextFormField(
+              style: TextStyle(color: Colors.white),
+              cursorColor: Colors.white,
+              keyboardType: TextInputType.multiline,
+              maxLines: 1,
+              controller: emailController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (email) =>
+                //TODO: uncomment this delete underneath this
+                   (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
+              decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.white),
+                hintText: 'Email',
+                fillColor: Colors.white,
+                focusColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
               ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
             ),
           ),
-        ),
-        SizedBox(height: 4),
-        Padding(
-          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
-          child: Text("First Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
-        ),
-        Padding(
-          padding: EdgeInsets.all(3.w), // Use sizer to set padding
-          child: TextFormField(
-            cursorColor: Colors.black,
-            keyboardType: TextInputType.multiline,
-            textCapitalization: TextCapitalization.sentences,
-            maxLines: 1,
-            controller: firstNameController,
-            decoration: InputDecoration(
-              hintText: 'First Name',
-              fillColor: Colors.black,
-              focusColor: Colors.black,
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+          SizedBox(height: 4),
+          Padding(
+            padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+            child: Text("First Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.white)),
+          ),
+          Padding(
+            padding: EdgeInsets.all(3.w), // Use sizer to set padding
+            child: TextFormField(
+              style: TextStyle(color: Colors.white),
+              cursorColor: Colors.white,
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.sentences,
+              maxLines: 1,
+              controller: firstNameController,
+              decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey),
+                hintText: 'First Name',
+                fillColor: Colors.white,
+                focusColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
               ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
             ),
           ),
-        ),
-        SizedBox(height: 4),
-        Padding(
-          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
-          child: Text("Last Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
-        ),
-        Padding(
-          padding: EdgeInsets.all(3.w), // Use sizer to set padding
-          child: TextFormField(
-            cursorColor: Colors.black,
-            keyboardType: TextInputType.multiline,
-            textCapitalization: TextCapitalization.sentences,
-            maxLines: 1,
-            controller: lastNameController,
-            decoration: InputDecoration(
-              hintText: 'Last Name',
-              fillColor: Colors.black,
-              focusColor: Colors.black,
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+          SizedBox(height: 4),
+          Padding(
+            padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+            child: Text("Last Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.white)),
+          ),
+          Padding(
+            padding: EdgeInsets.all(3.w), // Use sizer to set padding
+            child: TextFormField(
+              style: TextStyle(color: Colors.white),
+              cursorColor: Colors.white,
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.sentences,
+              maxLines: 1,
+              controller: lastNameController,
+              decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey),
+                hintText: 'Last Name',
+                fillColor: Colors.white,
+                focusColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
               ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
             ),
           ),
-        ),
-        SizedBox(height: 4),
-        Padding(
-          padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
-          child: Text("Password", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
-        ),
-        // TextFormField(
-        //   cursorColor: Colors.black,
-        //   controller: passwordController,
-        //   textInputAction: TextInputAction.done,
-        //   decoration: InputDecoration(labelText: "Password"),
-        //   obscureText: true,
-        //   autovalidateMode: AutovalidateMode.onUserInteraction,
-        //   validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
-        // ),
-        Padding(
-          padding: EdgeInsets.all(3.w), // Use sizer to set padding
-          child: TextFormField(
-            cursorColor: Colors.black,
-            keyboardType: TextInputType.multiline,
-            textCapitalization: TextCapitalization.sentences,
-            maxLines: 1,
-            controller: passwordController,
-              obscureText: true,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
-            decoration: InputDecoration(
-              hintText: 'Password',
-              fillColor: Colors.black,
-              focusColor: Colors.black,
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+          SizedBox(height: 4),
+          Padding(
+            padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
+            child: Text("Password", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.white)),
+          ),
+          // TextFormField(
+          //   cursorColor: Colors.black,
+          //   controller: passwordController,
+          //   textInputAction: TextInputAction.done,
+          //   decoration: InputDecoration(labelText: "Password"),
+          //   obscureText: true,
+          //   autovalidateMode: AutovalidateMode.onUserInteraction,
+          //   validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
+          // ),
+          Padding(
+            padding: EdgeInsets.all(3.w), // Use sizer to set padding
+            child: TextFormField(
+              style: TextStyle(color: Colors.white),
+              cursorColor: Colors.white,
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.sentences,
+              maxLines: 1,
+              controller: passwordController,
+                obscureText: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
+              decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey),
+                hintText: 'Password',
+                fillColor: Colors.white,
+                focusColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
               ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
             ),
           ),
-        ),
-        SizedBox(height: 20),
-        Padding(
-          padding: EdgeInsets.fromLTRB(3.w,0,3.w,3.5.h), // Use sizer to set padding
-          child: FloatingActionButton.extended(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0), // Set the border radius here
+          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.fromLTRB(3.w,0,3.w,3.5.h), // Use sizer to set padding
+            child: FloatingActionButton.extended(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0), // Set the border radius here
+              ),
+              backgroundColor: Colors.white,
+              onPressed: () {
+                _launchUrl("https://docs.google.com/document/d/1Au1nHDDSdrnfFZFROdV6aSrVBg0tnemU8PJ-6c1oHfQ/edit#heading=h.5wn9zmiu3ly6");
+              },
+              icon: Icon(Icons.note_alt_sharp, color: Colors.black,),
+              label: Text("Terms of Service", style: TextStyle(color: Colors.black),),
             ),
-            backgroundColor: Colors.black,
-            onPressed: () {
-              _launchUrl("https://docs.google.com/document/d/1Au1nHDDSdrnfFZFROdV6aSrVBg0tnemU8PJ-6c1oHfQ/edit#heading=h.5wn9zmiu3ly6");
-            },
-            icon: Icon(Icons.note_alt_sharp),
-            label: Text("Terms of Service"),
           ),
-        ),
-        // ElevatedButton(  style:ElevatedButton.styleFrom(
-        //     primary: Colors.black
-        // ),onPressed: () { _launchUrl("https://docs.google.com/document/d/1Au1nHDDSdrnfFZFROdV6aSrVBg0tnemU8PJ-6c1oHfQ/edit#heading=h.5wn9zmiu3ly6"); },
-        //     child: Text("Terms of Service")),
-        Padding(
-          padding: EdgeInsets.fromLTRB(3.w,0,3.w,2.h), // Use sizer to set padding
-          child: FloatingActionButton.extended(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0), // Set the border radius here
+          Padding(
+            padding: EdgeInsets.fromLTRB(3.w,0,3.w,2.h), // Use sizer to set padding
+            child: FloatingActionButton.extended(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0), // Set the border radius here
+              ),
+              backgroundColor: Colors.white,
+              onPressed: () {
+                _launchUrl("https://docs.google.com/document/d/1K0FeDwN0YmE13Hbf3FZA77Q4sLiRmw2cz3C7Xd28GJ4/edit#heading=h.eykxcvd8q5gq");            },
+              icon: Icon(Icons.note_alt_sharp, color: Colors.black,),
+              label: Text("End User License Agreement", style: TextStyle(color: Colors.black),),
             ),
-            backgroundColor: Colors.black,
-            onPressed: () {
-              _launchUrl("https://docs.google.com/document/d/1K0FeDwN0YmE13Hbf3FZA77Q4sLiRmw2cz3C7Xd28GJ4/edit#heading=h.eykxcvd8q5gq");            },
-            icon: Icon(Icons.note_alt_sharp),
-            label: Text("End User License Agreement"),
           ),
-        ),
-        // ElevatedButton(  style:ElevatedButton.styleFrom(
-        //     primary: Colors.black
-        // ),onPressed: () { _launchUrl("https://docs.google.com/document/d/1K0FeDwN0YmE13Hbf3FZA77Q4sLiRmw2cz3C7Xd28GJ4/edit#heading=h.eykxcvd8q5gq"); },
-        //     child: Text("End User License Agreement")),
-        Row(
-          children: [
-            Flexible(
-              child: Padding(
-                padding: EdgeInsets.only(left: 5.w), // Adjust the value as needed
-                child: Text(
-                  "I agree to the Terms of Service and End User License Agreement",
-                  softWrap: true,
-                  style: TextStyle(color: Colors.grey[800]),
+          Row(
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 5.w), // Adjust the value as needed
+                  child: Text(
+                    "Disclaimer: By clicking on the checkbox, you are agreeing to the Terms of Service and End User License Agreement for the Gator Bazaar app.",
+                    softWrap: true,
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
-            ),
-            Checkbox(
-              value: checkBoxValue,
-              activeColor: Colors.black,
-              onChanged: (bool? newValue) {
-                setState(() {
-                  checkBoxValue = newValue;
-                });
-              },
-            ),
-          ],
-        ),
+              Theme(
+                data: ThemeData(
+                  unselectedWidgetColor: Colors.white, // Set the outline color to white
+                ),
+                child: Checkbox(
+                  value: checkBoxValue,
+                  checkColor: Colors.black,
+                  activeColor: Colors.white,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      checkBoxValue = newValue;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
 
-        Padding(
-          padding: EdgeInsets.fromLTRB(3.w,1.5.h,3.w,3.5.h), // Use sizer to set padding
-          child: FloatingActionButton.extended(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0), // Set the border radius here
+          Padding(
+            padding: EdgeInsets.fromLTRB(3.w,1.5.h,3.w,3.5.h), // Use sizer to set padding
+            child: FloatingActionButton.extended(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0), // Set the border radius here
+              ),
+              backgroundColor: Colors.white,
+              onPressed: () {
+                signUp();
+              },
+              icon: Icon(Icons.check, color: Colors.black,),
+              label: Text("Sign Up", style:TextStyle(color: Colors.black)),
             ),
-            backgroundColor: Colors.black,
-            onPressed: () {
-              signUp();
-            },
-            icon: Icon(Icons.check),
-            label: Text("Sign Up"),
           ),
-        ),
-        Center(
-          child: RichText(
-              text: TextSpan (
-                  style: TextStyle(color: Colors.black),
-                  text: 'Already have an account?  ',
-                  children: [
-                    TextSpan(
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = widget.onClickedSignIn,
-                        text: 'Log In',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Colors.black
-                        )
-                    )
-                  ]
-              )
-          ),
-        )
-      ],
+          Center(
+            child: RichText(
+                text: TextSpan (
+                    style: TextStyle(color: Colors.white),
+                    text: 'Already have an account?  ',
+                    children: [
+                      TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = widget.onClickedSignIn,
+                          text: 'Log In',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.white
+                          )
+                      )
+                    ]
+                )
+            ),
+          )
+        ],
+      ),
     ),
   );
 

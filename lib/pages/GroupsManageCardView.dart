@@ -41,7 +41,7 @@ class GroupsManageCardView extends StatelessWidget {
                     tag: group.id.toString() + uniqueIdentifier,
                     child: group.imageURL != null
                         ? Image.memory(group.imageURL!)
-                        : Image.asset('assets/images/GatorBazaar.jpg'),
+                        : Image.asset('assets/gb_placeholder.jpg'),
                   ),
                 ),
               ),

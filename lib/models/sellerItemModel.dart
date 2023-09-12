@@ -44,14 +44,6 @@ class SellerItemModel extends ChangeNotifier {
 
   Map<String, dynamic> toJson() => _$SellerItemModelToJson(this);
 
-  // Future<void> init100() async {
-  //   Future.wait([getProfileFromDb(currentUser!.uid)]);
-  //   await Future.delayed(Duration(seconds: 5));
-  //   this.totalPages = await getItemRestList();
-  //   // await Future.delayed(Duration(seconds: 5));
-  //   await add1stImageToItemIfAvailable();
-  // }
-  //
   Future<void> init1(int pageNum) async {
     await getNextPage(pageNum);
     await add1stImageToItemIfAvailable();
@@ -103,7 +95,7 @@ class SellerItemModel extends ChangeNotifier {
         }
       } else { // Add default - no image
         data = (await rootBundle.load(
-            'assets/images/GatorBazaar.jpg'))
+            'assets/gb_placeholder.jpg'))
             .buffer
             .asUint8List();
       }
@@ -125,10 +117,6 @@ class SellerItemModel extends ChangeNotifier {
       for (int i = 0; i < items.length; i++) {
         ItemWithImages itm = ItemWithImages.fromJson(items[i]);
         _sellerItems.add(itm);
-        // for (int imgId in itm.itemImageList) {
-        //   var url = Uri.parse(
-        //       'http://localhost:8080/categories/1/items'); // TODO -  call the recentItem service when it is built
-        // }
       }
       return totalPages;
     } else {
@@ -202,7 +190,7 @@ class SellerItemModel extends ChangeNotifier {
           data = response.bodyBytes;
         }
       } else {   // Add default - no image
-        data = (await rootBundle.load('assets/images/GatorBazaar.jpg'))
+        data = (await rootBundle.load('assets/gb_placeholder.jpg'))
             .buffer
             .asUint8List();
       }

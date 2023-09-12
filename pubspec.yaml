@@ -124,6 +124,11 @@ flutter:
           weight: 700
         - asset: assets/fonts/muli/Muli-Light.ttf
           weight: 300
+
+    - family: Gotham
+      fonts:
+        - asset: assets/fonts/Gotham-Font/Gotham-Bold.otf
+        - asset: assets/fonts/Gotham-Font/GothamBook.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

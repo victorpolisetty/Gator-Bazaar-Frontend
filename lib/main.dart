@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
 import 'package:student_shopping_v1/buyerhome.dart';
 import 'package:student_shopping_v1/messaging/Pages/NewChatPage.dart';
 import 'package:student_shopping_v1/models/categoryModel.dart';
@@ -24,7 +25,6 @@ import 'models/messageModel.dart';
 import 'models/recentItemModel.dart';
 import 'models/favoriteModel.dart';
 import 'new/theme.dart';
-
 
 
 Future<void> backgroundHandler(RemoteMessage message) async {
@@ -58,7 +58,6 @@ Future<void> main() async {
 
   // Background message handler
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-
   runApp(MyApp());
 }
 
@@ -78,6 +77,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState(){
     super.initState();
+
     LocalNotificationService.initialize(context);
 
     //gives you the message on which the user taps and it opens the app from terminated state
@@ -97,8 +97,6 @@ class _MyAppState extends State<MyApp> {
         print(message.notification?.title);
       }
 
-      // Provider.of<ChatMessageModel>(context, listen: false).getChatHomeHelper();
-
       LocalNotificationService.display(message);
     });
 
@@ -117,6 +115,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
     return Sizer(
       builder: (BuildContext context, Orientation orientation, DeviceType deviceType) {
         return MultiProvider(

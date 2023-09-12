@@ -6,11 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/Widgets/isSoldWidgetSellerPage.dart';
 import '../Widgets/isSoldWidget.dart';
 import '../api_utils.dart';
 import '../models/itemModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
+import '../models/recentItemModel.dart';
 
 final spinkit = SpinKitFadingCircle(
   itemBuilder: (BuildContext context, int index) {
@@ -39,14 +43,12 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
   User? currentUser = FirebaseAuth.instance.currentUser;
   // String recipientProfileName = "";
   int currentUserId = -1;
-  String sellerUserName = "";
+  // String sellerUserName = "";
 
   @override
   void initState() {
-    // TODO: implement initState
     getProfileFromDb(currentUser?.uid.toString());
-    getProfileFromDbWithSellerId(widget.item.seller_id);
-
+    // getProfileFromDbWithSellerId(widget.item.seller_id);
     super.initState();
   }
 
@@ -56,31 +58,31 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
     List <dynamic> imgList = [];
     List <dynamic> emptyList = [];
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        iconTheme: new IconThemeData(color: Colors.grey[800], size: 27),
-        backgroundColor: Colors.white,
+        iconTheme: new IconThemeData(color: Colors.white, size: 27),
+        backgroundColor: Colors.black,
         elevation: 0,
       ),
-      body: FutureBuilder(
-          future: widget.item.getAllImagesForItem(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if(snapshot.data == null){
-              return Container(
-                child: Center(
-                    child: spinkit
-                ),
-              );
-            } else {
-              for(int i = 0; i < numberOfImagesInItem; i++){
-                imgList.add(snapshot.data[i]);
-              }
-              if (imgList.length == 0) {
-                emptyList.add(1);
-              }
-              return Container(
-                color: Colors.white,
-                child: SingleChildScrollView(
+      body: Container(
+        height: 100.h,
+        color: Color(0xFF333333),
+        child: FutureBuilder(
+            future: widget.item.getAllImagesForItem(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if(snapshot.data == null){
+                return Container(
+                  child: Center(
+                      child: spinkit
+                  ),
+                );
+              } else {
+                for(int i = 0; i < numberOfImagesInItem; i++){
+                  imgList.add(snapshot.data[i]);
+                }
+                if (imgList.length == 0) {
+                  emptyList.add(1);
+                }
+                return SingleChildScrollView(
                   child: Column(
                     children: [
                       Container(
@@ -114,38 +116,12 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                                 .map((item) => Container(
                               child: Center(
                                   child:
-                                  Image.asset("assets/images/GatorBazaar.jpg")
+                                  Image.asset("assets/gb_placeholder.jpg")
                                 // MemoryImage(item)
                               ),
                             ))
                                 .toList(),
-
-
-                            // items: [
-                            //   imageSliders,
-                            // ],
                           )
-                        //       // decoration: BoxDecoration(
-                        //   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
-                        //   boxShadow: [BoxShadow(spreadRadius: 0, blurRadius: 19, offset: Offset(0, 4), color: Colors.grey)],
-                        // child: Carousel(
-                        //   boxFit: BoxFit.contain,
-                        //   images: [
-                        //     numberOfImagesInItem > 0 ? MemoryImage(snapshot.data[0]) : AssetImage(
-                        //         "assets/images/no-picture-available-icon.png"),
-                        //     numberOfImagesInItem > 1 ? MemoryImage(snapshot.data[1]) : AssetImage(
-                        //         "assets/images/no-picture-available-icon.png"),
-                        //     numberOfImagesInItem > 2 ? MemoryImage(snapshot.data[2]) : AssetImage(
-                        //         "assets/images/no-picture-available-icon.png"),
-                        //   ],
-                        //   autoplay: false,
-                        //
-                        //
-                        //   //   image: DecorationImage(
-                        //   //image: MemoryImage(widget.itemPicture), fit: BoxFit.cover),
-                        // ),
-
-                        //     image: NetworkImage(widget.item_detail_picture),fit: BoxFit.cover)
                       ),
                       Container(
                           width: MediaQuery
@@ -154,7 +130,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                               .width,
                           margin: EdgeInsets.only(left: 15, top: 15),
                           child: Text(widget.item.name!,
-                            style: TextStyle(fontSize: 19, color: Colors.grey[700]),
+                            style: TextStyle(fontSize: 19, color: Colors.white),
                             textAlign: TextAlign.left,)
                       ),
                       Container(
@@ -165,7 +141,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                           margin: EdgeInsets.only(left: 15, top: 15),
                           child: Text('Price', style: TextStyle(fontSize: 15,
                               fontWeight: FontWeight.w700,
-                              color: Colors.grey[700]), textAlign: TextAlign.left,)
+                              color: Colors.white), textAlign: TextAlign.left,)
                       ),
                       Padding(
                         padding: const EdgeInsets.all(9.0),
@@ -175,7 +151,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                                 .size
                                 .width,
                             child: Text((' \$${NumberFormat('#,##0.00', 'en_US').format(widget.item.price)}'),
-                              style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                              style: TextStyle(fontSize: 15, color: Colors.white),
                               )
                         ),
                       ),
@@ -187,7 +163,7 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                           margin: EdgeInsets.only(left: 15, top: 15),
                           child: Text('Description', style: TextStyle(fontSize: 15,
                               fontWeight: FontWeight.w700,
-                              color: Colors.grey[700]), textAlign: TextAlign.left,)
+                              color: Colors.white), textAlign: TextAlign.left,)
                       ),
                       Container(
                           width: MediaQuery
@@ -196,9 +172,44 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                               .width,
                           margin: EdgeInsets.only(left: 15, top: 15, right: 15),
                           child: Text(widget.item.description!,
-                            style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                            style: TextStyle(fontSize: 15, color: Colors.white),
                             textAlign: TextAlign.left,)
                       ),
+                      SizedBox(height: 4.h,),
+                      Row(
+                        children: [
+                          Container(
+                            color: Color(0xFF333333),
+                            width: 75.w,
+                            height: 5.h,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(10.w,0,0,0),
+                              child: Container(
+                                // margin: EdgeInsets.only(left: 20, right: 20, bottom: 30,),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                ),
+                                child: Container(
+                                  child: isSoldWidgetSellerPage(
+                                    isSold: widget.item.isSold,
+                                    item: widget.item,
+                                    pagingController: widget.pagingController,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: new IconButton(
+                                icon: Icon(Icons.delete),
+                                color: Colors.red,
+                                onPressed: () {
+                                  _showConfirmDeleteButton(context, widget.item.id);
+                                }),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 2.h),
                       // SizedBox(
                       //   height: 10,
                       //   width: 10,
@@ -206,29 +217,52 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
                     ],
                   ),
 
-                ),
-              );
-            }
+                );
+              }
 
-          } ),
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        width: MediaQuery.of(context).size.width,
-        height: 100,
-        child: Container(
-          margin: EdgeInsets.only(left: 10, right:10, bottom: 10),
-          decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(50)),
-                child: Container(
-                  child: isSoldWidgetSellerPage(
-                    isSold: widget.item.isSold,
-                    item: widget.item,
-                    pagingController: widget.pagingController,
-                  ),
-                ),
-
-        ),
+            } ),
       ),
     );
+  }
+
+  void _showConfirmDeleteButton(BuildContext context, int? itemId) {
+    BuildContext dialogContext;
+    showDialog(
+        context: context,
+        builder: (context) => WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            // dialogContext = context;
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Are you sure?"),
+                ListTile(
+                  title: Text("Yes"),
+                  onTap: () {
+                    // _loadPicker(ImageSource.gallery, imageNumber);
+                    // Provider.of<RecentItemModel>(context, listen: false).getRecentItems();
+                    deleteListing(itemId)
+                        .then((value) => Provider.of<RecentItemModel>(
+                        context,
+                        listen: false)
+                        .getRecentItems())
+                        .then((value) => Navigator.pop(context))
+                        .then((value) => Navigator.pushReplacementNamed(
+                        context, "/home"));
+                  },
+                ),
+                ListTile(
+                  title: Text("No"),
+                  onTap: () {
+                    // _loadPicker(ImageSource.gallery, imageNumber);
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 
   Future<void> getProfileFromDb(String? firebaseid) async {
@@ -245,19 +279,29 @@ class _ItemDetailPageSellerViewState extends State<ItemDetailPageSellerView> {
     }
   }
 
-  Future<void> getProfileFromDbWithSellerId(int? profileId) async {
-    Map<String, dynamic> data;
-    var url = ApiUtils.buildApiUrl('/profiles/id/$profileId'); // TODO -  call the recentItem service when it is built
-    http.Response response = await http.get(
-        url, headers: {"Accept": "application/json"});
+  Future<void> deleteListing(int? itemId) async {
+    var url = ApiUtils.buildApiUrl('/categories/items/$itemId');
+    http.Response response =
+    await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
-      // data.map<Item>((json) => Item.fromJson(json)).toList();
-      data = jsonDecode(response.body);
-      sellerUserName = data['name'];
     } else {
       print(response.statusCode);
     }
   }
+
+  // Future<void> getProfileFromDbWithSellerId(int? profileId) async {
+  //   Map<String, dynamic> data;
+  //   var url = ApiUtils.buildApiUrl('/profiles/profileId/$profileId'); // TODO -  call the recentItem service when it is built
+  //   http.Response response = await http.get(
+  //       url, headers: {"Accept": "application/json"});
+  //   if (response.statusCode == 200) {
+  //     // data.map<Item>((json) => Item.fromJson(json)).toList();
+  //     data = jsonDecode(response.body);
+  //     sellerUserName = data['name'];
+  //   } else {
+  //     print(response.statusCode);
+  //   }
+  // }
 
 
 

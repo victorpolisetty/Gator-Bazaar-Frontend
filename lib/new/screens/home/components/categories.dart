@@ -9,22 +9,33 @@ class Categories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> categories1 = [
-      {"icon": "assets/icons/clothes.svg", "text": "Clothes", "pressNumber": 1},
-      {"icon": "assets/icons/formaldress.svg", "text": "Formal", "pressNumber": 2},
-      {"icon": "assets/icons/studentticket.svg", "text": "Tickets", "pressNumber": 3},
-      {"icon": "assets/icons/furniture.svg", "text": "Furniture", "pressNumber": 4},
+      {"icon": "assets/icons/clothes.png", "text": "Clothes", "pressNumber": 1},
+      {"icon": "assets/icons/formal.png", "text": "Formal", "pressNumber": 2},
+      {"icon": "assets/icons/ticket.png", "text": "Tickets", "pressNumber": 3},
+      {"icon": "assets/icons/furniture.png", "text": "Furniture", "pressNumber": 4},
+      {"icon": "assets/icons/sublease.png", "text": "Subleases", "pressNumber": 5},
+      {"icon": "assets/icons/electronics.png", "text": "Electronics", "pressNumber": 6},
+      {"icon": "assets/icons/electronics.png", "text": "Books", "pressNumber": 7},
+      {"icon": "assets/all_items.png", "text": "Misc.", "pressNumber": 8},
+      {"icon": "assets/icons/free.png", "text": "Free", "pressNumber": 9},
     ];
-    return Padding(
-      padding: EdgeInsets.all(1.5.w), // 1.5% of screen width
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: List.generate(
-          categories1.length,
-              (index) => CategoryCard(
-            icon: categories1[index]["icon"],
-            text: categories1[index]["text"],
-            pressNumber: categories1[index]["pressNumber"],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: EdgeInsets.all(1.5.w), // Padding for the entire row
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(
+            categories1.length,
+                (index) => Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0), // Adjust the horizontal padding as needed
+              child: CategoryCard(
+                icon: categories1[index]["icon"],
+                text: categories1[index]["text"],
+                pressNumber: categories1[index]["pressNumber"],
+              ),
+            ),
           ),
         ),
       ),
@@ -54,33 +65,32 @@ class CategoryCard extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        width: 15.w, // 15% of screen width
+        width: 13.5.w, // 15% of screen width
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(5.w), // 5% of screen width
+              padding: EdgeInsets.all(1.5.w), // ICON SIZE
               height: 15.w, // 15% of screen width
-              width: 15.w, // 15% of screen width
-              decoration: BoxDecoration(
-                color: Color(0xFFFFECDF),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: SvgPicture.asset(
-                icon!,
+              width: 19.w, // 15% of screen width
+              child: Image.asset(
+                icon!, // Use the PNG icon path
                 fit: BoxFit.scaleDown,
-                color: Colors.orange,
+                color: Colors.white,
                 height: 2.5.h, // 2.5% of screen height
                 width: 2.5.h, // 2.5% of screen height
               ),
             ),
-            SizedBox(height: 1.h), // 1% of screen height
             FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.center,
               child: Text(
                 text!,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: maxFontSize), // Use the calculated max font size
+                style: TextStyle(
+                  // fontSize: maxFontSize, // Use the calculated max font size
+                  fontSize: 10,
+                  color: Colors.white, // Set the text color to white
+                ),
               ),
             ),
           ],

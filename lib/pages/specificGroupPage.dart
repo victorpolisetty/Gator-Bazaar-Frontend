@@ -31,15 +31,17 @@ class _SpecificGroupPageState extends State<SpecificGroupPage> {
   int resultOfCatSelected = 10;
 
   List<Map<String, dynamic>> categories1 = [
-    {"icon": "assets/icons/allitems.svg", "text": "All Items", "pressNumber" : 10},
-    {"icon": "assets/icons/clothes.svg", "text": "Clothes", "pressNumber" : 1},
-    {"icon": "assets/icons/formaldress.svg", "text": "Formal Dresses", "pressNumber" : 2},
-    {"icon": "assets/icons/studentticket.svg", "text": "Student Tickets", "pressNumber" : 3},
-    {"icon": "assets/icons/furniture.svg", "text": "Furniture", "pressNumber" : 4},
-    {"icon": "assets/icons/subleases.svg", "text": "Subleases", "pressNumber" : 5},
-    {"icon": "assets/icons/electronics.svg", "text": "Electronics", "pressNumber" : 6},
-    {"icon": "assets/icons/misc.svg", "text": "Misc.", "pressNumber" : 7},
-    {"icon": "assets/icons/free.svg", "text": "Free", "pressNumber" : 9},
+
+    {"icon": "assets/icons/misc.png", "text": "All Items", "pressNumber" : 10},
+    {"icon": "assets/icons/clothes.png", "text": "Clothes", "pressNumber": 1},
+    {"icon": "assets/icons/formal.png", "text": "Formal", "pressNumber": 2},
+    {"icon": "assets/icons/ticket.png", "text": "Tickets", "pressNumber": 3},
+    {"icon": "assets/icons/furniture.png", "text": "Furniture", "pressNumber": 4},
+    {"icon": "assets/icons/sublease.png", "text": "Subleases", "pressNumber": 5},
+    {"icon": "assets/icons/electronics.png", "text": "Electronics", "pressNumber": 6},
+    {"icon": "assets/icons/electronics.png", "text": "Books", "pressNumber": 7},
+    {"icon": "assets/all_items.png", "text": "Misc.", "pressNumber": 8},
+    {"icon": "assets/icons/free.png", "text": "Free", "pressNumber": 9},
   ];
 
   @override
@@ -83,43 +85,52 @@ class _SpecificGroupPageState extends State<SpecificGroupPage> {
           },
           child: new Scaffold(
               appBar: AppBar(
+                backgroundColor: Colors.black,
                 title: Center(
                   child: Text(
                     widget.groupName,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
                 actions: <Widget>[
-                  IconBtnWithCounter(
-                    svgSrc: "assets/icons/filter.svg",
-                    numOfitem: 0,
-                    press: () {
+                  GestureDetector(
+                    onTap: () {
+                      // Add your onTap functionality here
                       _showListViewDialog(context);
                     },
-                  ),
+                    child: Image.asset(
+                      "assets/icons/filter.png", // Provide the path to your .png icon
+                      width: 24, // Set the desired width
+                      height: 24, // Set the desired height
+                      color: Colors.white, // Set the icon color
+                    ),
+                  )
                 ],
               ),
               key: _scaffoldKey,
               body:
               Center(
-                child: new
-                PagedGridView(
-                  pagingController: _pagingController,
-                  builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
-                      firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                      newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
-                      noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Yet :)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)),
-                      itemBuilder: (BuildContext context, item, int index) {
-                        return ProductCard(
-                          product: item,
-                          uniqueIdentifier: "groupItem",
-                        );
-                      }
+                child: Container(
+                  color: Color(0xFF333333),
+                  child: new
+                  PagedGridView(
+                    pagingController: _pagingController,
+                    builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
+                        firstPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                        newPageProgressIndicatorBuilder: (_) => Center(child: spinkit),
+                        noItemsFoundIndicatorBuilder: (_) => Center(child: Text("No Items Found.", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),)),
+                        itemBuilder: (BuildContext context, item, int index) {
+                          return ProductCard(
+                            product: item,
+                            uniqueIdentifier: "groupItem",
+                          );
+                        }
+                    ),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: .7,
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 0,),
                   ),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: .7,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 0,),
                 ),
               )
             // ),
@@ -132,7 +143,7 @@ class _SpecificGroupPageState extends State<SpecificGroupPage> {
       barrierDismissible: false, // Allows tapping outside to close the dialog
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Options'),
+          title: Text('Select Category'),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Container(
@@ -144,10 +155,11 @@ class _SpecificGroupPageState extends State<SpecificGroupPage> {
                     return ListTile(
                       leading: SizedBox(
                         width: 24, // You can adjust the size as needed.
-                        child: SvgPicture.asset(categories1[index]['icon']),
+                        child: Image.asset(categories1[index]['icon'], color: Colors.black,),
                       ),
                       title: Text(categories1[index]['text']),
                       trailing: Radio<int>(
+                        activeColor: Colors.black,
                         value: categories1[index]['pressNumber'],
                         groupValue: _selectedCategoryId,
                         onChanged: (int? value) {
@@ -169,7 +181,7 @@ class _SpecificGroupPageState extends State<SpecificGroupPage> {
               onPressed: () {
                 Navigator.of(context).pop(_selectedCategoryId);
               },
-              child: Text('Done'),
+              child: Text('Done', style: TextStyle(color: Colors.black),),
             ),
           ],
         );

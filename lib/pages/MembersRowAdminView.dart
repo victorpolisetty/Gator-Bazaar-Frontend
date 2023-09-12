@@ -45,17 +45,17 @@ class _MembersRowAdminViewState extends State<MembersRowAdminView> {
       child: Row(
         children: [
           Expanded(
-            child: Text(widget.profile.name!, style: TextStyle(color: Colors.black)),
+            child: Text(widget.profile.name!, style: TextStyle(color: Colors.white)),
           ),
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: Icon(Icons.delete, color: Colors.white),
             onPressed: () {
               showAlertDialogRequestGroup(context, widget.profile.id!, widget.group.id!, widget.profile.name);
             },
           ),
           IconButton(
-            icon: widget.profile.isAdmin == false ? Icon(Icons.admin_panel_settings_outlined)
-                : Icon(Icons.admin_panel_settings) ,
+            icon: widget.profile.isAdmin == false ? Icon(Icons.admin_panel_settings_outlined, color: Colors.white)
+                : Icon(Icons.admin_panel_settings, color: Colors.white,) ,
             onPressed: () {
               // Implement delete functionality here
               if(widget.profile.isAdmin == true &&

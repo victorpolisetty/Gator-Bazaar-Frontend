@@ -1,10 +1,10 @@
 class ApiUtils {
    static String getApiBaseUrl() {
-    bool isProduction = false; // Set to true for production, false for development
+    bool isProduction = true; // Set to true for production, false for development
     if (isProduction) {
       return 'http://gatorbazaarbackend3-env.eba-t4uqy2ys.us-east-1.elasticbeanstalk.com';
     } else {
-      return 'http://localhost:5000';
+      return 'http://localhost:8080';
     }
   }
 

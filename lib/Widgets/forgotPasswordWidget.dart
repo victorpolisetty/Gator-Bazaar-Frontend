@@ -37,15 +37,16 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
         SizedBox(
             height: 25.h,
             width: 25.w,
-            child: Image.asset('assets/images/GatorBazaar.jpg')),
+            child: Image.asset('assets/GatorBZR_Home.png')),
         Padding(
           padding: EdgeInsets.fromLTRB(3.w, 0, 0, 0),
-          child: Text("Email", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+          child: Text("Email", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.white)),
         ),
         Padding(
           padding: EdgeInsets.all(3.w), // Use sizer to set padding
           child: TextFormField(
-            cursorColor: Colors.black,
+            style: TextStyle(color: Colors.white),
+            cursorColor: Colors.white,
             keyboardType: TextInputType.multiline,
             maxLines: 1,
             controller: emailController,
@@ -54,17 +55,18 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
             //TODO: uncomment this delete underneath this
             (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
             decoration: InputDecoration(
+              hintStyle: TextStyle(color: Colors.grey),
               hintText: 'Email',
-              fillColor: Colors.black,
-              focusColor: Colors.black,
+              fillColor: Colors.white,
+              focusColor: Colors.white,
               border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+                borderSide: BorderSide(color: Colors.white),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+                borderSide: BorderSide(color: Colors.white),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+                borderSide: BorderSide(color: Colors.white),
               ),
               contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
             ),
@@ -89,16 +91,16 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0), // Set the border radius here
             ),
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.white,
               onPressed: (){resetPassword(email: emailController.text.trim());},
-            icon: Icon(Icons.check),
-            label: Text("Send Reset Email"),
+            icon: Icon(Icons.check, color: Colors.black,),
+            label: Text("Send Reset Email", style: TextStyle(color: Colors.black),),
           ),
         ),
         Center(
           child: RichText(
               text: TextSpan (
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                   text: 'Already have an account?  ',
                   children: [
                     TextSpan(
@@ -107,7 +109,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                         text: 'Log In',
                         style: TextStyle(
                             decoration: TextDecoration.underline,
-                            color: Colors.black
+                            color: Colors.white
                         )
                     )
                   ]

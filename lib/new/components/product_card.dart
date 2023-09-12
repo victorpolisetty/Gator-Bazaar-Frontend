@@ -23,7 +23,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(1.w), // Increase the padding
+      padding: EdgeInsets.all(3.w), // Increase the padding
       child: SizedBox(
         width: SizerUtil.deviceType == DeviceType.mobile ? 40.0.w : 100.0.w, // Adjust the width as needed
         child: GestureDetector(
@@ -50,8 +50,8 @@ class ProductCard extends StatelessWidget {
                       fit: BoxFit.cover,
                     )
                         : DecorationImage(
-                      image: AssetImage('assets/images/GatorBazaar.jpg'),
-                      fit: BoxFit.cover,
+                      image: AssetImage('assets/gb_placeholder.jpg'),
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
@@ -63,7 +63,7 @@ class ProductCard extends StatelessWidget {
                   Flexible(
                     child: Text(
                       product.name!,
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.white),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -96,7 +96,7 @@ class ProductCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 18.0,
                         fontWeight: FontWeight.w600,
-                        color: kPrimaryColor,
+                        color: Colors.white,
                       ),
                     ),
                   ),

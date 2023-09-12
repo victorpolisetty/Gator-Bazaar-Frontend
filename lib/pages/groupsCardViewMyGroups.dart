@@ -31,7 +31,7 @@ class GroupsCardViewMyGroups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(1.w), // Increase the padding
+      padding: EdgeInsets.all(3.w), // Increase the padding
       child: SizedBox(
         width: SizerUtil.deviceType == DeviceType.mobile ? 40.0.w : 100.0.w, // Adjust the width as needed
         child: GestureDetector(
@@ -50,7 +50,7 @@ class GroupsCardViewMyGroups extends StatelessWidget {
                 aspectRatio: 1.2,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: kSecondaryColor.withOpacity(0.1),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
                     image: group.imageURL != null
                         ? DecorationImage(
@@ -58,7 +58,7 @@ class GroupsCardViewMyGroups extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                     )
                         : DecorationImage(
-                      image: AssetImage('assets/images/GatorBazaar.jpg'),
+                      image: AssetImage('assets/gb_placeholder.jpg'),
                       fit: BoxFit.scaleDown,
                     ),
                   ),
@@ -71,7 +71,7 @@ class GroupsCardViewMyGroups extends StatelessWidget {
                   Flexible(
                     child: Text(
                       group.name!,
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.white),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

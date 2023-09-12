@@ -59,7 +59,7 @@ class MessageModel extends ChangeNotifier{
   //   this.recipientId = recipientId;
   // }
 
-  Future<void> _getMessagesHelper(int creatorId, int recipientId) async {
+  Future<void> getMessagesHelperReal(int creatorId, int recipientId) async {
     messageList.clear();
     await getMessages(creatorId, recipientId);
     notifyListeners();
@@ -67,7 +67,7 @@ class MessageModel extends ChangeNotifier{
 }
 
   void getMessagesHelper(int creatorId, int recipientId) {
-    var initFuture = _getMessagesHelper(creatorId, recipientId);
+    var initFuture = getMessagesHelperReal(creatorId, recipientId);
     initFuture.then((voidValue) {
       // state = HomeScreenModelState.initialized;
       notifyListeners();

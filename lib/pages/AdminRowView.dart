@@ -44,7 +44,7 @@ class _AdminRowViewState extends State<AdminRowView> {
       child: Row(
         children: [
           Expanded(
-            child: Text(widget.profile.name!, style: TextStyle(color: Colors.black)),
+            child: Text(widget.profile.name!, style: TextStyle(color: Colors.white)),
           ),
           // IconButton(
           //   icon: Icon(Icons.delete),

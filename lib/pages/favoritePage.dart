@@ -10,20 +10,21 @@ class favoritePageTab extends StatelessWidget {
       },
       child: Scaffold(
           appBar: AppBar(
+            backgroundColor: Colors.black,
             leading: InkWell(
               onTap: () {
                 Navigator.pop(context);
               },
               child: Icon(
                 Icons.arrow_back_ios,
-                color: Colors.black54,
+                color: Colors.white,
               ),
             ),
             automaticallyImplyLeading: false,
             elevation: .1,
               title: Text(
                 'Favorites',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.white),
               ),
 
             actions: [

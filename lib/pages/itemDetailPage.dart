@@ -1,20 +1,23 @@
 import 'dart:core';
+import 'dart:typed_data';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/Widgets/FavoriteWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:student_shopping_v1/messaging/Screens/ChatDetail.dart';
 import 'package:student_shopping_v1/models/chatMessageModel.dart';
 import '../models/itemModel.dart';
+import 'package:provider/provider.dart';
 
-final spinkit = SpinKitFadingCircle(
+final spinkit = SpinKitRipple(
   itemBuilder: (BuildContext context, int index) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: index.isEven ? Colors.black : Colors.black,
+        color: index.isEven ? Colors.white : Colors.white,
       ),
     );
   },
@@ -32,12 +35,22 @@ class ItemDetails extends StatefulWidget {
 
 class _ItemDetailsState extends State<ItemDetails> {
   User? currentUser = FirebaseAuth.instance.currentUser;
+  Uint8List sellerImage = Uint8List(0);
 
   @override
   void initState() {
-
+    _loadSellerImage();
     super.initState();
   }
+
+  Future<void> _loadSellerImage() async {
+    final image = await Provider.of<ChatMessageModel>(context, listen: false).fetchProfilePictureForUser(widget.item.seller_id!);
+
+    setState(() {
+      sellerImage = image;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -46,32 +59,32 @@ class _ItemDetailsState extends State<ItemDetails> {
     List<dynamic> emptyList = [];
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white), // Set the color of the back arrow
+
         elevation: 0,
         actions: [
           PopupMenuButton(
-            // add icon, by default "3 dot" icon
-            // icon: Icon(Icons.book)
-              itemBuilder: (context){
-                return [
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text("Report"),
-                  ),
-
-                  PopupMenuItem<int>(
-                    value: 1,
-                    child: Text("Block"),
-                  ),
-                ];
-              },
-              onSelected:(value){
-                if(value == 0){
-                  showAlertDialogReportUser(context);
-                }else if(value == 1){
-                  showAlertDialogBlockUser(context);
-                }
-              }
-          ),
+              // add icon, by default "3 dot" icon
+              // icon: Icon(Icons.book)
+              itemBuilder: (context) {
+            return [
+              PopupMenuItem<int>(
+                value: 0,
+                child: Text("Report"),
+              ),
+              PopupMenuItem<int>(
+                value: 1,
+                child: Text("Block"),
+              ),
+            ];
+          }, onSelected: (value) {
+            if (value == 0) {
+              showAlertDialogReportUser(context);
+            } else if (value == 1) {
+              showAlertDialogBlockUser(context);
+            }
+          }),
         ],
       ),
       body: FutureBuilder(
@@ -82,14 +95,19 @@ class _ItemDetailsState extends State<ItemDetails> {
                 child: Center(child: spinkit),
               );
             } else {
-              for (int i = 0; i < numberOfImagesInItem; i++) {
-                imgList.add(snapshot.data[i]);
+              if(imgList.isEmpty) {
+                for (int i = 0; i < numberOfImagesInItem; i++) {
+                  imgList.add(snapshot.data[i]);
+                }
               }
-              if (imgList.length == 0) {
+
+              if (imgList.length == 0 && emptyList.length == 0) {
                 emptyList.add(1);
               }
 
               return Container(
+                color: Color(0xFF333333),
+                height: 100.h,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -116,19 +134,16 @@ class _ItemDetailsState extends State<ItemDetails> {
                                     .map((item) => Container(
                                           child: Center(
                                               child: Image.asset(
-                                                  "assets/images/GatorBazaar.jpg")
-                                              ),
+                                                  "assets/gb_placeholder.jpg")),
                                         ))
                                     .toList(),
-                          )
-                          ),
+                          )),
                       Container(
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.only(left: 15, top: 15, right: 15),
                           child: Text(
                             widget.item.name!,
-                            style: TextStyle(
-                                fontSize: 19, color: Colors.black),
+                            style: TextStyle(fontSize: 19, color: Colors.white),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -139,7 +154,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                                color: Colors.white),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -147,8 +162,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           margin: EdgeInsets.only(left: 10, top: 10, right: 10),
                           child: Text(
                             (' \$${NumberFormat('#,##0.00', 'en_US').format(widget.item.price)}'),
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.black),
+                            style: TextStyle(fontSize: 15, color: Colors.white),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -159,7 +173,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                                color: Colors.white),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -167,8 +181,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           margin: EdgeInsets.only(left: 15, top: 15, right: 15),
                           child: Text(
                             widget.item.description!,
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.black),
+                            style: TextStyle(fontSize: 15, color: Colors.white),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -179,7 +192,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                                color: Colors.white),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -187,8 +200,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           margin: EdgeInsets.only(left: 15, top: 15),
                           child: Text(
                             widget.item.seller_name!,
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.black),
+                            style: TextStyle(fontSize: 15, color: Colors.white),
                             textAlign: TextAlign.left,
                           )),
                       Container(
@@ -196,8 +208,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           margin: EdgeInsets.only(left: 15, top: 15),
                           child: Text(
                             widget.item.seller_email!,
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.black),
+                            style: TextStyle(fontSize: 15, color: Colors.white),
                             textAlign: TextAlign.left,
                           )),
                     ],
@@ -208,6 +219,7 @@ class _ItemDetailsState extends State<ItemDetails> {
           }),
       bottomNavigationBar: widget.item.seller_id != widget.currentUserId
           ? Container(
+        color: Color(0xFF333333),
               width: MediaQuery.of(context).size.width,
               height: 100,
               child: Container(
@@ -219,33 +231,35 @@ class _ItemDetailsState extends State<ItemDetails> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
+                        color: Color(0xFF333333),
                         child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(new MaterialPageRoute(
-                                  builder: (context) => new ChatDetailPage(chatProfile: new ChatMessageHome.NewChatMessage
-                                    ("", widget.item.seller_name, currentUser?.displayName, widget.currentUserId, widget.item.seller_id, "createdAt", widget.currentUserId, widget.item.id, false, -1), currentUserDbId: widget.currentUserId)));
-                      },
-                      child: Text(
-                        'Message',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
+                          onPressed: () {
+                            Navigator.of(context).push(new MaterialPageRoute(
+                                builder: (context) => new ChatDetailPage(
+                                    chatProfile:
+                                        new ChatMessageHome.NewChatMessage(
+                                            "",
+                                            widget.item.seller_name,
+                                            currentUser?.displayName,
+                                            widget.currentUserId,
+                                            widget.item.seller_id,
+                                            "createdAt",
+                                            widget.currentUserId,
+                                            widget.item.id,
+                                            false,
+                                            -1),
+                                    currentUserDbId: widget.currentUserId,
+                                sellerImage: sellerImage,)));
+                          },
+                          child: Text(
+                            'Message',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
                           style: TextButton.styleFrom(
                               backgroundColor: Colors.black,
                               padding: EdgeInsets.zero,
-                            fixedSize: Size.fromWidth(250)
-                          ),
-                    )
-                        // child: InkWell(
-                        //   onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                        //       builder: (context) => new ChatDetailPage(chatProfile: new ChatMessageHome.NewChatMessage
-                        //         ("", widget.item.seller_name, currentUser?.displayName, widget.currentUserId, widget.item.seller_id, "createdAt", widget.currentUserId, widget.item.id, false, -1), currentUserDbId: widget.currentUserId))),
-                        //   child: Text(
-                        //     "Click here to buy!",
-                        //     textAlign: TextAlign.center,
-                        //     style: TextStyle(fontSize: 20),
-                        //   ),
-                        // ),
-                        ),
+                              fixedSize: Size.fromWidth(250)),
+                        )),
                     InkWell(
                       //todo: update list
                       child: Container(
@@ -261,17 +275,16 @@ class _ItemDetailsState extends State<ItemDetails> {
   }
 
   showAlertDialogReportUser(BuildContext context) {
-
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("No"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.of(context).pop();
       },
     );
     Widget continueButton = TextButton(
       child: Text("Yes"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.of(context).pop();
       },
     );
@@ -279,7 +292,8 @@ class _ItemDetailsState extends State<ItemDetails> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Report User"),
-      content: Text("Are you sure you want to REPORT this user for this specific listing?"),
+      content: Text(
+          "Are you sure you want to REPORT this user for this specific listing?"),
       actions: [
         cancelButton,
         continueButton,
@@ -294,18 +308,18 @@ class _ItemDetailsState extends State<ItemDetails> {
       },
     );
   }
-  showAlertDialogBlockUser(BuildContext context) {
 
+  showAlertDialogBlockUser(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("No"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.of(context).pop();
       },
     );
     Widget continueButton = TextButton(
       child: Text("Yes"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.of(context).pop();
       },
     );

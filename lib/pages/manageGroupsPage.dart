@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:sizer/sizer.dart';
 import 'package:student_shopping_v1/models/groupRequestModel.dart';
 import 'package:student_shopping_v1/pages/addNewGroupsRequestPage.dart';
 import 'package:student_shopping_v1/pages/groupsCardViewMyGroups.dart';
@@ -132,6 +133,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
+      backgroundColor: Colors.black,
       leading: InkWell(
         onTap: (){
           Navigator.pop(context);
@@ -180,55 +182,60 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
         child: new DefaultTabController(
           length: 4,
           child: Scaffold(
+            backgroundColor: Color(0xFF333333),
             resizeToAvoidBottomInset: false,
-
             appBar: AppBar(
-              title: Text("Manage Groups", style: TextStyle(color: Colors.black),),
+              backgroundColor: Colors.black,
+              title: Text(
+                "Manage Groups",
+                style: TextStyle(color: Colors.white),
+              ),
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(kToolbarHeight),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: <Widget>[
-                  TabBar(
-                    labelColor: Colors.black,
-                    isScrollable: true, // Make the TabBar scrollable
-                    tabs: <Widget>[
-                      Center(
-                        child: Text(
-                          "My Groups",
-                          style: TextStyle(fontSize: maxFontSize),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          "Find Groups",
-                          style: TextStyle(fontSize: maxFontSize),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          "Request Group",
-                          style: TextStyle(fontSize: maxFontSize),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          "Admin Groups",
-                          style: TextStyle(fontSize: maxFontSize),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                preferredSize: Size.fromHeight(20.0), // Adjust the height as needed
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: <Widget>[
+                      TabBar(
+                        labelColor: Colors.black,
+                        isScrollable: true, // Make the TabBar scrollable
+                        tabs: <Widget>[
+                          Center(
+                            child: Text(
+                              "My Groups",
+                              style: TextStyle(fontSize: 18, color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              "Find",
+                              style: TextStyle(fontSize: 18, color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              "Request",
+                              style: TextStyle(fontSize: 18, color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              "Admin",
+                              style: TextStyle(fontSize: 18, color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+
             body: TabBarView(
               children: [
                 //MY GROUPS
@@ -239,7 +246,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * .58,
+                        height: 72.h,
                         child: PagedGridView(
                           pagingController: _pagingControllerMyGroups,
                           shrinkWrap: true,
@@ -285,7 +292,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * .58,
+                        height: 72.h,
                         child: PagedGridView(
                           pagingController: _pagingControllerFindGroups,
                           shrinkWrap: true,
@@ -340,7 +347,7 @@ class _manageGroupsPageState extends State<manageGroupsPage> {
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * .58,
+                        height: 72.h,
                         child: PagedGridView(
                           pagingController: _pagingControllerAdminGroups,
                           shrinkWrap: true,

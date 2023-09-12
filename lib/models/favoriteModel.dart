@@ -139,7 +139,7 @@ class FavoriteModel extends ChangeNotifier {
         }
       } else {
         // Add default - no image
-        data = (await rootBundle.load('assets/images/GatorBazaar.jpg'))
+        data = (await rootBundle.load('assets/gb_placeholder.jpg'))
             .buffer
             .asUint8List();
       }

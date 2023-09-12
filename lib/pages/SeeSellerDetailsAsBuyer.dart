@@ -19,19 +19,20 @@ import '../models/sellerItemModel.dart';
 
 import 'itemDetailPage.dart';
 
-
 class SeeSellerDetailsAsBuyer extends StatefulWidget {
   ChatMessageHome chatHome;
-  SeeSellerDetailsAsBuyer(chatHome)
-      : this.chatHome = chatHome;
+  SeeSellerDetailsAsBuyer(chatHome) : this.chatHome = chatHome;
   @override
-  State<SeeSellerDetailsAsBuyer> createState() => _SeeSellerDetailsAsBuyerState();
+  State<SeeSellerDetailsAsBuyer> createState() =>
+      _SeeSellerDetailsAsBuyerState();
 }
 
 class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
   File? _image1;
-  final TextEditingController _instagramController = TextEditingController();
   bool isInstagramHandleFetched = false;
+  bool isProfileDescriptionFetched = false;
+  bool isProfilePaymentFetched = false;
+
   late String? displayName;
   late int? currentDbId;
 
@@ -56,17 +57,13 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
       child: Text("Yes"),
       onPressed: () async {
         Navigator.of(context).pop();
-        await _signOut().then((value) => Navigator.of(context)
-            .pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => MainPage()),
-                (route) => false));
       },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Sign out?"),
-      content: Text("Are you sure you want to SIGN OUT?"),
+      title: Text("Block?"),
+      content: Text("Are you sure you want to block this account?"),
       actions: [
         cancelButton,
         continueButton,
@@ -152,10 +149,9 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
 
   Future<void> deleteUserFromDB(int? id) async {
     Map<String, dynamic> data;
-    var url = ApiUtils.buildApiUrl(
-        '/profiles/$id');
+    var url = ApiUtils.buildApiUrl('/profiles/$id');
     http.Response response =
-    await http.delete(url, headers: {"Accept": "application/json"});
+        await http.delete(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
     } else {
       print(response.statusCode);
@@ -163,18 +159,24 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
   }
 
   final PagingController<int, ItemWithImages> _pagingController =
-  PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 0);
   int totalPages = 0;
   String? instagramHandle = "";
+  String? profileDescription = "";
+  String? profilePayment = "";
   String? email = "";
   Uint8List? imageURL = new Uint8List(0);
 
   @override
   void initState() {
-    currentDbId = widget.chatHome.current_user_id == widget.chatHome.creator_user_id ? widget.chatHome.recipient_user_id : widget.chatHome.creator_user_id;
-    displayName = widget.chatHome.current_user_id == widget.chatHome.creator_user_id ?
-    widget.chatHome.recipient_profile_name :
-    widget.chatHome.creator_profile_name;
+    currentDbId =
+        widget.chatHome.current_user_id == widget.chatHome.creator_user_id
+            ? widget.chatHome.recipient_user_id
+            : widget.chatHome.creator_user_id;
+    displayName =
+        widget.chatHome.current_user_id == widget.chatHome.creator_user_id
+            ? widget.chatHome.recipient_profile_name
+            : widget.chatHome.creator_profile_name;
     widget.chatHome.creator_profile_name;
     _initializeData();
     _pagingController.addPageRequestListener((pageKey) {
@@ -188,13 +190,12 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
   void dispose() {
     super.dispose();
     if (!mounted) _pagingController.dispose();
-    if (!mounted) _instagramController.dispose();
   }
 
   Future<void> _fetchPage(int pageKey, int currentDbId) async {
     try {
       await Provider.of<SellerItemModel>(context, listen: false)
-          .initNextPageUserClicksMessage(pageKey,currentDbId);
+          .initNextPageUserClicksMessage(pageKey, currentDbId);
       totalPages =
           Provider.of<SellerItemModel>(context, listen: false).totalPages;
       if (mounted) {
@@ -216,8 +217,14 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
   }
 
   Future<void> _initializeData() async {
-    if(!isInstagramHandleFetched) {
+    if (!isInstagramHandleFetched) {
       await getInstagramHandle();
+    }
+    if (!isProfileDescriptionFetched) {
+      await getProfileDescription();
+    }
+    if (!isProfilePaymentFetched) {
+      await getProfilePayment();
     }
     await getImageByProfile();
   }
@@ -232,7 +239,7 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
-            color: Colors.white,
+            color: Colors.black87,
             height: 350.sp, // Use sizer to set height
             width: MediaQuery.of(context).size.width,
             child: spinkit,
@@ -249,162 +256,248 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
                 },
                 child: Icon(
                   Icons.arrow_back_ios,
-                  color: Colors.black54,
+                  color: Colors.white,
                 ),
               ),
               automaticallyImplyLeading: false,
               elevation: .1,
+              title: Text(widget.chatHome.creator_user_id ==
+                      widget.chatHome.current_user_id
+                  ? widget.chatHome.recipient_profile_name!
+                  : widget.chatHome.creator_profile_name!),
               actions: [
-                PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem<int>(
-                        value: 0,
-                        child: Text("Sign Out"),
-                      ),
-                      PopupMenuItem<int>(
-                        value: 1,
-                        child: Text("Delete Account"),
-                      ),
-                    ];
-                  },
-                  onSelected: (value) {
-                    if (value == 0) {
-                      showAlertDialogSignOut(context);
-                    } else if (value == 1) {
-                      showAlertDialogDeleteAccount(context);
-                    }
-                  },
-                ),
               ],
             ),
-            body: CustomScrollView(
-              slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    SizedBox(width: 10.w), // Use sizer to set width
-                    Column(
-                      children: [
-                        buildProfileImage(),
-                        SizedBox(height: 1.h), // Use sizer to set width
-                        Center(
-                          child: Text(
-                            displayName!.toString(),
-                            textAlign: TextAlign.center, // Center-align the text within the widget
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontSize: 8.w, // Use sizer to set font size
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 8.sp), // Use sizer to set height
-                        Center(
-                          child: Text(
-                            email!.toString(),
-                            textAlign: TextAlign.center, // Center-align the text within the widget
-                            style: TextStyle(
-                              fontSize: 4.w, // Use sizer to set font size
-                              fontFamily: 'Montserrat',
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 8.sp), // Use sizer to set height
-                        instagramHandle == ""
-                            ? FloatingActionButton.extended(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                0), // Set the border radius here
-                          ),
-                          backgroundColor: Colors.black,
-                          onPressed: () {},
-                          icon: Icon(Icons.cancel_outlined),
-                          label: Text("No Instagram Added"),
-                        )
-                            : Padding(
-                          padding: EdgeInsets.fromLTRB(25.w,0,0,0),
-                          child: Row(
+            body: Container(
+              color: Color(0xFF333333),
+              width: 100.w,
+              height: 100.h,
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      Row(
+                        children: [
+                          SizedBox(width: 5.w), // Use sizer to set width
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start, // Adjust this property for vertical alignment
                             children: [
-                              Image.asset(
-                                "assets/instagrambw.png",
-                                height: 10.h,
-                                width: 10.w,
-                              ),
                               SizedBox(
-                                width: 10,
-                              ),
-                              FloatingActionButton.extended(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(0),
-                                ),
-                                backgroundColor: Colors.black,
-                                onPressed: () {
-                                  _launchUrl(
-                                      "https://instagram.com/$instagramHandle");
-                                },
-                                label: Text(
-                                  "@" + instagramHandle!,
-                                  style: TextStyle(fontSize: 2.5.w),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
+                                  height:
+                                  25.0), // Adjust the height value as needed
+                              buildProfileImage(),
                             ],
                           ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 1.h), // Use sizer to set height
-                    Padding(
-                      padding:
-                      EdgeInsets.all(10.sp), // Use sizer to set padding
-                      child: Text(
-                        displayName!.split(' ')[0] + "'s Listings",
-                        style: TextStyle(
-                          fontSize: 20.sp, // Use sizer to set font size
-                          fontFamily: 'Montserrat',
-                          color: Colors.black,
+
+                          SizedBox(width: 5.w), // Use sizer to set width
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                  height: 2.h), // Use sizer to set height
+                              Center(
+                                child: Text(
+                                  email!.toString(),
+                                  style: TextStyle(
+                                    fontSize: 3.w, // Use sizer to set font size
+                                    fontFamily: 'Montserrat',
+                                    color: Colors.white60,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              profileDescription == ""
+                                  ? Row(
+                                children: [
+                                  Text(
+                                    "No Profile Description",
+                                    style: TextStyle(
+                                        fontSize: 1.2.h, color: Colors.grey),
+                                  ),
+                                  SizedBox(height: 1.h,width: 1.w,),
+                                ],
+                              )
+                                  :
+                              Container(
+                                width: 55.w, // Set a specific width or adjust as needed
+                                child: Row(
+                                  children: [
+                                    // SizedBox(height: 2.h),
+                                    Flexible(
+                                      child: Text(
+                                        profileDescription!,
+                                        softWrap: true,
+                                        maxLines: 3,
+                                        style: TextStyle(
+                                          fontSize: 3.w,
+                                          color: Colors.grey,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                  ],
+                                ),
+                              ),
+                              instagramHandle == ""
+                                  ? Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/insta.png",
+                                    height: 5.h,
+                                    width: 5.w,
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    "No Instagram Linked",
+                                    style: TextStyle(
+                                        fontSize: 1.2.h, color: Colors.grey),
+                                  ),
+                                  SizedBox(width: 1.w,),
+                                ],
+                              ) :
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      _launchUrl(
+                                          "https://instagram.com/$instagramHandle");
+                                    },
+                                    child: Image.asset(
+                                      "assets/insta_white.png",
+                                      height: 5.h,
+                                      width: 5.w,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      _launchUrl(
+                                          "https://instagram.com/$instagramHandle");
+                                    },
+                                    child: Text(
+                                      "@" + instagramHandle!,
+                                      style: TextStyle(
+                                          fontSize: 3.w,
+                                          color: Colors.blueAccent),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              profilePayment! == ""
+                                  ? Container(
+                                width: 55.w, // Set a specific width or adjust as needed
+                                height: 2.h,
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/payment_grey.png",
+                                      height: 5.h,
+                                      width: 5.w,
+                                      // Add margin to move it to the left
+                                      // margin: EdgeInsets.only(left: 10.0), // Adjust the left margin as needed
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      "No Payment Method",
+                                      style: TextStyle(
+                                          fontSize: 1.2.h, color: Colors.grey),
+                                    ),
+                                    SizedBox(height: 1.h,width: 1.w,),
+                                    // GestureDetector(child: Icon(Icons.edit, color: Colors.white, size: 3.w,),onTap: (){
+                                    //   _openInstagramDialog();
+                                    // },)
+                                  ],
+                                ),
+                              )
+                                  :
+                              Container(
+                                width: 55.w, // Set a specific width or adjust as needed
+                                height: 2.h,
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/payment_white.png",
+                                      height: 5.h,
+                                      width: 5.w,
+                                      // Add margin to move it to the left
+                                      // margin: EdgeInsets.only(left: 10.0), // Adjust the left margin as needed
+                                    ),
+                                    SizedBox(width: 5),
+                                    Flexible(
+                                      child: Text(
+                                        profilePayment!,
+                                        softWrap: true,
+                                        maxLines: 3,
+                                        style: TextStyle(
+                                          fontSize: 3.w,
+                                          color: Colors.grey,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5,height: 0,),
+                                  ],
+                                ),
+                                    ),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 1.h), // Use sizer to set height
+                      Padding(
+                        padding:
+                            EdgeInsets.all(10.sp), // Use sizer to set padding
+                        child: Text(
+                          displayName!.split(' ')[0] + "'s Listings",
+                          style: TextStyle(
+                            fontSize: 15.sp, // Use sizer to set font size
+                            fontFamily: 'Montserrat',
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                  ]),
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.all(5.sp), // Use sizer to set padding
-                  sliver: PagedSliverGrid(
-                    pagingController: _pagingController,
-                    builderDelegate: PagedChildBuilderDelegate<ItemWithImages>(
-                      firstPageProgressIndicatorBuilder: (_) =>
-                          Center(child: spinkit),
-                      newPageProgressIndicatorBuilder: (_) =>
-                          Center(child: spinkit),
-                      noItemsFoundIndicatorBuilder: (_) => Center(
-                          child: Text(
-                            "No Items Found.",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: Colors.black),
-                          )),
-                      itemBuilder: (BuildContext context, item, int index) {
-                        return ProductCard(
-                          product: item,
-                          uniqueIdentifier: "messagingView",
-                        );
-                      },
-                    ),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: .7,
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 0, // Use sizer to set main axis spacing
+                    ]),
+                  ),
+                  SliverPadding(
+                    padding: EdgeInsets.all(5.sp), // Use sizer to set padding
+                    sliver: PagedSliverGrid(
+                      pagingController: _pagingController,
+                      builderDelegate:
+                          PagedChildBuilderDelegate<ItemWithImages>(
+                        firstPageProgressIndicatorBuilder: (_) =>
+                            Center(child: spinkit),
+                        newPageProgressIndicatorBuilder: (_) =>
+                            Center(child: spinkit),
+                        noItemsFoundIndicatorBuilder: (_) => Center(
+                            child: Text(
+                          "No Items Found.",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                        )),
+                        itemBuilder: (BuildContext context, item, int index) {
+                          return ProductCard(
+                            product: item,
+                            uniqueIdentifier: "messagingView",
+                          );
+                        },
+                      ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: .7,
+                        crossAxisCount: 2,
+                        mainAxisSpacing:
+                            0, // Use sizer to set main axis spacing
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         }
@@ -412,47 +505,46 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
     );
   }
 
-
   Widget buildProfileImage() => CircleAvatar(
-    radius: 60, // Adjust the radius as needed
-    backgroundColor: Colors.grey.shade800,
-    backgroundImage: (_image1 != null && _image1!.existsSync())
-        ? Image.file(
-      _image1!,
-      height: 80, // Adjust the height as needed
-      width: 80, // Adjust the width as needed
-      fit: BoxFit.cover,
-    ).image
-        : (imageURL != null && !imageURL!.isEmpty)
-        ? Image.memory(
-      imageURL!,
-      height: 100, // Adjust the height as needed
-      width: 100, // Adjust the width as needed
-      fit: BoxFit.cover,
-    ).image
-        : null,
-    child: (_image1 == null && imageURL!.length == 0)
-        ? Container(
-      width: 120, // Adjust the width as needed
-      height: 120, // Adjust the height as needed
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.black,
-      ),
-      child: Icon(
-        Icons.person,
-        color: Colors.white, // Set the color of the icon
-        size: 40, // Adjust the size of the icon
-      ),
-    )
-        : null,
-  );
+        radius: 60, // Adjust the radius as needed
+        backgroundColor: Colors.grey.shade800,
+        backgroundImage: (_image1 != null && _image1!.existsSync())
+            ? Image.file(
+                _image1!,
+                height: 80, // Adjust the height as needed
+                width: 80, // Adjust the width as needed
+                fit: BoxFit.cover,
+              ).image
+            : (imageURL != null && !imageURL!.isEmpty)
+                ? Image.memory(
+                    imageURL!,
+                    height: 100, // Adjust the height as needed
+                    width: 100, // Adjust the width as needed
+                    fit: BoxFit.cover,
+                  ).image
+                : null,
+        child: (_image1 == null && imageURL!.length == 0)
+            ? Container(
+                width: 120, // Adjust the width as needed
+                height: 120, // Adjust the height as needed
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey,
+                ),
+                child: Icon(
+                  Icons.person,
+                  color: Colors.white, // Set the color of the icon
+                  size: 40, // Adjust the size of the icon
+                ),
+              )
+            : null,
+      );
 
   Future<void> getInstagramHandle() async {
     Map<String, dynamic> data;
     var url = ApiUtils.buildApiUrl('/profiles/profileId/$currentDbId');
     http.Response response =
-    await http.get(url, headers: {"Accept": "application/json"});
+        await http.get(url, headers: {"Accept": "application/json"});
     if (response.statusCode == 200) {
       data = jsonDecode(response.body);
       if (data['instagramHandle'] != null) {
@@ -462,6 +554,44 @@ class _SeeSellerDetailsAsBuyerState extends State<SeeSellerDetailsAsBuyer> {
         });
       }
       email = data['emailId'];
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future<void> getProfileDescription() async {
+    Map<String, dynamic> data;
+    var url = ApiUtils.buildApiUrl('/profiles/profileId/$currentDbId');
+    http.Response response =
+        await http.get(url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
+      if (data['profileDescription'] != null) {
+        setState(() {
+          profileDescription = data['profileDescription'];
+          isProfileDescriptionFetched = true; // Mark as fetched
+        });
+      }
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  Future<void> getProfilePayment() async {
+    Map<String, dynamic> data;
+    var url = ApiUtils.buildApiUrl('/profiles/profileId/$currentDbId');
+    http.Response response =
+        await http.get(url, headers: {"Accept": "application/json"});
+    if (response.statusCode == 200) {
+      String responseJson = Utf8Decoder().convert(response.bodyBytes);
+      data = json.decode(responseJson);
+      if (data['profilePayment'] != null) {
+        setState(() {
+          profilePayment = data['profilePayment'];
+          isProfilePaymentFetched = true; // Mark as fetched
+        });
+      }
     } else {
       print(response.statusCode);
     }

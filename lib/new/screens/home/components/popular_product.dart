@@ -60,7 +60,9 @@ class _PopularProductsState extends State<PopularProducts> {
   @override
   void dispose() {
     super.dispose();
-    if (mounted) _pagingController.dispose();
+    if (!mounted) {
+      _pagingController.dispose();
+    }
   }
 
   @override
@@ -75,7 +77,7 @@ class _PopularProductsState extends State<PopularProducts> {
               "No Items Found.",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),

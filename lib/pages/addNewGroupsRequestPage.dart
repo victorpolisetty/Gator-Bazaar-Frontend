@@ -117,7 +117,7 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF333333),
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -132,12 +132,12 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                     SizedBox(height: 1.h),
                     Padding(
                       padding: EdgeInsets.fromLTRB(3.w,0,0,0),
-                      child: Text("Group Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+                      child: Text("Group Name", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.white)),
                     ),// Use sizer to set vertical spacing
                     Padding(
                       padding: EdgeInsets.all(3.w), // Use sizer to set padding
                       child: TextFormField(
-                        cursorColor: Colors.black,
+                        cursorColor: Colors.white,
 
                         keyboardType: TextInputType.multiline,
                         maxLines: 1,
@@ -148,16 +148,17 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                         textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
                           hintText: 'Group Name',
-                          fillColor: Colors.black,
-                          focusColor: Colors.black,
+                          hintStyle: TextStyle(color: Colors.grey),
+                          fillColor: Colors.grey,
+                          focusColor: Colors.grey,
                           border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: BorderSide(color: Colors.white),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: BorderSide(color: Colors.white),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: BorderSide(color: Colors.white),
                           ),
                           contentPadding: EdgeInsets.symmetric(horizontal: 1.h), // Remove horizontal padding
 
@@ -166,28 +167,29 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                     ),
                     Padding(
                       padding:  EdgeInsets.fromLTRB(3.w,0,0,0),
-                      child: Text("Group Description", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.black)),
+                      child: Text("Group Description", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.white)),
                     ),
                     Padding(
                       padding: EdgeInsets.all(3.w), // Use sizer to set padding
                       child: TextFormField(
-                        cursorColor: Colors.black,
+                        cursorColor: Colors.white,
                         keyboardType: TextInputType.multiline,
                         maxLines: 3,
                         controller: groupDescriptionController,
                         textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
                           hintText: 'Who are you in relation to this group?',
-                          fillColor: Colors.black,
-                          focusColor: Colors.black,
+                          hintStyle: TextStyle(color: Colors.grey),
+                          fillColor: Colors.white,
+                          focusColor: Colors.white,
                           border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: BorderSide(color: Colors.white),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: BorderSide(color: Colors.white),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: BorderSide(color: Colors.white),
                           ),
                           contentPadding: EdgeInsets.symmetric(horizontal: 1.h, vertical: 2.w), // Remove horizontal padding
                         ),
@@ -201,11 +203,11 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                           child: Padding(
                             padding: EdgeInsets.all(2.w), // Use sizer to set padding
                             child: SizedBox(
-                              height: 35.h,
+                              height: 25.h,
                               child: OutlinedButton(
                                   style: OutlinedButton.styleFrom(
                                     primary: Colors.grey.withOpacity(0.5),
-                                    side: BorderSide(color: Colors.black, width: 1),
+                                    side: BorderSide(color: Colors.white, width: 1),
                                   ),
                                   onPressed: () async {
                                     _showPickOptionsDialog(context, 1);
@@ -222,7 +224,7 @@ class _AddNewGroupsRequestState extends State<AddNewGroupsRequest> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(0), // Set the border radius here
                         ),
-                        backgroundColor: Colors.black,
+                        backgroundColor: Colors.blueAccent,
                         onPressed: () {
                           groupNameController.text.isNotEmpty &&
                               groupDescriptionController.text.isNotEmpty &&

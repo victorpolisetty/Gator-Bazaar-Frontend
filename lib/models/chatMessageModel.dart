@@ -40,6 +40,7 @@ class ChatMessageHome extends ChangeNotifier {
   String createdAt,
   int? current_user_id,
       int? item_id,
+      // Uint8List? image,
       bool? is_message_read,
       int? id){
     this.message_text = message_text;
@@ -50,6 +51,7 @@ class ChatMessageHome extends ChangeNotifier {
     this.createdAt = createdAt;
     this.current_user_id = current_user_id;
     this.item_id = item_id;
+    // this.image = image;
     this.is_message_read = is_message_read;
     this.id = id;
   }

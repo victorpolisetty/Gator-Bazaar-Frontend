@@ -40,15 +40,6 @@ class _MultiSelectAddListingViewState extends State<MultiSelectAddListingView> {
   bool _isChecked = false;
   List<int> _selectedGroupIds = [];
 
-  void _onCheckboxChanged(int groupId, bool? value) {
-    setState(() {
-      if (value == true) {
-        _selectedGroupIds.add(groupId);
-      } else {
-        _selectedGroupIds.remove(groupId);
-      }
-    });
-  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -59,6 +50,8 @@ class _MultiSelectAddListingViewState extends State<MultiSelectAddListingView> {
             child: Text(widget.group.name!, style: TextStyle(color: Colors.black)),
           ),
           Checkbox(
+            checkColor: Colors.white,
+            activeColor: Colors.black,
             value: _isChecked,
             onChanged: (bool? value) {
               setState(() {

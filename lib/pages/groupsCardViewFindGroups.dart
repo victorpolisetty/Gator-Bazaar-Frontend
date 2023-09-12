@@ -27,7 +27,7 @@ class GroupsCardViewFindGroups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(1.w), // Increase the padding
+      padding: EdgeInsets.all(3.w), // Increase the padding
       child: SizedBox(
         width: width.w,
         child: Column(
@@ -37,7 +37,7 @@ class GroupsCardViewFindGroups extends StatelessWidget {
               aspectRatio: 1.2,
               child: Container(
                 decoration: BoxDecoration(
-                  color: kSecondaryColor.withOpacity(0.1),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(SizerUtil.deviceType == DeviceType.mobile ? 10.0.sp : 10.0),
                   image: group.imageURL != null
                       ? DecorationImage(
@@ -58,7 +58,7 @@ class GroupsCardViewFindGroups extends StatelessWidget {
                 Flexible(
                   child: Text(
                     group.name!,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.white),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -76,7 +76,7 @@ class GroupsCardViewFindGroups extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 3.5.w),
                     ),
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor: Colors.blueAccent,
                       padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.sp),
