@@ -77,7 +77,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 //TODO: uncomment this delete underneath this
                    (email != null && !EmailValidator.validate(email)) || (email != null && !email.endsWith('@ufl.edu')) ? 'Enter a valid .edu email' : null,
               decoration: InputDecoration(
-                hintStyle: TextStyle(color: Colors.white),
+                hintStyle: TextStyle(color: Colors.grey),
                 hintText: 'Email',
                 fillColor: Colors.white,
                 focusColor: Colors.white,

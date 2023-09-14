@@ -160,7 +160,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   Widget build(BuildContext context) => isEmailVerified
       ? BuyerHomePage("Gator Bazaar")
       : Scaffold(
-    backgroundColor: Colors.grey[350],
+    backgroundColor: Colors.black,
           // appBar: AppBar(
           //   title: Text('Verify Email'),
           //   backgroundColor: Colors.grey,
@@ -173,7 +173,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 Text(
                   'A verification pin has been sent to the email: ' +
                       FirebaseAuth.instance.currentUser!.email!,
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 24),
@@ -217,7 +217,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   ),
                   child: Text(
                     'Cancel',
-                    style: TextStyle(fontSize: 24, color: Colors.black),
+                    style: TextStyle(fontSize: 24, color: Colors.white),
                   ),
                   onPressed: () => FirebaseAuth.instance.signOut(),
                 ),

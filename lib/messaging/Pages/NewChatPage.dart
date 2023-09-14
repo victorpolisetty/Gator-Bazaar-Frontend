@@ -118,7 +118,7 @@ class _ChatPageState extends State<ChatPage> {
                           Provider.of<ChatMessageModel>(context,
                               listen: false);
                           await chatMessageModel.changeLatestMessageToRead(
-                              chatHomeObject.id);
+                              chatHomeObject.id).then((value) => _pagingController.refresh());
                         }
                         Navigator.of(context).push(
                           MaterialPageRoute(

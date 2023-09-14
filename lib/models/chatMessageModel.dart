@@ -186,16 +186,13 @@ class ChatMessageModel extends ChangeNotifier{
 
   Future<void> changeLatestMessageToRead(int? userMessageId)  async {
     var url = ApiUtils.buildApiUrl('/message/readStatus/$userMessageId');
-    // var tmpObj =  json.encode(itm.toJson());
     final http.Response response =  await http.put(url
         , headers: {
           "Accept": "application/json",
           "Content-Type": "application/json"
         }
-      // , body: tmpObj
     );
 
-    //  .then((response) {
     if (response.statusCode == 200) {
     } else {
       print(response.statusCode);

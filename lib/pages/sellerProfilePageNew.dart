@@ -47,7 +47,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
   showAlertDialogSignOut(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
-      child: Text("No"),
+      child: Text("No", style: TextStyle(color: Colors.black),),
       onPressed: () {
         Navigator.of(context).pop();
       },
@@ -57,7 +57,7 @@ class _SellerProfilePageNewState extends State<SellerProfilePageNew> {
     }
 
     Widget continueButton = TextButton(
-      child: Text("Yes"),
+      child: Text("Yes", style: TextStyle(color: Colors.black),),
       onPressed: () async {
         Navigator.of(context).pop();
         await _signOut().then((value) => Navigator.of(context)

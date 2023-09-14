@@ -39,7 +39,7 @@ class _SpecificGroupPageState extends State<SpecificGroupPage> {
     {"icon": "assets/icons/furniture.png", "text": "Furniture", "pressNumber": 4},
     {"icon": "assets/icons/sublease.png", "text": "Subleases", "pressNumber": 5},
     {"icon": "assets/icons/electronics.png", "text": "Electronics", "pressNumber": 6},
-    {"icon": "assets/icons/electronics.png", "text": "Books", "pressNumber": 7},
+    {"icon": "assets/icons/open-book.png", "text": "Books", "pressNumber": 7},
     {"icon": "assets/all_items.png", "text": "Misc.", "pressNumber": 8},
     {"icon": "assets/icons/free.png", "text": "Free", "pressNumber": 9},
   ];
